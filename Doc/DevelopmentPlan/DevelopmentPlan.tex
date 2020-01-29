@@ -26,6 +26,7 @@ Alexander Samaha, samahaa\\
 \midrule
 Jan 26, 2020 & Alexander Samaha & Set-up document, initial changes\\
 Jan 28, 2020 & Daniel Noorduyn & POC and Roles Rough Draft\\
+Jan 28, 2020 & Alexander Samaha & Technology and Communication Rough Draft and Final\\
 Jan 29, 2020 & Daniel Noorduyn & POC and Roles Touched Up\\
 \bottomrule
 \end{tabularx}
@@ -56,14 +57,44 @@ Rules for agendas:
 Rubric:  5 marks.
 
 \section{Team Communication Plan}
-By: Alex
+% By: Alex
+%
+% How we communicate as a team.  Git issues (through merge requests and wiki
+% posts?), email, group chats, phones.  What contact information is exchanged and
+% what is used for what information (issues through git,  updates on groupchats,
+% phone for meetings?)
+%
+% Rubric:  3 marks.
 
-How we communicate as a team.  Git issues (through merge requests and wiki
-posts?), email, group chats, phones.  What contact information is exchanged and
-what is used for what information (issues through git,  updates on groupchats,
-phone for meetings?)
+The development group have all exchanged Facebook Messenger credentials, phone
+numbers and academic email handles. This allows the team three channels of
+communication outside of the predetermined weekly meetings.
 
-Rubric:  3 marks.
+The team has set up a Facebook Messenger group chat for discussing work related
+activities among all group members. Messenger provides an important avenue to
+discuss minor issues related to the project, in contrast, the weekly meetings
+will be used to discuss major issues and activities in detail. This could
+involve current bugs or issues with the program, blockers where a team member is
+unsure how to proceed, as well as current updates on development of features.
+Casual work discussion not fitting the previous criteria would also be
+appropriate on Facebook Messenger. Update conference calls will also happen on
+this platform through the conference call functionality. This should occur
+before a development sprint and throughout the development cycle to update team
+members on features to be completed and manage a prioritization schedule.
+
+More time sensitive issues involving individual team members will be pursued
+through telephone communication. Phone calls or text messages would be
+appropriate to communicate issues such as critical blockers that need to be
+fixed.
+
+The team members have access to GitLab through our academic emails. This
+directly connects the team to the source code-base to communicate merge requests
+and issues. Real-time or synchronous messages will be avoided with this channel
+since it is not likely to elicit a fast response relative to phone and Facebook
+Messenger communication. Furthermore, our academic emails open a direct channel
+between our team and supervising TA. This will be used to pass information both
+ways regarding different stages of the project and feedback on progress.
+
 
 \section{Team Member Roles}
 % By: Dan
@@ -172,14 +203,63 @@ will consist of a 2D plane where in a character can be controlled to move left
 and right as well as jump up and fall down. If this can be achieved the overall project should be able to be completed.
 
 \section{Technology}
-By: Alex
-Talk  about  the  Programming  languages,  are  we  using  an  IDE?  Testing
-frame-
-work,  how  are  we  testing  (maybe  something  to  do  with  pytest).
-Document
-generation, how are we making documentation in Python?
+% By: Alex
+% Talk  about  the  Programming  languages,  are  we  using  an  IDE?  Testing
+% frame-
+% work,  how  are  we  testing  (maybe  something  to  do  with  pytest).
+% Document
+% generation, how are we making documentation in Python?
+%
+% Rubric:  4 marks, we need to write a bit to really bring this one out.
 
-Rubric:  4 marks, we need to write a bit to really bring this one out.
+\subsection*{Programming Lanugage:}
+
+The programming language to be used for the project is Python. We will be taking
+advantage of the PyGame library which is beneficial for rapid prototyping and
+smaller scope games, it is also the most widely recognized game development
+library through Python. The game we are producing does not require intensive
+resources and as such, Python utilizing the PyGame library would be adequate to
+satisfy the game’s requirements. The original project is already utilizing this
+language and library which allows the team to efficiently continue from what was
+left off. This solution allows for an easy set-up for users of the project,
+requiring the Python interpreter to be installed along with a version of PyGame
+through the pip installer.
+
+\subsection*{IDE:}
+
+There will be no mandatory IDE to develop the project, however, the preferred
+development environment will be Microsoft VSCode. Although not a dedicated
+Python development platform, VSCode provides many advantages that make
+development more efficient and convenient. VSCode houses tools that perform
+linter checks and code completion for Python, helping the development team
+release higher quality and consistent code. VSCode also has terminal support
+which speeds up the process of testing the code since it can be run in-app. The
+chosen IDE also supports Git integration, which encourages best practices such
+as branching and frequent code committing to the source code repository.
+
+\subsection*{Testing Framework:}
+
+Testing during the course of the project will be achieved using pyTest and
+manual testing. pyTest is a popular Python testing framework that allows us to
+perform dynamic white box testing and ensuring appropriate code coverage for all
+parts of the program. The team already has experience using this framework which
+makes it easier to implement for this solution. Manual testing will be done to
+ensure that in-game assets and gameplay are behaving as expected when run.
+
+\subsection*{Documentation:}
+
+The project will be documented in full using LaTeX and made available for all
+users with access to see on GitLab. LaTeX allows the development team to create
+efficient and consistent documents that can be easily compiled into PDF format.
+All development team members have extensive use of LaTeX in previous projects.
+For code documentation, proper development practices related to code commenting
+will be followed. In-line comments will be used to describe the function and use
+of the sequence of code. Further, Doxygen will be used to encompass the
+functionality of the entire source code base. This will allow us to track the
+logic of each class, method and field across the whole project and act as a
+reference for future development.
+
+
 
 \section{Coding Style}
 By: David
