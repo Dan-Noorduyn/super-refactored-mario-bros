@@ -4,13 +4,13 @@
 \usepackage{tabularx}
 \usepackage{caption}
 
-\title{SE 3XA3: Development Plan\\Title of Project}
+\title{SE 3XA3: Development Plan\\super-refactored-mario-python}
 
 \author{Team 203, Abstract Connoiseurs\\
 Daniel Noorduyn, noorduyd\\
 David Jandric, jandricd\\
 Alexander Samaha, samahaa\\
-}
+} 
 
 \date{}
 
@@ -28,7 +28,7 @@ Jan 26, 2020 & Alexander Samaha & Set-up document, initial changes\\
 Jan 28, 2020 & Daniel Noorduyn & POC and Roles Rough Draft\\
 Jan 28, 2020 & Alexander Samaha & Technology and Communication Rough Draft and Final\\
 Jan 29, 2020 & Daniel Noorduyn & POC and Roles Touched Up\\
-Jan 29, 2020 & David Jandric & TMP, GWP, CS Rough Draft\\
+Jan 29, 2020 & David Jandric & TMP, GWP, CS Rough Draft and Final\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -41,14 +41,10 @@ This document lays out the plan for developing, testing and reviewing our
 project.
 
 \section{Team Meeting Plan}
-% By: David
-% Need to include :  When?  Where?  Frequency?  Roles?  Rules for agendas?
-% Rubric:  5 marks.
 
 Meetings will take place every Tuesday and Wednesday in ITB 236 from 2:30PM to
 4:30PM. Informal meetings will be held on Thursdays at 6:00PM, if required.
 Alex will log, Dan will be chair, David will act as technology expert.
-
 Rules for agendas:
 \begin{enumerate}
     \item Items must be pertinent to next deliverable.
@@ -59,14 +55,6 @@ Rules for agendas:
 \end{enumerate}
 
 \section{Team Communication Plan}
-% By: Alex
-%
-% How we communicate as a team.  Git issues (through merge requests and wiki
-% posts?), email, group chats, phones.  What contact information is exchanged and
-% what is used for what information (issues through git,  updates on groupchats,
-% phone for meetings?)
-%
-% Rubric:  3 marks.
 
 The development group have all exchanged Facebook Messenger credentials, phone
 numbers and academic email handles. This allows the team three channels of
@@ -97,16 +85,7 @@ Messenger communication. Furthermore, our academic emails open a direct channel
 between our team and supervising TA. This will be used to pass information both
 ways regarding different stages of the project and feedback on progress.
 
-
 \section{Team Member Roles}
-% By: Dan
-% Name  a  team  leader,  scribe.   Then  we  identify  experts  based  on  git,
-% LATEX,
-% technology,  perhaps  domain.   Roles  are  fluid  and  you  should  know
-% which  hat you wear.
-%
-% Rubric:  2 marks
-
 
 A project with this level of coordination required amidst developers and
 designers results in the need for a chair (or team leader). The chair's
@@ -143,32 +122,15 @@ arise during the project. Each team member will be filling in multiple roles
 from the start, and therefore understand how fluid the assigned roles are.
 
 \section{Git Workflow Plan}
-% By: David
-% Pretty  simple,  how  are  our  branches  organized,  is  our  repository
-% centralized?
-% How do we label everything, how will milestones be used?
-% Rubric:  3 marks
 
 Our repository is centralized around the master branch, and new branches are
-created for different features and modules. These branches are destroyed once merged with master.
+created for different features and modules. These branches are destroyed once 
+merged with master. Labels will be used in order to track bugs, stylistic 
+changes, documentation requirements, issues that may require discussion, and 
+suggestions. We will be using milestones in order to track the due dates 
+of the deliverables.
 
 \section{Proof of Concept Demonstration Plan}
-% By: Dan
-% Validate technical feasibility.
-% https://sensinum.com/proof-of-concept-in-software-development/
-%
-% Identify risks, is testing going to be difficult?  what are difficult
-% implementa-
-% tion aspects.  Are there required libraries that have some concerns (pygame and
-% MacOS for example).  Will portability be a concern (yes for new Macs I guess,
-% out  of our control but lets talk about it).
-%
-% What will we demonstrate to overcome the risks.  (talk about what we might
-% show in terms of testing, what our product will be?  demos of levels?).
-%
-% Rubric:  5  marks.   Gonna  be  a  biggie.   Maybe  we  have  a  table  here?
-% some figures.
-
 
 The ambitious goal of creating a Super Mario Bros game that is accessible on
 every platform results in some possible hurdles that will need to be overcome if
@@ -206,14 +168,6 @@ will consist of a 2D plane where in a character can be controlled to move left
 and right as well as jump up and fall down. If this can be achieved the overall project should be able to be completed.
 
 \section{Technology}
-% By: Alex
-% Talk  about  the  Programming  languages,  are  we  using  an  IDE?  Testing
-% frame-
-% work,  how  are  we  testing  (maybe  something  to  do  with  pytest).
-% Document
-% generation, how are we making documentation in Python?
-%
-% Rubric:  4 marks, we need to write a bit to really bring this one out.
 
 \subsection*{Programming Language:}
 
@@ -263,20 +217,13 @@ logic of each class, method and field across the whole project and act as a
 reference for future development.
 
 \section{Coding Style}
-By: David
-% We  should  follow  a  coding  style,  this  can  involve  but  it’s  important
-% that  the code is consistent.  Someone needs to research some python coding
-% styles.  Then we talk about it and how it can be helpful!
-% Rubric:  2  marks.
-% Should  be  enough  to  just  introduce  the  style  and what
-% advantages it brings.
 
-Since we our project will be coded in Python, we will be following the PEP8
-standard for Python, which is a style standard from the creators of Python.
+Since our project will be coded in Python, we will be following the PEP8
+style standard for Python, which comes from the creators of Python. 
 A coding style like this can be helpful by keeping the structure and look of
-our code consistent, which helps with maintaining the code base.
-
-
+our code consistent, which helps with maintaining the code base. Using a 
+consistent coding style can also help other developers read and understand the 
+code.
 
 \section{Project Schedule}
 By: All
@@ -285,9 +232,6 @@ Provide a pointer to your Gantt Chart.
 Rubric:  5 marks.  Needs to be detailed and accurate (realistic).
 
 \section{Project Review}
-% By: All
-% Looks like this is necessary for our revisions.
-%
-% Rubric:  1 mark
+Not Applicable.
 
 \end{document}
