@@ -2,6 +2,7 @@
 
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{caption}
 
 \title{SE 3XA3: Development Plan\\Title of Project}
 
@@ -24,6 +25,7 @@ Alexander Samaha, samahaa\\
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 Jan 26, 2020 & Alexander Samaha & Set-up document, initial changes\\
+Jan 28, 2020 & Daniel Noorduyn & POC and Roles Rough Draft\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -37,12 +39,9 @@ Put your introductory blurb here.
 \section{Team Meeting Plan}
 
 By: David
-HelloLMAO
 Need to include :  When?  Where?  Frequency?  Roles?  Rules for agendas?
 Every Tuesday and Wednesday in ITB 236 from 2:30PM to 4:30PM.
 Informal meeting every Thursday at 6:00PM, if required.
-
-no
 
 David and Alex will log, and Dan will be chair.
 
@@ -66,14 +65,48 @@ phone for meetings?)
 Rubric:  3 marks.
 
 \section{Team Member Roles}
-By: Dan
-Name  a  team  leader,  scribe.   Then  we  identify  experts  based  on  git,
-LATEX,
-technology,  perhaps  domain.   Roles  are  fluid  and  you  should  know
-which  hat
-you wear.
+% By: Dan
+% Name  a  team  leader,  scribe.   Then  we  identify  experts  based  on  git,
+% LATEX,
+% technology,  perhaps  domain.   Roles  are  fluid  and  you  should  know
+% which  hat you wear.
+%
+% Rubric:  2 marks
 
-Rubric:  2 marks
+
+A project with this level of coordination required amidst developers and
+designers results in the need for a chair (or team leader). The chair's
+responsibility is making sure each team meeting runs smoothly within the
+allotted time frame and makes sure each team member is communicated with each
+other during the designing and building phases. The team has democratically
+voted in Daniel Noorduyn to fulfill this position.  During the team meetings, a
+scribe will be required to jot minutes down. These minutes will be referred to
+by individual team members to recall all team decisions during individual work.
+The team has democratically voted in Alexander Samaha. During the design phase,
+a technology lead is required to determine if certain project aspects are
+feasible. The team has voted that David Jandric fulfill this position.
+
+Each member of the team has unique expertise that will benefit the overall
+project. The breakdown is in the following table:
+
+\begin{center}
+  \begin{tabular}{ |c|c| }
+    \hline
+    Team Member & Expertise\\
+    \hline
+     David Jandric & Documentation\\
+     Alexander Samaha & Git\\
+     Daniel Noorduyn & LaTeX\\
+     David Jandric & Technology\\
+     Alexander Samaha & Design\\
+    \hline
+  \end{tabular}
+  \captionof{table}{Team Member Expertise}
+\end{center}
+
+These roles and expertise fields are subject to change as different challenge
+arise during the project. Each team member will be filling in multiple roles
+from the start, and therefore understand how fluid the assigned roles are.
 
 \section{Git Workflow Plan}
 By: David
@@ -85,22 +118,57 @@ How do we label everything, how will milestones be used?
 Rubric:  3 marks
 
 \section{Proof of Concept Demonstration Plan}
-By: Dan
-Validate technical feasibility.
-https://sensinum.com/proof-of-concept-in-software-
-development/
+% By: Dan
+% Validate technical feasibility.
+% https://sensinum.com/proof-of-concept-in-software-development/
+%
+% Identify risks, is testing going to be difficult?  what are difficult
+% implementa-
+% tion aspects.  Are there required libraries that have some concerns (pygame and
+% MacOS for example).  Will portability be a concern (yes for new Macs I guess,
+% out  of our control but lets talk about it).
+%
+% What will we demonstrate to overcome the risks.  (talk about what we might
+% show in terms of testing, what our product will be?  demos of levels?).
+%
+% Rubric:  5  marks.   Gonna  be  a  biggie.   Maybe  we  have  a  table  here?
+% some figures.
 
-Identify risks, is testing going to be difficult?  what are difficult
-implementa-
-tion aspects.  Are there required libraries that have some concerns (pygame and
-MacOS for example).  Will portability be a concern (yes for new Macs I guess,
-out  of our control but lets talk about it).
 
-What will we demonstrate to overcome the risks.  (talk about what we might
-show in terms of testing, what our product will be?  demos of levels?).
+The ambitious goal of creating a Super Mario Bros game that is accessible on
+every platform results in some possible hurdles that will need to be overcome if
+the project is seen as feasible. We the team want to create a game that blends
+elements from the original Super Mario Bros with features from the newer
+versions. However, considering the popularity of the game, both past and
+present, users will have strong opinions as to what features the game should
+possess and how they should be implemented. Therefore, a minimum viable product
+(MVP) will be created that users can interact with and critique. This feedback
+will help us continue creation of the game in a way that results in a wanted
+final product.
 
-Rubric:  5  marks.   Gonna  be  a  biggie.   Maybe  we  have  a  table  here?
-some figures.
+There are also some strictly technological issues that will have to be
+addressed. Our game will be created using pygame, a Python library. This library
+is difficult to install and run properly on an Apple Computer. Therefore, even
+though Python is compatible with most operating systems, portability with
+respect to Apple computers will be an issue due to the incompatible library. A
+possible solution is creating an exe file for the users to run, which bypasses
+the need for users to download libraries. The implementation of our game is
+quite straightforward and feasible, but difficulties may arise when many
+different methods must work together in real time to create a seemless gameplay
+for the user.
+
+There will be difficulties in testing our product as it relies heavily on human
+input. Therefore, multiple individuals are needed to play the game and report
+any bugs. It is important to note that not all testing will be done by external
+players, as different methods and algorithms can be tested individually. This
+logical testing will be performed using PyTest. However, for testing overall
+interaction of the program attributes, we will have to look outside ourselves.
+
+To present proof that the afore-mentioned risks can be overcome and the game can
+be developed, we will have a demonstration. To underline that the libary issue
+was overcome, this demonstration will be run on a MacBook. The demonstration
+will consist of a 2D plane where in a character can be controlled to move left
+and right as well as jump up and fall down. If this can be achieved the overall project should be able to be completed.
 
 \section{Technology}
 By: Alex
