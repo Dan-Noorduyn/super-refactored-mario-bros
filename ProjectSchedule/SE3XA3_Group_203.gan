@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="super-refactored-mario-python" company="McMaster University" webLink="https://gitlab.cas.mcmaster.ca/jandricd/super-refactored-mario-bros" view-date="2019-12-22" view-index="1" gantt-divider-location="615" resource-divider-location="595" version="2.8.10" locale="en_CA">
+<?xml version="1.0" encoding="UTF-8"?><project name="super-refactored-mario-python" company="McMaster University" webLink="https://gitlab.cas.mcmaster.ca/jandricd/super-refactored-mario-bros" view-date="2020-01-05" view-index="0" gantt-divider-location="615" resource-divider-location="595" version="2.8.10" locale="en_CA">
     <description><![CDATA[Gantt chart for the Super Mario Bros. game ported to Python.]]></description>
     <view zooming-state="default:5" id="gantt-chart">
-        <field id="tpd3" name="Name" width="287" order="0"/>
-        <field id="tpd4" name="Begin date" width="162" order="1"/>
-        <field id="tpd5" name="End date" width="162" order="2"/>
+        <field id="tpd3" name="Name" width="356" order="0"/>
+        <field id="tpd4" name="Begin date" width="130" order="1"/>
+        <field id="tpd5" name="End date" width="125" order="2"/>
     </view>
     <view id="resource-table">
         <field id="0" name="Name" width="358" order="0"/>
@@ -66,18 +66,20 @@
                 <notes><![CDATA[Continuously Updated. Initial schedule complete.]]></notes>
             </task>
         </task>
-        <task id="67" name="Requirements Document Revision 0" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="0" thirdDate="2019-12-30" thirdDate-constraint="0" expand="true">
+        <task id="67" name="Requirements Document Revision 0" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="90" thirdDate="2019-12-30" thirdDate-constraint="0" expand="true">
             <depend id="95" type="2" difference="0" hardness="Strong"/>
             <depend id="106" type="2" difference="0" hardness="Strong"/>
             <depend id="210" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="95" name="Proof of Concept Demo" color="#8cb6ce" meeting="false" start="2020-02-08" duration="7" complete="0" thirdDate="2020-01-20" thirdDate-constraint="1" expand="true">
+        <task id="95" name="Proof of Concept Demo" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="0" thirdDate="2020-01-20" thirdDate-constraint="1" expand="true">
             <depend id="101" type="2" difference="0" hardness="Rubber"/>
             <depend id="106" type="2" difference="0" hardness="Rubber"/>
             <depend id="201" type="2" difference="0" hardness="Strong"/>
             <depend id="205" type="2" difference="0" hardness="Rubber"/>
+            <task id="212" name="Implement Movement in Game" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="214" name="Code POC Game environment" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="0" thirdDate="2020-02-08" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="101" name="Test Plan Revision 0" color="#8cb6ce" meeting="false" start="2020-02-15" duration="14" complete="0" thirdDate="2020-01-07" thirdDate-constraint="0" expand="true">
+        <task id="101" name="Test Plan Revision 0" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-07" thirdDate-constraint="0" expand="true">
             <depend id="106" type="2" difference="0" hardness="Rubber"/>
             <depend id="205" type="2" difference="0" hardness="Rubber"/>
         </task>
