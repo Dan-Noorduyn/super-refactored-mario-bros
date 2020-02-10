@@ -60,7 +60,7 @@ template~\citep{RobertsonAndRobertson2012}. This document serves to inform users
 
 \subsection{The Purpose of the Project}
     The purpose of super-refactored-mario-python is to re implement and modify the age old Super Mario Bros. game in an open source environment. The team will finish the work started and left uncompleted, then look to add features that diverge from the original game. The end result is a version of Super Mario Bros. that can be enjoyed by anyone with access to a computer with the proper libraries installed.
-
+    
 \subsection{The Stakeholders}
 
 \subsubsection{The Client}
@@ -68,20 +68,31 @@ template~\citep{RobertsonAndRobertson2012}. This document serves to inform users
 \subsubsection{The Customers}
     The customers of this project are all with an interest in the original Super Mario Bros. game and open-source game development in general. This project will be available for anyone to download if they have access to a computer that satisfies the hardware and software requirements.
 \subsubsection{Other Stakeholders}
-    The original project owner has a vested interest in the completion of their unfinished project. This may include the integration of the changes and features put forward during the development cycle. Furthermore, the open-source pyGame community will have a vested interest in the propagation of its use to make video games. Finally, the development team also has a vested interest in the success of the project.
+    The original project owner has a vested interest in the completion of their unfinished project. This may include the integration of the changes and features put forward during the development cycle. Furthermore, the open-source Pygame community will have a vested interest in the propagation of its use to make video games. Finally, the development team also has a vested interest in the success of the project.
 \subsection{Mandated Constraints}
-    \textbf{Description:} The project shall use the pyGame library for Python game development.\\
-    \textbf{Rationale:} The project is originally written with the pyGame library and will make it easier to continue using it.\\
-    \textbf{Fit Criterion:} Running the game files with Python includes and runs the pyGame library.\\
+    \textbf{Description:} The project shall use the Pygame library for Python game development.\\
+    \textbf{Rationale:} The project is originally written with the Pygame library and will make it easier to continue using it.\\
+    \textbf{Fit Criterion:} Running the game files with Python includes and runs the Pygame library.\\\\
     \textbf{Description:} The project shall follow the structure of deliverables outlined in the project schedule.\\
     \textbf{Rationale:} The project needs to follow a logical schedule to ensure completion of the product within the allotted time.\\
     \textbf{Fit Criterion:} The project is completed and all deliverables submitted by April 6th 2020.
+    \textbf{Description:} The project shall use the Pygame library for Python game development.\\
+    \textbf{Rationale:} The project is originally written with the Pygame library and will make it easier to continue using it.\\
+    \textbf{Fit Criterion:} Running the game files with Python includes and runs the Pygame library.\\\\
 \subsection{Naming Conventions and Terminology}
     \textbf{SFWRENG 3XA3} - The Software Engineering Practice and Experience: Software Project Management course instructed by Dr. Asghar Bokhari.\\
     \textbf{Super Mario Bros.} - The original arcade game released in 1985 for the Nintendo Entertainment System in North America.\\
-    \textbf{pyGame} - Popular library for small open-source games written in Python.\\
+    \textbf{Pygame} - Popular library for small open-source games written in Python.\\
+    \textbf{Koopa} - Refers to a non-playable character in the Super Mario Bros. game that is encountered as an enemy. This character has a shell that can be used as a projectile.\\
+    \textbf{Regular enemy} - Refers to a non-playable character in the Super Mario Bros. game that is encountered as an enemy such as a Goomba.\\
 \subsection{Relevant Facts and Assumptions}
-    It is assumed that the user has access to a modern computer with the necessary Python interpreter installed along with the pyGame library and is able to run the files. Along with this, the user is expected to have working knowledge of running Python code from the command line. The user is assumed to have a keyboard and a mouse to be able to interact with the game. It is assumed that the user has installed all the required artefacts in a compatible operating system environment.
+    \subsubsection{Facts}
+    \begin{itemize}
+        \item Pygame is a set of modules used to create video games written in Python. It encompasses graphics and sound libraries.
+        \item The original repository contains 1390 lines of Python code.
+    \end{itemize}
+    \subsubsection{Assumptions}
+    It is assumed that the user has access to a modern computer with the necessary Python interpreter installed along with the Pygame library and is able to run the files. Along with this, the user is expected to have working knowledge of running Python code from the command line. The user is assumed to have a keyboard and a mouse to be able to interact with the game. It is assumed that the user has installed all the required artefacts in a compatible operating system environment.
 User characteristics should go under assumptions.
 
 \section{Functional Requirements}
@@ -90,7 +101,24 @@ User characteristics should go under assumptions.
 
 \subsubsection{The Context of the Work}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{SRScontextdiagram.png}
+    \caption{Game Context Diagram}
+    \label{fig:contextdiagram}
+\end{figure}
+
 \subsubsection{Work Partitioning}
+
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Event} & \textbf{Input/Output} & \textbf{Summary} \\\hline
+Player action  & \begin{tabular}{l}Player action(IN) \\ Change in game state(OUT)\end{tabular} & 
+\begin{tabular}{l}Respond to the users \\ input by updating the \\ game state accordingly. \end{tabular}  \\\hline
+
+Collision       & \begin{tabular}{l}Entity location(IN) \\ Change in game state(OUT)\end{tabular} & 
+\begin{tabular}{l} Update the game state \\ when there is \\ an entity collision.\end{tabular}\\\hline
+\end{tabular}
 
 \subsubsection{Individual Product Use Cases}
 The primary use case of this product is to be played from start to end, and get the best high-score. There will be a number of levels, and each will have a high score associated with it, for players to challenge themselves and constantly improve their score.
@@ -117,9 +145,9 @@ The primary use case of this product is to be played from start to end, and get 
 \subsection{Look and Feel Requirements}
 \begin{enumerate}[{LF}1. ]
     \item The product shall look extremely similar to the original Super Mario Bros.\\
-    \textbf{Fit Criteria:} Users who identify as familiar with the original game should be able to navigate through the first level
+    \textbf{Fit Criteria:} Users who identify as familiar with the original game shall be able to navigate through the first level within 1 minute and 30 seconds.
     \item The product shall have a modern looking menu.\\
-    \textbf{Fit Criteria:} Use
+    \textbf{Fit Criteria:} Users shall be able to recognize all menu options within 30 seconds of booting the game.
 \end{enumerate}
 
 
@@ -128,8 +156,10 @@ The primary use case of this product is to be played from start to end, and get 
 
 \subsubsection{Ease of Use Requirements}
 \begin{enumerate}[{UH}1. ]
-    \item The product shall be usable for anybody over the age of 10.
-    \item The product shall have simple, standard controls.
+    \item The product shall be usable for anybody over the age of 10.\\
+    \textbf{Fit Criteria:} Users shall be able to start a level within 30 seconds of booting the game
+    \item The product shall have simple, standard controls.\\
+    \textbf{Fit Criteria:} Users shall move their character within 10 seconds of starting a level.
 \suspend{enumerate}
 
 \subsubsection{Personalization and Internationalization Requirements}
@@ -137,15 +167,20 @@ N/A
 
 \subsubsection{Learning Requirements}
 \resume{enumerate}[{[{UH}1.]}]
-    \item The product shall be playable by a user after reading the in game tutorial.
-    \item The product shall be playable by some users without reading the in game tutorial.
+    \item The product shall be playable by a user after reading the in game tutorial.\\
+    \textbf{Fit Criteria:} A test group of 20 users shall read the tutorial and play the first level, 90\% of the test group shall rate their experience as favourable regarding understanding game controls and rules.
+    \item The product shall be playable by some users without reading the in game tutorial.\\
+    \textbf{Fit Criteria:} A test group of 20 users shall read the tutorial and play the first level, 50\% of the test group shall rate their experience as favourable regarding understanding game controls and rules.
 \suspend{enumerate}
 
 \subsubsection{Understandability and Politeness Requirements}
 \resume{enumerate}[{[{UH}1.]}]
-    \item The product shall use simple language which can be understandable by 95\% of users.
-    \item The product shall use standard icons indicative of their function to avoid confusion of the user.
+    \item The product shall use simple language which can be understandable by 95\% of users.\\
+    \textbf{Fit Criteria:} A questionnaire will be authored and 95\% of users shall rate their experience positively in understanding the rules of the game.
+    \item The product shall use standard icons indicative of their function to avoid confusion of the user.\\
+    \textbf{Fit Criteria:} The game shall include all standard images of the original game.
     \item The product shall use a simple font which is easily read by all users.
+    \textbf{Fit Criteria:} A questionnaire will be authored and 95\% of users shall rate their experience as favourable reading through the game menus.
 \end{enumerate}
 
 \subsubsection{Accessibility Requirements}
@@ -157,9 +192,12 @@ N/A
 
 \subsubsection{Speed and Latency Requirements}
 \begin{enumerate}[{PR}1. ]
-    \item The product shall run at 60 frames per second.
-    \item The product shall take no more than 3 seconds to load and display all resources.
-    \item The product shall not significantly slow down if there are 100 entities displaying on the screen.
+    \item The product shall run at 60 frames per second.\\
+    \textbf{Fit Criteria:} A play test shall be conducted with a group of 10 testers whose framerates shall be captured through the first level of the game, the framerate shall maintain 60 frames per second 95\% of the time under normal conditions.
+    \item The product shall take no more than 3 seconds to load and display all resources.\\
+    \textbf{Fit Criteria:} A play test shall be conducted with a group of 10 testers to confirm the game loads within 3 seconds 90\% of the time.
+    \item The product shall not significantly slow down if there are 100 entities displaying on the screen.\\
+    \textbf{Fit Criteria:} A playtest shall be conducted with a group of 10 testers to confirm the game stays above 60 frames per second 95\% of the time.
 \suspend{enumerate}
 
 \subsubsection{Safety-Critical Requirements}
@@ -167,36 +205,46 @@ N/A
 
 \subsubsection{Precision or Accuracy Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall respond correctly to inputs 100\% of the time.
-    \item The product shall correctly calculate the high-score 100\% of the time.
+    \item The product shall respond correctly to inputs 100\% of the time.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall correctly calculate the high-score 100\% of the time.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Reliability and Availability Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall be able to be run by a user for at least 1 hour.
+    \item The product shall be able to be run by a user for at least 1 hour.\\
+    \textbf{Fit Criteria:} Testing will be done on multiple machines with different configurations, and be run for 1 hour each.
 \suspend{enumerate}
 
 \subsubsection{Robustness or Fault-Tolerance Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall not crash if given many inputs at a time.
-    \item The product shall not crash if there are under 1000 entities visible.
+    \item The product shall not crash if given many inputs at a time.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall not crash if there are under 1000 entities visible.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Capacity Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall be able to handle a single user.
+    \item The product shall be able to handle a single user.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Scalability or Extensibility Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall be easily modifiable for the addition of features.
-    \item The product shall contain an easy way to add levels.
-    \item The product shall be easily modifiable for the addition of enemies and blocks.
+    \item The product shall be easily modifiable for the addition of features.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall contain an easy way to add levels.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall be easily modifiable for the addition of enemies and blocks.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Longevity Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall run until a major Python or Pygame update.
+    \item The product shall run until a major Python or Pygame update.\\
+    \textbf{Fit Criteria:} N/A
 \end{enumerate}
 
 
@@ -205,23 +253,28 @@ N/A
 
 \subsubsection{Expected Physical Environment}
 \begin{enumerate}[{OE}1. ]
-    \item The product shall run on a personal computer.
+    \item The product shall run on a personal computer.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Requirements for Interfacing with Adjacent Systems}
 \resume{enumerate}[{[{OE}1. ]}]
-    \item The product shall run on computer using Windows 10, MacOS Catalina, and Ubuntu 18.
-    \item The product shall run on a computer with Python 3.7 and Pygame.
+    \item The product shall run on computer using Windows 10, MacOS Catalina, and Ubuntu 18.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall run on a computer with Python 3.7 and Pygame.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Productization Requirements}
 \resume{enumerate}[{[{OE}1. ]}]
-    \item The product shall be available on GitLab for download.
+    \item The product shall be available on GitLab for download.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Release Requirements}
 \resume{enumerate}[{[{OE}1. ]}]
-    \item The product will have a final release in early April, 2020.
+    \item The product will have a final release in early April, 2020.\\
+    \textbf{Fit Criteria:} N/A
 \end{enumerate}
 
 
@@ -230,14 +283,18 @@ N/A
 
 \subsubsection{Maintenance Requirements}
 \begin{enumerate}[{MS}1. ]
-    \item The product shall be maintained by the developers until early April, 2020.
-    \item The product shall receive updates to fix bugs.
-    \item The product shall be open source, and may receive updates from other programmers.
+    \item The product shall be maintained by the developers until early April, 2020.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall receive updates to fix bugs.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall be open source, and may receive updates from other programmers.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Supportability Requirements}
 \resume{enumerate}[{[{MS}1. ]}]
-    \item The product shall be supported on OS's mentioned previous.
+    \item The product shall be supported on OS's mentioned previous.\\
+    \textbf{Fit Criteria:} N/A
 \end{enumerate}
 
 \subsubsection{Adaptability Requirements}
@@ -249,17 +306,20 @@ N/A
 
 \subsubsection{Access Requirements}
 \begin{enumerate}[{SR}1. ]
-    \item The products source code shall be available for any user.
+    \item The products source code shall be available for any user.\\
+    \textbf{Fit Criteria:} All downloads of the game shall include all the game files locally for anyone to see.
 \suspend{enumerate}
 
 \subsubsection{Integrity Requirements}
 \resume{enumerate}[{[{SR}1. ]}]
-    \item All data shall be stored locally on the users machine.
+    \item All data shall be stored locally on the users machine.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Privacy Requirements}
 \resume{enumerate}[{[{SR}1. ]}]
-    \item The product shall not save any personal user data.
+    \item The product shall not save any personal user data.\\
+    \textbf{Fit Criteria:} N/A
 \suspend{enumerate}
 
 \subsubsection{Audit Requirements}
@@ -267,8 +327,10 @@ N/A
 
 \subsubsection{Immunity Requirements}
 \resume{enumerate}[{[{SR}1. ]}]
-    \item The developers of the project shall not provide malicious links.
-    \item Official versions of the product shall only come from the developers GitLab repository.
+    \item The developers of the project shall not provide malicious links.\\
+    \textbf{Fit Criteria:} N/A
+    \item Official versions of the product shall only come from the developers GitLab repository.\\
+    \textbf{Fit Criteria:} N/A
 \end{enumerate}
 
 
@@ -277,8 +339,10 @@ N/A
 
 \subsubsection{Cultural Requirements}
 \begin{enumerate}[{CR}1. ]
-    \item The product shall not contain any controversial content.
-    \item The product shall use Canadian English spelling.
+    \item The product shall not contain any controversial content.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall use Canadian English spelling.\\
+    \textbf{Fit Criteria:} All text in-game shall be run through a spell-checking engine ie. Grammarly.
 \end{enumerate}
 
 \subsubsection{Political Requirements}
@@ -290,8 +354,10 @@ N/A
 
 \subsubsection{Compliance Requirements}
 \begin{enumerate}[{LR}1. ]
-    \item The product shall not violate copyright.
-    \item The product shall give credits to creators of any original content used by the product, that was not created by the developers.
+    \item The product shall not violate copyright.\\
+    \textbf{Fit Criteria:} N/A
+    \item The product shall give credits to creators of any original content used by the product, that was not created by the developers.\\
+    \textbf{Fit Criteria:} The main screen of the game shall include the names of all the developers and the original owner.
 \end{enumerate}
 
 \subsubsection{Standards Requirements}
@@ -301,7 +367,8 @@ N/A
 
 \subsection{Health and Safety Requirements}
 \begin{enumerate}[{HS}1. ]
-    \item The product shall not endanger its users in any way.
+    \item The product shall not endanger its users in any way.\\
+    \textbf{Fit Criteria:} N/A
 \end{enumerate}
 
 \section{Project Issues}
@@ -314,7 +381,7 @@ Considering this project is attempting to remake Super Mario Bros (howbeit in a 
 
 There are also the official version of Super Mario Bros that will be referenced for the creation of characters and certain desirable aspects that this project aims to mimic. However, it is key to note that there will be no code so the official game is more like a creativity mine.
 
-Lastly, there are multiple online resources such as YouTube tutorials or coding forums that can help familiarize the development team with new tools.
+Lastly, there are multiple online resources such as YouTube tutorials or coding forums that can help familiarize the development team with new tools. 
 
 The game engine called Pygame will be used to do most of the heavy processing.
 
@@ -326,10 +393,10 @@ The team cannot think of this project as a replacement for the official Super Ma
 Due to the fact that the development team has no experience designing and coding a game utilizing the Pygame library, issues could arise when trying to implement the game. If too many core aspects prove impossible to create it may result in the team having to choose a new library or even coding language to implement the game. This means the team must first attempt to code the base functionality of the game to determine possibility, before adding the fun aspects of the game.
 
 \subsubsection{Problems Resulting from the Solution}
-The resultant project will obviously draw heavily from the official Nintendo game. This may cause any distribution of the project to be a violation of the Digital Millennium Copyright Act.
+The resultant project will obviously draw heavily from the official Nintendo game. This may cause any distribution of the project to be a violation of the Digital Millennium Copyright Act. 
 
 \subsubsection{Possible User Related Issues}
-A lack of accessible controls for end users with movement restrictions could pose a large issue. This would mean the team must develop alternative control methods with better accessibility. The team must factor this into the decision to publicly distribute the game.
+A lack of accessible controls for end users with movement restrictions could pose a large issue. This would mean the team must develop alternative control methods with better accessibility. The team must factor this into the decision to publicly distribute the game. 
 
 \subsection{Tasks}
 \subsubsection{Project Schedule}
@@ -368,7 +435,7 @@ The entire project will consist of the free to use coding language python and it
 
 \subsection{User Documentation and Training}
 \subsubsection{User Documentation Requirements}
-The team will create a game controls outline and add it to the game settings. If the team has time, the first game level might come with a run through tutorial to help first time players understand how to play.
+The team will create a game controls outline and add it to the game settings. If the team has time, the first game level might come with a run through tutorial to help first time players understand how to play. 
 
 If the game is distributed publicly, a Read-Me file will accompany the game with instructions on how to download and install.
 
