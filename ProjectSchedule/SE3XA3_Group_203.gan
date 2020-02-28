@@ -6,8 +6,8 @@
         <field id="tpd5" name="End date" width="125" order="2"/>
     </view>
     <view id="resource-table">
-        <field id="0" name="Name" width="358" order="0"/>
-        <field id="1" name="Default role" width="233" order="1"/>
+        <field id="0" name="Name" width="356" order="0"/>
+        <field id="1" name="Default role" width="235" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -36,7 +36,7 @@
         <task id="1" name="Team Formation" color="#8cb6ce" meeting="false" start="2020-01-06" duration="8" complete="100" thirdDate="2020-01-27" thirdDate-constraint="0" priority="2" expand="true">
             <depend id="4" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="4" name="Project Aproval" color="#8cb6ce" meeting="false" start="2020-01-14" duration="7" complete="100" thirdDate="2019-12-30" thirdDate-constraint="0" expand="false">
+        <task id="4" name="Project Aproval" color="#8cb6ce" meeting="false" start="2020-01-14" duration="7" complete="100" thirdDate="2019-12-30" thirdDate-constraint="0" expand="true">
             <notes><![CDATA[Research on GitLab and proposal of project to supervising TA.]]></notes>
             <task id="8" name="Aproved Project Details" color="#8cb6ce" meeting="false" start="2020-01-14" duration="7" complete="100" thirdDate="2020-01-14" thirdDate-constraint="0" expand="true">
                 <notes><![CDATA[TA approves the project from proposal.]]></notes>
@@ -66,22 +66,31 @@
                 <notes><![CDATA[Continuously Updated. Initial schedule complete.]]></notes>
             </task>
         </task>
-        <task id="67" name="Requirements Document Revision 0" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="90" thirdDate="2019-12-30" thirdDate-constraint="0" expand="true">
+        <task id="67" name="Requirements Document Revision 0" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="100" thirdDate="2019-12-30" thirdDate-constraint="0" expand="true">
             <depend id="95" type="2" difference="0" hardness="Strong"/>
             <depend id="106" type="2" difference="0" hardness="Strong"/>
             <depend id="210" type="2" difference="0" hardness="Strong"/>
+            <task id="215" name="Project Drivers" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="100" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="216" name="Functional Requirements" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="100" thirdDate="2020-02-01" thirdDate-constraint="0" expand="true"/>
+            <task id="220" name="Non-Functional Requirements" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="100" thirdDate="2020-02-01" thirdDate-constraint="0" expand="true"/>
+            <task id="225" name="Project Issues" color="#8cb6ce" meeting="false" start="2020-02-01" duration="7" complete="100" thirdDate="2020-02-01" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="95" name="Proof of Concept Demo" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="0" thirdDate="2020-01-20" thirdDate-constraint="1" expand="true">
+        <task id="95" name="Proof of Concept Demo" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="100" thirdDate="2020-01-20" thirdDate-constraint="1" expand="true">
             <depend id="101" type="2" difference="0" hardness="Rubber"/>
             <depend id="106" type="2" difference="0" hardness="Rubber"/>
             <depend id="201" type="2" difference="0" hardness="Strong"/>
             <depend id="205" type="2" difference="0" hardness="Rubber"/>
-            <task id="212" name="Implement Movement in Game" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="214" name="Code POC Game environment" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="0" thirdDate="2020-02-08" thirdDate-constraint="0" expand="true"/>
+            <task id="212" name="Implement Movement in Game" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="100" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="214" name="Code POC Game environment" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="100" thirdDate="2020-02-08" thirdDate-constraint="0" expand="true"/>
         </task>
         <task id="101" name="Test Plan Revision 0" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-07" thirdDate-constraint="0" expand="true">
             <depend id="106" type="2" difference="0" hardness="Rubber"/>
             <depend id="205" type="2" difference="0" hardness="Rubber"/>
+            <task id="245" name="General Information" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="247" name="Plan" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="249" name="System Test Description" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="251" name="Tests for Proof of Concept" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="252" name="Unit Testing Plan" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-02-12" thirdDate-constraint="0" expand="true"/>
         </task>
         <task id="106" name="Design and Document Revision" color="#8cb6ce" meeting="false" start="2020-02-29" duration="14" complete="0" thirdDate="2020-01-10" thirdDate-constraint="0" expand="true">
             <depend id="201" type="2" difference="0" hardness="Strong"/>
@@ -108,37 +117,53 @@
         <allocation task-id="45" resource-id="1" function="1" responsible="true" load="33.0"/>
         <allocation task-id="51" resource-id="1" function="1" responsible="true" load="33.0"/>
         <allocation task-id="72" resource-id="1" function="1" responsible="true" load="34.0"/>
-        <allocation task-id="95" resource-id="1" function="1" responsible="true" load="100.0"/>
-        <allocation task-id="67" resource-id="1" function="1" responsible="true" load="100.0"/>
-        <allocation task-id="101" resource-id="1" function="1" responsible="true" load="100.0"/>
+        <allocation task-id="95" resource-id="1" function="1" responsible="true" load="0.0"/>
         <allocation task-id="106" resource-id="1" function="1" responsible="true" load="100.0"/>
         <allocation task-id="201" resource-id="1" function="1" responsible="true" load="100.0"/>
         <allocation task-id="205" resource-id="1" function="1" responsible="true" load="100.0"/>
         <allocation task-id="210" resource-id="1" function="1" responsible="true" load="100.0"/>
+        <allocation task-id="215" resource-id="1" function="1" responsible="true" load="80.0"/>
+        <allocation task-id="67" resource-id="1" function="1" responsible="true" load="0.0"/>
+        <allocation task-id="225" resource-id="1" function="1" responsible="true" load="20.0"/>
+        <allocation task-id="212" resource-id="1" function="1" responsible="true" load="50.0"/>
+        <allocation task-id="214" resource-id="1" function="1" responsible="true" load="50.0"/>
+        <allocation task-id="251" resource-id="1" function="1" responsible="true" load="25.0"/>
+        <allocation task-id="252" resource-id="1" function="1" responsible="true" load="50.0"/>
         <allocation task-id="1" resource-id="2" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="4" resource-id="2" function="Default:1" responsible="true" load="80.0"/>
         <allocation task-id="12" resource-id="2" function="Default:1" responsible="true" load="50.0"/>
         <allocation task-id="46" resource-id="2" function="Default:1" responsible="true" load="33.0"/>
         <allocation task-id="77" resource-id="2" function="Default:1" responsible="true" load="34.0"/>
         <allocation task-id="82" resource-id="2" function="Default:1" responsible="true" load="33.0"/>
-        <allocation task-id="95" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
-        <allocation task-id="67" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
-        <allocation task-id="101" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
+        <allocation task-id="95" resource-id="2" function="Default:1" responsible="false" load="0.0"/>
+        <allocation task-id="67" resource-id="2" function="Default:1" responsible="false" load="0.0"/>
         <allocation task-id="106" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
         <allocation task-id="201" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
         <allocation task-id="205" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
         <allocation task-id="210" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
+        <allocation task-id="216" resource-id="2" function="Default:1" responsible="false" load="25.0"/>
+        <allocation task-id="220" resource-id="2" function="Default:1" responsible="true" load="25.0"/>
+        <allocation task-id="225" resource-id="2" function="Default:1" responsible="false" load="50.0"/>
+        <allocation task-id="212" resource-id="2" function="Default:1" responsible="false" load="50.0"/>
+        <allocation task-id="214" resource-id="2" function="Default:1" responsible="false" load="50.0"/>
+        <allocation task-id="245" resource-id="2" function="Default:1" responsible="true" load="25.0"/>
+        <allocation task-id="247" resource-id="2" function="Default:1" responsible="true" load="25.0"/>
         <allocation task-id="1" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="4" resource-id="3" function="1" responsible="false" load="10.0"/>
         <allocation task-id="12" resource-id="3" function="1" responsible="false" load="25.0"/>
         <allocation task-id="48" resource-id="3" function="1" responsible="true" load="100.0"/>
-        <allocation task-id="95" resource-id="3" function="1" responsible="false" load="100.0"/>
-        <allocation task-id="67" resource-id="3" function="1" responsible="false" load="100.0"/>
-        <allocation task-id="101" resource-id="3" function="1" responsible="false" load="100.0"/>
+        <allocation task-id="95" resource-id="3" function="1" responsible="false" load="0.0"/>
+        <allocation task-id="67" resource-id="3" function="1" responsible="false" load="0.0"/>
         <allocation task-id="106" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="201" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="205" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="210" resource-id="3" function="1" responsible="false" load="100.0"/>
+        <allocation task-id="216" resource-id="3" function="1" responsible="true" load="30.0"/>
+        <allocation task-id="220" resource-id="3" function="1" responsible="false" load="50.0"/>
+        <allocation task-id="212" resource-id="3" function="1" responsible="false" load="50.0"/>
+        <allocation task-id="214" resource-id="3" function="1" responsible="false" load="50.0"/>
+        <allocation task-id="249" resource-id="3" function="1" responsible="true" load="100.0"/>
+        <allocation task-id="225" resource-id="3" function="1" responsible="false" load="20.0"/>
         <allocation task-id="8" resource-id="4" function="2" responsible="true" load="100.0"/>
     </allocations>
     <vacations/>
