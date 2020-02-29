@@ -2,7 +2,11 @@
 
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{float}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -12,17 +16,15 @@
 }
 \usepackage[round]{natbib}
 
-\title{SE 3XA3: Test Plan\\Title of Project}
+\title{SE 3XA3: Test Plan\\Super Refactored Mario Bros.}
 
-\author{Team \#, Team Name
-		\\ Student 1 name and macid
-		\\ Student 2 name and macid
-		\\ Student 3 name and macid
+\author{203, Abstract Connoisseurs
+		\\ David Jandric, jandricd
+		\\ Daniel Noorduyn, noorduyd
+		\\ Alexander Samaha, samahaa
 }
 
 \date{\today}
-
-\input{../Comments}
 
 \begin{document}
 
@@ -33,13 +35,12 @@
 \listoftables
 \listoffigures
 
-\begin{table}[bp]
+\begin{table}[H]
 \caption{\bf Revision History}
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+Feb 28, 2020 & 1.0 & Revision 0\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -48,187 +49,610 @@ Date 2 & 1.1 & Notes\\
 
 \pagenumbering{arabic}
 
-This document ...
+This document will give an overview of the testing that will be done for the implementation of Super
+Refactored Mario Python throughout development. 
+
+
 
 \section{General Information}
 
 \subsection{Purpose}
+The purpose of this document is to provide a plan for verifying that the product
+satisfies the requirements through testing.
+
+
 
 \subsection{Scope}
+This document outlines the tests that will be done for testing the functional and non-functional requirements and proof of concept, as well as unit tests. This document also details the associated software products to achieve those goals.
+
+
 
 \subsection{Acronyms, Abbreviations, and Symbols}
-	
 \begin{table}[hbp]
 \caption{\textbf{Table of Abbreviations}} \label{Table}
-
 \begin{tabularx}{\textwidth}{p{3cm}X}
 \toprule
 \textbf{Abbreviation} & \textbf{Definition} \\
 \midrule
-Abbreviation1 & Definition1\\
-Abbreviation2 & Definition2\\
+SRS & Software Requirements Specification document.\\
+JSON & JavaScript Object Notation, a readable file format to transmit data objects.\\
+GUI & Graphical User Interface.\\
+FPS & Frames Per Second calculated in Hertz.\\
 \bottomrule
 \end{tabularx}
-
 \end{table}
 
 \begin{table}[!htbp]
 \caption{\textbf{Table of Definitions}} \label{Table}
-
 \begin{tabularx}{\textwidth}{p{3cm}X}
 \toprule
 \textbf{Term} & \textbf{Definition}\\
 \midrule
-Term1 & Definition1\\
-Term2 & Definition2\\
+Mario & The in-game player controlled character\\
+Emulator & A software product that ports a game originally intended for another system.\\
+Koopa & A non-playable adversary in the Super Mario Bros. game.\\
+Enemy & Refers to either of the Koopa or Goomba non-playable adversaries.\\
+PyTest & Python unit testing suite.\\
+PyGame & Python simple game development environment.\\
 \bottomrule
 \end{tabularx}
-
 \end{table}	
 
+
+
 \subsection{Overview of Document}
+This document will walk through the test plan for Super Mario Refactored Python, 
+
+
 
 \section{Plan}
-	
+
 \subsection{Software Description}
+This software is an extended re-implementation of a Super Mario Bros. clone,
+written in Python.
+
 
 \subsection{Test Team}
+The individuals on the test team are David Jandric, Dan Noorduyn, and Alexander Samaha.
+
+
 
 \subsection{Automated Testing Approach}
+We will use PyTest to test the core functionality of the project, excluding any 
+GUI elements (which will be tested manually). Some examples of what could be
+tested automatically would be: the physics, level parsing, and collision. 
+Automatic testing will ensure that the major functions of the project work
+correctly, and can be done quickly and efficiently. The automated testing
+will cover each function in each module separately. Testing functions that require
+user input will be done by automating the input.
+
+
 
 \subsection{Testing Tools}
+The testing for this project will be done with PyTest, which is a testing suite framework for
+Python projects, which deals with unit testing and code coverage.
+
+
 
 \subsection{Testing Schedule}
-		
-See Gantt Chart at the following url ...
+See Gantt Chart at the following url ...\\
+\href{https://gitlab.cas.mcmaster.ca/jandricd/super-refactored-mario-bros/tree/master/ProjectSchedule}{[Link to Gantt chart and Resource chart]}
+
+
 
 \section{System Test Description}
 	
 \subsection{Tests for Functional Requirements}
 
-\subsubsection{Area of Testing1}
+\subsubsection{User Input}
+
+Please observe the \textbf{Figures} section in the Appendix at the end of this paper for a better understanding of the player controlled Mario character's location in the game world and a definition of directions.
 		
-\paragraph{Title for Test}
+\paragraph{Keyboard Movement Inputs}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{\textbf{test-UI1}: Test Standard Left Movement\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
+Type: Functional, Dynamic, Manual
 					
-Initial State: 
+Initial State: Mario is standing still on the ground level. 
 					
-Input: 
+Input: The KEYBOARD\_LEFT will be pressed on the user's keyboard.
 					
-Output: 
+Output: Mario moves left, along the 180 degree line, at speed V.
 					
-How test will be performed: 
+How test will be performed: A visual test will testify that Mario moves left, along the 180 degree line, at speed V while the KEYBOARD\_LEFT is pressed.
 					
-\item{test-id2\\}
+\item{\textbf{test-UI2}: Test Standard Right Movement\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
+Type: Functional, Dynamic, Manual
 					
-Initial State: 
+Initial State: Mario is standing still on the ground level.
 					
-Input: 
+Input: The KEYBOARD\_RIGHT will be pressed on the user's keyboard.
 					
-Output: 
+Output: Mario moves right, along the 0 degree line, at speed V.
 					
-How test will be performed: 
+How test will be performed: A visual test will confirm that Mario moves right at speed V, along the 0 degree line, while the KEYBOARD\_RIGHT is pressed.
+
+\item{\textbf{test-UI3}: Test Standard Jump Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_JUMP will be pressed on the user's keyboard.
+					
+Output: Mario moves up, along the 90 degree line, at speed C, until he reaches height Y. Mario then falls back to the ground level at the speed of gravity.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_JUMP is pressed, Mario jumps up at speed C, along the 90 degree line, until height Y, before falling back down to ground level at the speed of gravity.
+
+\item{\textbf{test-UI4}: Test Duck Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_CROUCH will be pressed on the user's keyboard.
+					
+Output: Mario changes from a standing position to a crouching positing, along the 0 degree line, at speed V (Reference Figure 3 for a visual representation of Mario standing and sitting).
+					
+How test will be performed: A visual test will confirm that while the KEYBOARD\_CROUCH is pressed, Mario will be in a crouching position.
+
+\item{\textbf{test-UI5}: Test Sprinting Right Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_RIGHT and the KEYBOARD\_SPRINT will be pressed simultaneously on the user's keyboard.
+					
+Output: Mario moves right, along the 0 degree line, at speed V + S.
+					
+How test will be performed: A visual test will confirm that Mario moves right faster than normal, at speed V+S, along the 0 degree line, while the KEYBOARD\_RIGHT is pressed.
+
+\item{\textbf{test-UI6}: Test Sprinting left Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_LEFT and the key KEYBOARD\_SPRINT will be pressed simultaneously on the user's keyboard.
+					
+Output: Mario moves right, along the 180 degree line, at speed V + S.
+					
+How test will be performed: A visual test will confirm that Mario moves right faster than normal, at speed V+S, along the 180 degree line, while the KEYBOARD\_LEFT is pressed.
+
+\item{\textbf{test-UI7}: Test Jumping Up and Right Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_RIGHT and the KEYBOARD\_JUMP will be pressed simultaneously on the user's keyboard.
+					
+Output: Mario moves right and upwards, at a vertical speed (90 degree line) of C and a horizontal speed (0 degree line) of V, resulting in a direction between the 0 and 90 degree lines.
+					
+How test will be performed: A visual test will confirm that Mario moves upwards and right, at a vertical speed (90 degree line) of C and a horizontal speed (0 degree line) of V, while the KEYBOARD\_RIGHT and the KEYBOARD\_JUMP are pressed together.
+
+\item{\textbf{test-UI8}: Test Jumping Up and Left Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_LEFT and the KEYBOARD\_JUMP will be pressed simultaneously on the user's keyboard.
+					
+Output: Mario moves left and upwards, at a vertical speed (90 degree line) of C and a horizontal speed (180 degree line) of V, resulting in a direction between the 90 and 1800 degree lines.
+					
+How test will be performed: A visual test will confirm that Mario moves upwards and left, at a vertical speed (90 degree line) of C and a horizontal speed (180 degree line) of V, while the KEYBOARD\_LEFT and the KEYBOARD\_JUMP are pressed together.
+
+\item{\textbf{test-UI9}: Test Standard Right Falling Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on a platform above the ground level (see Figure 4 for a visual representation).
+					
+Input: The KEYBOARD\_RIGHT is pressed on the user's keyboard.
+					
+Output: Mario moves right along the 0 degree line at a speed of V, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move right, resulting in a direction between 270 degrees and 0 degrees, until he lands on the ground level.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_RIGHT is pressed, Mario moves right along the 0 degree line at a speed of V, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move right, resulting in a direction between 270 degrees and 0 degrees, until he lands on the ground level.
+
+\item{\textbf{test-UI10}: Test Standard Left Falling Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on a platform above the ground level (see Figure 4 for a visual representation).
+					
+Input: The KEYBOARD\_LEFT is pressed on the user's keyboard.
+					
+Output: Mario moves left along the 180 degree line at a speed of V, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move left, resulting in a direction between 180 degrees and 270 degrees, until he lands on the ground level.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_LEFT is pressed, Mario moves left along the 180 degree line at a speed of V, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move left, resulting in a direction between 180 degrees and 270 degrees, until he lands on the ground level.
+
+\item{\textbf{test-UI11}: Test Sprinting Left Falling Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on a platform above the ground level (see Figure 4 for a visual representation).
+					
+Input: The KEYBOARD\_LEFT and the key 'shift' is pressed on the user's keyboard.
+					
+Output: Mario moves quickly left along the 180 degree line at a speed of V + S, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move left, resulting in a direction between 180 degrees and 270 degrees, until he lands on the ground level.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_LEFT is pressed, Mario moves quickly left along the 180 degree line at a speed of V + S, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move left, resulting in a direction between 180 degrees and 270 degrees, until he lands on the ground level.
+
+\item{\textbf{test-UI12}: Test Sprinting Left Falling Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on a platform above the ground level (see Figure 4 for a visual representation).
+					
+Input: The KEYBOARD\_RIGHT and the key 'shift' is pressed on the user's keyboard.
+					
+Output: Mario moves quickly right along the 0 degree line at a speed of V + S, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move right, resulting in a direction between 270 degrees and 0 degrees, until he lands on the ground level.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_RIGHT is pressed, Mario moves quickly right along the 0 degree line at a speed of V + S, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move right, resulting in a direction between 270 degrees and 0 degrees, until he lands on the ground level.
+
+\item{\textbf{test-UI13}: Test Duck Overriding Other Controls\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_CROUCH is pressed down first and held down continually while the KEYBOARD\_LEFT, KEYBOARD\_RIGHT and KEYBOARD\_JUMP keys are pressed in succession on the user's keyboard.
+					
+Output: Mario ducks and remains crouched for the remainder of the inputs.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_CROUCH is held down and the KEYBOARD\_LEFT, KEYBOARD\_RIGHT and KEYBOARD\_JUMP keys are pressed in succession, Mario remains crouched.
+
+\textbf{Functional Keyboard Inputs}
+
+\item{\textbf{test-UI14}: Test Game Pause\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Any point during game play: Mario is standing still; Mario is jumping; Mario is falling.
+					
+Input: The KEYBOARD\_EXIT is pressed down on the user's keyboard.
+					
+Output: The game-play freezes (nothing in the game-environment moves) and a pop-up window will display the paused menu.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_EXIT is pressed, the game-play freezes and a pop-up window displays the paused menu.
+
+\item{\textbf{test-UI15}: Test Select Input\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Home screen of the game with the focus on the button 'Levels'.
+					
+Input: The KEYBOARD\_ENTER is pressed down on the user's keyboard.
+					
+Output: The main window changes from the home screen to display the level selection menu.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_ENTER is pressed the main window displays the levels selection menu instead of the home screen.
+
+\item{\textbf{test-UI16}: Test Program Robustness\\}
+
+Type: Structural, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: One of the developers will play the game simulating a random user's interactions. This means all the viable input keys will be pressed in a unique combination and some will be held down for a long time.
+					
+Output: The game responds accordingly to each input in the sequence corresponding to the keys being pressed. 
+					
+How test will be performed: A visual test will confirm that when the input keys are pressed, the game responds accordingly and in the correct sequence.
+
+\item{\textbf{test-UI17}: Test Illegal Double Jump\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level.
+					
+Input: The KEYBOARD\_JUMP is pressed one time on the user's keyboard. After Mario leaves the ground level, The KEYBOARD\_JUMP is pressed once more.
+					
+Output: Mario jumps upwards (degree line 90) at speed C, reaches height Y, and then falls at the speed of gravity till he lands on the ground level.
+					
+How test will be performed: A visual test will confirm that when the KEYBOARD\_JUMP is pressed one time, and again after Mario leaves the ground level, that Mario jumps upwards (degree line 90) at speed C, reaches height Y, and then falls at the speed of gravity till he lands on the ground level.
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\subsubsection{Game Environment}
 
-...
+\begin{enumerate}
+
+\item{\textbf{test-GE1}: Test Proper Game Load\\}
+
+Type: Dynamic, Manual
+					
+Initial State: A running computer with Macintosh, Windows or Linux operating system.
+					
+Input: The executable file for Super-Refactored-Mario-Bros is double clicked by the users right mouse button.
+					
+Output: The game's code is loaded by the CPU's integrated graphics processor and the all the levels, characters, and enemies will be created. 
+					
+How test will be performed: An early version of the game will be created with one simplistic level that can be tested. An initial visual test will confirm that when the game is loaded, the correct level and the corresponding details such as platforms and coins are all created properly. After this is successful, a secondary visual test will be run. One by one, different types of enemies will be added to the level and the game will be reloaded with each new enemy type. Each time, there will be a visual confirmation that the new enemy type has be correctly generated.
+
+\end{enumerate}
+
+\subsubsection{Game Mechanics}
+
+\begin{enumerate}
+
+\item{\textbf{test-GM1}: Test Killing Standard Enemies\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level with an enemy near.
+					
+Input: Mario is controlled by the input keys to jump on top of the enemy.
+					
+Output: When Mario lands on top of the enemy, the enemy will die and disappear from the level. The score of the user will be increased accordingly.
+					
+How test will be performed: A visual test will confirm that when Mario lands on top of the enemy, the enemy dies and disappears from the level and the user's score increased accordingly.
+
+\item{\textbf{test-GM2}: Test Killing 'Koopas'\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level with a Koopa near.
+					
+Input: Mario is controlled by the input keys to jump on top of the Koopa.
+					
+Output: When Mario lands on top of the Koopa, the Koopa will retract into its shell and Mario will be left standing on top of the shell. The user's score will be increased accordingly (see \textbf{Figure 5} for a visual representation)
+					
+How test will be performed: A visual test will confirm that when Mario lands on top of the Koopa, the Koopa will retract into its shell and Mario will be left standing on top of the shell. Further, the user's score shall be confirmed as increasing accordingly.
+
+\item{\textbf{test-GM3}: Test Koopa's Shell Movement\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level with a Koopa's shell motionless on his right, also on the ground level .
+					
+Input: Mario is controlled by the input keys (KEYBOARD\_RIGHT is held down on the user's keyboard) to contact the Koopa's shell.
+					
+Output: When Mario hits the Koopa's shell, the shell will begin moving to the right on the ground level. If it comes into contact with a wall or pipe, the shell will bounce off it and move back in the direction it came from.
+					
+How test will be performed: A visual test will confirm that when Mario moves right and contacts the Koopa's shell, the shell begins to move to the right. Further, if the shell contacts a wall or pipe, it will be visually confirmed that is bounces off and moves back in the direction it came from.
+
+\item{\textbf{test-GM4}: Test Koopa's Shell Killing\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: There is a Koopa's shell motionless on the ground level to the right of Mario. To the right of the shell are two enemies and then further along a wall.
+					
+Input: Mario is controlled with the inputs from a user's keyboard to move right hit the shell.
+					
+Output: When the shell is hit, it moves right and collides with the first enemy who dies and disappears. The shell continues right and hits the second enemy, who also dies and disappears. The shell continues right until it hits the pipe and bounces off, now moving left towards Mario. The shell hits Mario and Mario dies.
+					
+How test will be performed: A visual test will confirm that when Mario moves right and hits the shell, the shell will move right, killing both enemies, before bouncing off the pipe and hitting Mario, who also dies.
+
+\item{\textbf{test-GM5}: Test Player's Character's General Death\\}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: Mario is standing still on the ground level with an enemy near.
+					
+Input: Mario is controlled to move right (KEYBOARD\_RIGHT is held down on user's keyboard).
+					
+Output: When Mario collides with the enemy, he dies and is sent to the beginning of the level which has been reset (all enemies are regenerated).
+					
+How test will be performed: A visual test will confirm that when Mario moves right and collides with the enemy, he dies and is sent back to the beginning of the level, which is also visually confirmed to be reset.
+
+\item{\textbf{test-GM6}: Test Player's Character's lives\\}
+
+Type: Functional, Dynamic, Manual
+
+Initial State: Mario is standing still on the ground level with an enemy near. The player has 3 of their lives left.
+					
+Input: Mario is controlled to move right (KEYBOARD\_RIGHT is held down on user's keyboard).
+					
+Output: When Mario collides with the enemy he dies and one of the player's three lives is lost (visually represented by hearts at the top of the screen).
+					
+How test will be performed: A visual test will confirm that when Mario moves right and collides with the enemy, he dies and one of the player's lives is lost.
+
+\item{\textbf{test-GM7}: Test Player's Character's Final Death\\}
+
+Type: Functional, Dynamic, Manual
+
+Initial State: Mario is standing still on the ground level with an enemy near. The player has one of their three lives left.
+					
+Input: Mario is controlled to move right (KEYBOARD\_RIGHT is held down on user's keyboard).
+					
+Output: When Mario collides with the enemy he dies and the level is exited. The player is then returned to the main menu and their high-score is saved.
+					
+How test will be performed: A visual test will confirm that when Mario moves right and collides with the enemy, he dies and the level exits, returning the player to the main menu.
+
+\item{\textbf{test-GM8}: Test Beating Level\\}
+
+Type: Functional, Dynamic, Manual
+
+Initial State: A user has completed an entire level and Mario is currently standing still on the ground level next to the flagpole.
+					
+Input: Mario is controlled to move right (KEYBOARD\_RIGHT is held down on user's keyboard).
+					
+Output: When Mario collides with the flagpole, there will be a message stating they have completed the level and the player will be transported to the start of the next level.
+					
+How test will be performed: A visual test will confirm that when Mario moves right and collides with the flagpole, a congratulatory message appears and the player is transported to the start of the next level.
+
+\item{\textbf{test-GM9}: Test Player Beating Game\\}
+
+Type: Functional, Dynamic, Manual
+
+Initial State: Every level has been completed in sequence and Mario is standing still on the ground level next to the flagpole of the final level.
+					
+Input: Mario is controlled to move right (KEYBOARD\_RIGHT is held down on user's keyboard).
+					
+Output: When Mario collides with the flagpole, there will be a "You Win" screen shown and the player will be transported the main menu. The player's high-score will be saved.
+					
+How test will be performed: A visual test will confirm that when Mario moves right and collides with the flagpole, a "You Win" screen will be shown and the player will be transported the main menu. It will be further observed that the player's high-score is entered into the database.
+
+\end{enumerate}
 
 \subsection{Tests for Nonfunctional Requirements}
 
-\subsubsection{Area of Testing1}
-		
-\paragraph{Title for Test}
+\subsubsection{Look and Feel}
+
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{\textbf{test-LF1}: Test movement is similar to original game\\}
 
-Type: 
+Type: Dynamic, Manual
 					
-Initial State: 
+Initial State: The modified game is launched and an emulator version of the original game is loaded.
 					
-Input/Condition: 
+Input/Condition: The tester will make all available movements (Right-Left, Jump, Crouch) in the modified game and the original game emulator.
 					
-Output/Result: 
+Output/Result: The tester will determine if both versions of the game have a similar feel through visual confirmation.
 					
-How test will be performed: 
+How test will be performed: The tester will first play an original version of the game through an emulator service and go through the initial level. The tester will then play our version of the game and finish its initial level. A test that passes will have visual confirmation that the two games are similar in movement feel.
 					
-\item{test-id2\\}
+\item{\textbf{test-LF2}: Test ability to navigate through game menu.\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
+Type: Dynamic, Manual
 					
-Initial State: 
+Initial State: Terminal or file explorer screen of Operating System.
 					
-Input: 
+Input: Tester will boot the game and reach the menu screen.
 					
-Output: 
+Output: Tester will navigate to a level and boot the level.
 					
-How test will be performed: 
+How test will be performed: A tester will try navigating through the main menu and ensure that the process takes less than or equal to TIME\_TO\_NAVIGATE to reach the level screen and finally load a level. This test case will pass if a running stopwatch is started when the menu appears and stops when the level is loaded and the timing is within bounds.
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\subsubsection{Performance}
 
-...
+\begin{enumerate}
+
+\item{\textbf{test-PF1}: Test the game runs at FRAMES\_PER\_SECOND.\\}
+
+Type: Dynamic, Manual
+					
+Initial State: The tester has launched the game.
+					
+Input/Condition: The tester will navigate the menu and start a level.
+					
+Output/Result: The tester will finish the level and exit the game.
+					
+How test will be performed: The tester will start the game and play through one level with an FPS counter such as FRAPS recording the gameplay, then will exit the game. The test will pass if after the recording is finished, the FPS does not drop lower than FRAMES\_PER\_SECOND for more than FPS\_MARGIN tolerates.
+
+\item{\textbf{test-PF2}: Test the game does not slow down under stress.\\}
+
+Type: Dynamic, Manual
+					
+Initial State: The tester has launched the game.
+					
+Input/Condition: The tester will navigate the menu and start a level. Tester will then add 100 Koopa characters to the level.
+					
+Output/Result: The tester will finish the level and exit the game.
+					
+How test will be performed: The tester will start the game and play through one level with an FPS counter such as FRAPS recording the gameplay, then will exit the game. The test will pass if after the recording is finished, the FPS does not drop lower than FRAMES\_PER\_SECOND for more than FPS\_MARGIN tolerates.
+
+
+\item{\textbf{test-PF3}: Test the game can run for at least GAME\_AVAILABILITY.\\}
+
+Type: Dynamic, Manual
+					
+Initial State: The tester has launched the game.
+					
+Input/Condition: The tester will navigate the menu and start a level.
+					
+Output/Result: The tester will finish the game after GAME\_AVAILABILITY elapsed.
+					
+How test will be performed: The tester will start the game and play through one level with a stopwatch recording time elapsed, then will exit the game. The test will pass if after GAME\_AVAILABILITY has passed, the game has not crashed and is still in a stable state.
+\end{enumerate}
 
 \subsection{Traceability Between Test Cases and Requirements}
 
+The following table details which test cases trace to which requirements (the ID's of the requirements are taken from the Requirements Document found \href{https://gitlab.cas.mcmaster.ca/jandricd/super-refactored-mario-bros/-/tree/master/Doc/SRS}{here}).
+
+\begin{table}[H]
+\caption{\bf Requirements Traceability}
+\begin{tabular}{|l|p{0.5\linewidth}|l|}
+\hline
+\multicolumn{1}{|l}{\bfseries Requirement ID} & \multicolumn{1}{|l|}{\bfseries Requirement Description} & \multicolumn{1}{l|}{\bfseries Test ID(s)}\\
+\hline
+FR1 - FR5, PR4 & These requirements relate to movement of the player character & UI1 - UI13\\
+\hline
+FR6 - FR9 & These requirements  detail how enemies can and should die. & GM1, GM2, GM3, GM4 \\
+\hline
+FR10, FR11, FR12 & These functional requirements detail how the player’s character can die. & GM5, GM6, GM7\\
+\hline
+FR13, FR14 & These functional requirements detail how the player can beat levels and collectively the game. & GM8, GM9\\
+\hline
+LF1 & This requirement relates to the feel of the game being similar to the original. & LF1\\
+\hline
+LF2 & This requirement relates to the menu being modern and easy to navigate. & LF2\\
+\hline
+PR1, PR3, PR7 - PR9 & These requirement relate to game performance when under load. & PF1, PF2\\
+\hline
+PR6, PR9 & These requirements ensure the game can handle the overhead of one player. & PF3\\
+\hline
+\end{tabular}
+\end{table}
+
 \section{Tests for Proof of Concept}
 
-\subsection{Area of Testing1}
-		
-\paragraph{Title for Test}
+\subsection{Movement}
+
+During the Proof of Concept demonstration, our group demonstrated gameplay by testing a base level included in the original release. We showed how a character moves on screen in response to user input and also showed how alterations to the game files are reflected in the game.
+
+\paragraph{Test that the game responds to user input.}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{\textbf{test-M1\\}}
 
-Type: Functional, Dynamic, Manual, Static etc.
+Type: Functional, Dynamic, Manual
 					
-Initial State: 
+Initial State: The game will be run and a base level will be loaded.
 					
-Input: 
+Input: Use the keyboard input KEYBOARD\_LEFT, KEYBOARD\_RIGHT and KEYBOARD\_JUMP         to move the onscreen character.
 					
-Output: 
+Output: The onscreen player character will be displaced according to user input.
 					
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+How test will be performed: The user will push the keyboard input for the left, right and jump movements and visually confirm that the onscreen character has moved on the screen for the test to pass.
 
 \end{enumerate}
 
-\subsection{Area of Testing2}
+\subsection{Level design}
 
-...
+\paragraph{Test response of changes to level.}
 
+\begin{enumerate}
+
+\item{\textbf{test-LD1\\}}
+
+Type: Functional, Dynamic, Manual
+					
+Initial State: The game will be run and a base level will be loaded.
+					
+Input: Use the game level files to modify the world length for a level to TEST\_LEVEL\_LENGTH. 
+					
+Output: The onscreen character will move past the end of the level from the base game.
+					
+How test will be performed: By duplicating the game data for a base level and modifying the level length to one, a comparison can be made between both levels. The test passes if the character is able to move past the end of level area of the base game level.
+
+\end{enumerate}
 	
-\section{Comparison to Existing Implementation}	
-				
-\section{Unit Testing Plan}
-		
-\subsection{Unit testing of internal functions}
-		
-\subsection{Unit testing of output files}		
+	
 
+\section{Comparison to Existing Implementation}	
+N/A
+
+
+
+\section{Unit Testing Plan}
+Super Refactored Mario Python will use PyTest to evaluate the functionality of each module and subsystem.	
+\subsection{Unit testing of internal functions}
+	The project will feature unit testing files for every module created. This will help ensure the behaviour of each function is traceable to the requirements specified in the SRS. The type of testing will be dynamic and functional in nature and will involve a white box approach. Code coverage will be tracked using a PyTest plugin called PyTest-cov. The aim of unit testing in this project is to ensure a minimum of CODE\_COVERAGE\_VALUE and to instill confidence in the correctness of the game logic. Further, this test suite can be easily extended as new modules are created and set up to support automated regression testing for each future iteration of the game.	
+\subsection{Unit testing of output files}		
+    The game does not create output files, however it does take in JSON formatted files for level design and settings options. The game features a graphic user interface using PyGame. This will have to be tested manually and dynamically in a black-box fashion. As such, the development team will play the game and test user interactions with the game according to the functional requirements specified in the SRS. Visual confirmation that the behaviour of the game matches the intended behaviour will signify a pass for the test.
 \bibliographystyle{plainnat}
 
 \bibliography{SRS}
@@ -242,10 +666,100 @@ This is where you can place additional information.
 \subsection{Symbolic Parameters}
 
 The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
-Their values are defined in this section for easy maintenance.
+Their values are defined in the table below.
+
+\begin{table}[H]
+\caption{\bf Symbolic Parameter Table}
+\begin{tabular}{|l|p{0.5\linewidth}|l|}
+\hline
+\multicolumn{1}{|l}{\bfseries Symbolic Parameter} & \multicolumn{1}{|l|}{\bfseries Description} & \multicolumn{1}{l|}{\bfseries Value}\\
+\hline
+KEYBOARD\_LEFT & Keyboard key that moves the onscreen character sideways to the left. & Left Arrow \\
+\hline
+KEYBOARD\_RIGHT & Keyboard key that moves the onscreen character sideways to the right. & Right Arrow \\
+\hline
+KEYBOARD\_JUMP & Keyboard key that moves the onscreen character vertically upwards. & Up Arrow\\
+\hline
+KEYBOARD\_CROUCH & Keyboard key that crouches the onscreen character. & Down Arrow\\
+\hline
+KEYBOARD\_SPRINT & Keyboard key that makes the onscreen character sprint. & Shift\\
+\hline
+KEYBOARD\_ENTER & Keyboard key that selects an option in a menu. & Enter\\
+\hline
+KEYBOARD\_EXIT & Keyboard key that pauses a game mid-level. & ESC\\
+\hline
+TEST\_LEVEL\_LENGTH & The exact length of a game level. & 60\\
+\hline
+CODE\_COVERAGE\_VALUE & The test coverage goal expressed in percentage. & 100\%\\
+\hline
+TIME\_TO\_NAVIGATE & Time to navigate through a menu to reach an action. & 30 seconds\\
+\hline
+FRAMES\_PER\_SECOND  & Framerate in Hz of the game. & 60Hz\\
+\hline
+FPS\_MARGIN & Time required spent at framerate or above through use of product. & 95\%\\
+\hline
+GAME\_AVAILABILITY & Minimum time required of game to run continuously. & 1 hour\\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{Usability Survey Questions?}
 
-This is a section that would be appropriate for some teams.
+\textbf{Usability} is defined by ISO9241-11 as\\
+
+\emph{"the extent to which a product can be used by specified users to achieve specified goals with effectiveness, efficiency and satisfaction in a specified context of use"}.\\
+
+As such, we want to poll users on their experience playing the game, particularly in the areas of effectiveness and satisfaction. This will help determine if we are reaching our goal of providing a better way to play the classic Super Mario Game.
+
+\begin{enumerate}
+    \item Do the controls of the game make sense?
+    \item Was your experience bug free? if not, where did you encounter issues?
+    \item How much time do you usually play the game in one sitting? Please answer; Under 10 minutes, under 30 minutes, under 1 hour, more than 1 hour.
+    \item Was the game language easy to understand?
+    \item Did you enjoy your time with the game? Please rate from 1 (did not enjoy) to 5 (very much enjoyed).
+    \item Would you recommend this game to a friend?
+    \item Would you come back to this game instead of using a Super Mario Bros. emulator?
+\end{enumerate}
+
+\subsection{Figures}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{"Direction degrees".jpg}
+    \caption{Visual representation of the directions of movement with respect to Mario.}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{"Mario Ground Level".png}
+    \caption{Visual representation of Mario on the ground level of the game.}
+\end{figure}
+
+\begin{figure}[!h]
+    \begin{subfigure}{0.25\textwidth}
+        \includegraphics{"Standing Mario".png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.25\textwidth}
+        \includegraphics{"Crouching Mario".png}
+    \end{subfigure}
+    \caption{Visual representation of Mario standing and then ducking.}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{"Mario platform level".png}
+    \caption{Visual representation of Mario on a platform in the game.}
+\end{figure}
+
+\begin{figure}[!h]
+    \begin{subfigure}{0.25\textwidth}
+        \includegraphics{"Koopa".png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.25\textwidth}
+        \includegraphics{"Koopa Shell".png}
+    \end{subfigure}
+    \caption{Visual representation of a Koopa and a Koopa retracted into its shell.}
+\end{figure}
 
 \end{document}
