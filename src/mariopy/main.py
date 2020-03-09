@@ -1,5 +1,5 @@
 import pygame
-from core.heap_of_shit import Dashboard, Level, Menu, Mario
+from core.old_code import Dashboard, Level, Menu, Mario
 from resources.display import SCREEN
 
 def main():
