@@ -56,7 +56,6 @@
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 13/03/20 & 1.0 & Initial Write of Modular Guide\\
-Date 2 & 1.1 & Notes\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -141,6 +140,8 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mLevel}:] Level
 \item [\refstepcounter{mnum} \mthemnum \label{mLevels}:] Levels.json
 \item [\refstepcounter{mnum} \mthemnum \label{mSprites}:] Sprites
+\item [\refstepcounter{mnum} \mthemnum \label{mSprite}:] Sprite
+\item [\refstepcounter{mnum} \mthemnum \label{mEntityB}:] Entity\_Base
 \end{description}
 
 \begin{table}[h!]
@@ -170,6 +171,7 @@ actually be implemented.
 & Level\\
 & Levels.json\\
 & Sprites \\
+& Sprite\\
 \bottomrule
 
 \end{tabular}
@@ -258,32 +260,32 @@ selected.
 \subsubsection{Mario Module (\mref{mMario})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] How the character interacts with other objects in the game, such as enemies, blocks and coins.
+\item[Services:] Provides the functionalities of the user playable character through the game.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{Camera Module (\mref{mCamera})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] How the game camera pans and follows the user's character.
+\item[Services:] Provides the driver to move the camera of the game as the user's character moves through the world.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{Goomba Module (\mref{mGoomba})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] The function of the Goomba enemies.
+\item[Services:] Allows the user to interact with an enemy, and gain points from their death.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{Koopa Module (\mref{mKoopa})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] The function of the Koopa enemies.
+\item[Services:] Allows the user to interact with an enemy, and gain points from their death.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
@@ -297,46 +299,46 @@ selected.
   do not provide direct interaction with the user. 
   % Changes in these modules are more likely to be motivated by a desire to
   % improve performance than by externally imposed changes.
-\item[Implemented By:] --
+\item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{Vector2D Module (\mref{mVector2D})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] The method of doing the vector addition, as well as calculation the magnitude of a vector.
+\item[Services:] Uses vector addition in order to create new vectors for doing math with positions, velocities and accelerations. 
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{Sound\_Controller Module (\mref{mSound})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] The method of playing audio in the game for the user, which sounds are used and the channels over which he music and sounds will be played
+\item[Services:] Provides functionality to play, stop and mute sounds or music.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{SpriteSheet Module (\mref{mSpritesheet})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] Where and how the game accesses the various files to pull images from and create sprites
+\item[Services:] Provides functionality to isolate an image to be used to create a sprite.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{Collider Module (\mref{mCollider})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] How the game detects that two objects have overlapped and are in a collision state.
+\item[Services:] Provides methods and functions to check positions to determine if a collision has occurred.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
 \subsubsection{Level Module (\mref{mLevel})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] The method of which objects and entities in the game are spawned and placed in a level.
+\item[Services:] Loads objects and entities from sprites and places them within the context of a level. 
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
@@ -348,11 +350,27 @@ selected.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
-\subsubsection{sprites Module (\mref{mSprites})}
+\subsubsection{Sprites Module (\mref{mSprites})}
 
 \begin{description}
-\item[Secrets:] 
-\item[Services:] 
+\item[Secrets:] The method of which collections of sprites are loaded to be used in the game.
+\item[Services:] Loads a collection of sprites to be used by the different entities and level building modules.
+\item[Implemented By:] Super Refactored Mario Bros
+\end{description}
+
+\subsubsection{Sprite Module (\mref{mSprite})}
+
+\begin{description}
+\item[Secrets:] The method of which the game draws a sprite.
+\item[Services:] Provides functionalities to draw a sprite from an image to be used in the game.
+\item[Implemented By:] Super Refactored Mario Bros
+\end{description}
+
+\subsubsection{Sprite Module (\mref{mEntityB})}
+
+\begin{description}
+\item[Secrets:] The various fields that are general to all attributes in the game.
+\item[Services:] Provides functionalities to update and access fields required of all attributes in the game.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
@@ -369,15 +387,15 @@ requirements and between the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-FR1 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR2 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR3 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR4 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR5 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR6 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mGoomba}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR7 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mKoopa}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR8 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mKoopa}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
-FR9 & \mref{mController}, \mref{mMario}, \mref{mCamera}, \mref{mGoomba}, \mref{mKoopa}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}\\
+FR1 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}\\
+FR2 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}\\
+FR3 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}\\
+FR4 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}\\
+FR5 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}\\
+FR6 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mGoomba}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}\\
+FR7 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mKoopa}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}, \mref{mEntityB}\\
+FR8 & \mref{mController}, \mref{mInput}, \mref{mMario}, \mref{mCamera}, \mref{mKoopa}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}, \mref{mEntityB}\\
+FR9 & \mref{mController}, \mref{mMario}, \mref{mCamera}, \mref{mGoomba}, \mref{mKoopa}, \mref{mCollider}, \mref{mLevels}, \mref{mSprites}, \mref{mSprite}, \mref{mEntityB}\\
 FR10 & \mref{mController}, \mref{mMario} \\
 FR11 & \mref{mController}, \mref{mDashboard}, \mref{mMario}\\
 FR12 & \mref{mController}, \mref{mMenu}, \mref{mDashboard}, \mref{mMario}\\
@@ -424,7 +442,7 @@ because they use modules from the lower levels.
 
 \begin{figure}[H]
 \centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
 \caption{Use hierarchy among modules}
 \label{FigUH}
 \end{figure}
