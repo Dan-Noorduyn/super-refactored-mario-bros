@@ -83,26 +83,37 @@
             <task id="212" name="Implement Movement in Game" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="100" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
             <task id="214" name="Code POC Game environment" color="#8cb6ce" meeting="false" start="2020-02-08" duration="4" complete="100" thirdDate="2020-02-08" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="101" name="Test Plan Revision 0" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-07" thirdDate-constraint="0" expand="true">
+        <task id="101" name="Test Plan Revision 0" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="100" thirdDate="2020-01-07" thirdDate-constraint="0" expand="true">
             <depend id="106" type="2" difference="0" hardness="Rubber"/>
             <depend id="205" type="2" difference="0" hardness="Rubber"/>
-            <task id="245" name="General Information" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="247" name="Plan" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="249" name="System Test Description" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="251" name="Tests for Proof of Concept" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="252" name="Unit Testing Plan" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="0" thirdDate="2020-02-12" thirdDate-constraint="0" expand="true"/>
+            <task id="245" name="General Information" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="100" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="247" name="Plan" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="100" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="249" name="System Test Description" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="100" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="251" name="Tests for Proof of Concept" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="100" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="252" name="Unit Testing Plan" color="#8cb6ce" meeting="false" start="2020-02-12" duration="17" complete="100" thirdDate="2020-02-12" thirdDate-constraint="0" expand="true"/>
         </task>
         <task id="106" name="Design and Document Revision" color="#8cb6ce" meeting="false" start="2020-02-29" duration="14" complete="0" thirdDate="2020-01-10" thirdDate-constraint="0" expand="true">
             <depend id="201" type="2" difference="0" hardness="Strong"/>
             <depend id="210" type="2" difference="0" hardness="Strong"/>
+            <task id="255" name="MIS" color="#8cb6ce" meeting="false" start="2020-02-29" duration="14" complete="0" thirdDate="2020-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="256" name="MG Section 1" color="#8cb6ce" meeting="false" start="2020-02-29" duration="14" complete="0" thirdDate="2020-02-29" thirdDate-constraint="0" expand="true"/>
+            <task id="259" name="MG Section 2" color="#8cb6ce" meeting="false" start="2020-03-06" duration="8" complete="0" thirdDate="2020-02-29" thirdDate-constraint="0" expand="true"/>
+            <task id="263" name="MG Section 3" color="#8cb6ce" meeting="false" start="2020-03-06" duration="8" complete="0" thirdDate="2020-02-29" thirdDate-constraint="0" expand="true"/>
+            <task id="267" name="MG Section 4" color="#8cb6ce" meeting="false" start="2020-03-06" duration="8" complete="0" thirdDate="2020-02-29" thirdDate-constraint="0" expand="true"/>
+            <task id="271" name="MG Section 5" color="#8cb6ce" meeting="false" start="2020-03-06" duration="8" complete="0" thirdDate="2020-02-29" thirdDate-constraint="0" expand="true"/>
+            <task id="273" name="MG Section 6" color="#8cb6ce" meeting="false" start="2020-03-06" duration="8" complete="0" thirdDate="2020-02-29" thirdDate-constraint="0" expand="true"/>
+            <task id="275" name="MG Section 7" color="#8cb6ce" meeting="false" start="2020-03-06" duration="8" complete="0" thirdDate="2020-02-29" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="201" name="Revision Demonstration" color="#8cb6ce" meeting="false" start="2020-03-14" duration="3" complete="0" thirdDate="2020-01-20" thirdDate-constraint="0" expand="true">
+        <task id="201" name="Revision Demonstration" color="#8cb6ce" meeting="false" start="2020-03-14" duration="4" complete="0" thirdDate="2020-01-20" thirdDate-constraint="0" expand="true">
             <depend id="205" type="2" difference="0" hardness="Strong"/>
+            <task id="280" name="Code Entities + Base" color="#8cb6ce" meeting="false" start="2020-03-14" duration="4" complete="0" thirdDate="2020-03-14" thirdDate-constraint="0" expand="true"/>
+            <task id="287" name="Code Controller + Menu" color="#8cb6ce" meeting="false" start="2020-03-14" duration="4" complete="0" thirdDate="2020-03-14" thirdDate-constraint="0" expand="true"/>
+            <task id="291" name="Code Sprites + Colliders" color="#8cb6ce" meeting="false" start="2020-03-14" duration="4" complete="0" thirdDate="2020-03-14" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="205" name="Final Demonstration" color="#8cb6ce" meeting="false" start="2020-03-17" duration="14" complete="0" thirdDate="2020-01-11" thirdDate-constraint="0" expand="true">
+        <task id="205" name="Final Demonstration" color="#8cb6ce" meeting="false" start="2020-03-18" duration="14" complete="0" thirdDate="2020-01-11" thirdDate-constraint="0" expand="true">
             <depend id="210" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="210" name="Final Documentation" color="#8cb6ce" meeting="false" start="2020-03-31" duration="7" complete="0" thirdDate="2020-02-19" thirdDate-constraint="0" expand="true"/>
+        <task id="210" name="Final Documentation" color="#8cb6ce" meeting="false" start="2020-04-01" duration="7" complete="0" thirdDate="2020-02-19" thirdDate-constraint="0" expand="true"/>
     </tasks>
     <resources>
         <resource id="1" name="Alexander Samaha" function="1" contacts="samahaa@mcmaster.ca" phone="647-987-4669"/>
@@ -118,8 +129,6 @@
         <allocation task-id="51" resource-id="1" function="1" responsible="true" load="33.0"/>
         <allocation task-id="72" resource-id="1" function="1" responsible="true" load="34.0"/>
         <allocation task-id="95" resource-id="1" function="1" responsible="true" load="0.0"/>
-        <allocation task-id="106" resource-id="1" function="1" responsible="true" load="100.0"/>
-        <allocation task-id="201" resource-id="1" function="1" responsible="true" load="100.0"/>
         <allocation task-id="205" resource-id="1" function="1" responsible="true" load="100.0"/>
         <allocation task-id="210" resource-id="1" function="1" responsible="true" load="100.0"/>
         <allocation task-id="215" resource-id="1" function="1" responsible="true" load="80.0"/>
@@ -129,6 +138,10 @@
         <allocation task-id="214" resource-id="1" function="1" responsible="true" load="50.0"/>
         <allocation task-id="251" resource-id="1" function="1" responsible="true" load="25.0"/>
         <allocation task-id="252" resource-id="1" function="1" responsible="true" load="50.0"/>
+        <allocation task-id="255" resource-id="1" function="1" responsible="true" load="20.0"/>
+        <allocation task-id="259" resource-id="1" function="1" responsible="true" load="20.0"/>
+        <allocation task-id="275" resource-id="1" function="1" responsible="true" load="20.0"/>
+        <allocation task-id="280" resource-id="1" function="1" responsible="true" load="75.0"/>
         <allocation task-id="1" resource-id="2" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="4" resource-id="2" function="Default:1" responsible="true" load="80.0"/>
         <allocation task-id="12" resource-id="2" function="Default:1" responsible="true" load="50.0"/>
@@ -137,8 +150,6 @@
         <allocation task-id="82" resource-id="2" function="Default:1" responsible="true" load="33.0"/>
         <allocation task-id="95" resource-id="2" function="Default:1" responsible="false" load="0.0"/>
         <allocation task-id="67" resource-id="2" function="Default:1" responsible="false" load="0.0"/>
-        <allocation task-id="106" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
-        <allocation task-id="201" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
         <allocation task-id="205" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
         <allocation task-id="210" resource-id="2" function="Default:1" responsible="false" load="100.0"/>
         <allocation task-id="216" resource-id="2" function="Default:1" responsible="false" load="25.0"/>
@@ -148,14 +159,15 @@
         <allocation task-id="214" resource-id="2" function="Default:1" responsible="false" load="50.0"/>
         <allocation task-id="245" resource-id="2" function="Default:1" responsible="true" load="25.0"/>
         <allocation task-id="247" resource-id="2" function="Default:1" responsible="true" load="25.0"/>
+        <allocation task-id="255" resource-id="2" function="Default:1" responsible="false" load="20.0"/>
+        <allocation task-id="256" resource-id="2" function="Default:1" responsible="true" load="20.0"/>
+        <allocation task-id="287" resource-id="2" function="Default:1" responsible="true" load="75.0"/>
         <allocation task-id="1" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="4" resource-id="3" function="1" responsible="false" load="10.0"/>
         <allocation task-id="12" resource-id="3" function="1" responsible="false" load="25.0"/>
         <allocation task-id="48" resource-id="3" function="1" responsible="true" load="100.0"/>
         <allocation task-id="95" resource-id="3" function="1" responsible="false" load="0.0"/>
         <allocation task-id="67" resource-id="3" function="1" responsible="false" load="0.0"/>
-        <allocation task-id="106" resource-id="3" function="1" responsible="false" load="100.0"/>
-        <allocation task-id="201" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="205" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="210" resource-id="3" function="1" responsible="false" load="100.0"/>
         <allocation task-id="216" resource-id="3" function="1" responsible="true" load="30.0"/>
@@ -164,6 +176,12 @@
         <allocation task-id="214" resource-id="3" function="1" responsible="false" load="50.0"/>
         <allocation task-id="249" resource-id="3" function="1" responsible="true" load="100.0"/>
         <allocation task-id="225" resource-id="3" function="1" responsible="false" load="20.0"/>
+        <allocation task-id="255" resource-id="3" function="1" responsible="false" load="20.0"/>
+        <allocation task-id="263" resource-id="3" function="1" responsible="true" load="20.0"/>
+        <allocation task-id="267" resource-id="3" function="1" responsible="true" load="10.0"/>
+        <allocation task-id="271" resource-id="3" function="1" responsible="true" load="10.0"/>
+        <allocation task-id="273" resource-id="3" function="1" responsible="true" load="20.0"/>
+        <allocation task-id="291" resource-id="3" function="1" responsible="true" load="75.0"/>
         <allocation task-id="8" resource-id="4" function="2" responsible="true" load="100.0"/>
     </allocations>
     <vacations/>

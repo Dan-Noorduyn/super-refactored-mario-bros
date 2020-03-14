@@ -1,3 +1,13 @@
 *.aux
 *.log
 *.synctex.gz
+.vscode
+__pycache__
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.toc
+*.out
