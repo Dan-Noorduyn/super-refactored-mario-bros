@@ -1,0 +1,1962 @@
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{hhline}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{float}
+
+\oddsidemargin -10mm
+\evensidemargin -10mm
+\textwidth 160mm
+\textheight 200mm
+\renewcommand\baselinestretch{1.0}
+
+\pagestyle {plain}
+\pagenumbering{arabic}
+
+\newcounter{stepnum}
+
+%% Comments
+
+\usepackage{color}
+
+\newif\ifcomments\commentstrue
+
+\ifcomments
+\newcommand{\authornote}[3]{\textcolor{#1}{[#3 ---#2]}}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\else
+\newcommand{\authornote}[3]{}
+\newcommand{\todo}[1]{}
+\fi
+
+\newcommand{\wss}[1]{\authornote{blue}{SS}{#1}}
+
+\title{SE 3XA3: Module Interface Specification\\Super Refactored Mario Python}
+
+\author{203, Abstract Connoisseurs 
+		\\ David Jandric, jandricd
+		\\ Daniel Noorduyn, noorduyd
+		\\ Alexander Samaha, samahaa
+}
+
+\date{\today}
+
+\begin {document}
+
+\maketitle
+
+\newpage
+\section*{Mario Module}
+\subsection*{Module}
+\subsection*{Uses}
+Uses entity\_base
+\subsection*{Syntax}
+\subsubsection*{Exported Constants}
+None
+\subsubsection*{Exported Access Programs}
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Mario & $\mathbb{N}, \mathbb{N}$, Level, Screen, Dashboard, $\mathbb{R}$ & Mario & \\
+\hline
+get\_pos & & $\mathbb{N}, \mathbb{N}$ &\\
+\hline
+set\_pos & $\mathbb{N}, \mathbb{N}$ & & TypeError\\
+\hline
+update & & &\\
+\hline
+move\_mario & & & \\
+\hline
+check\_entity\_collision & & &\\
+\hline
+on\_collision\_with\_item & Item & & TypeError\\
+\hline
+on\_collision\_with\_block & random\_block & & TypeError\\
+\hline
+on\_collision\_with\_mob & entity\_base, collision\_state & & TypeError\\
+\hline
+bounce & & &\\
+\hline
+kill\_entity & entity\_base & & TypeError\\
+\hline
+death\_in\_game & & &\\
+\hline
+game\_over & & &\\
+\hline
+get\_lives & & $\mathbb{N}$ &\\
+\hline
+\end{tabular}
+
+\subsection*{Semantics}
+\subsubsection*{State Variables}
+sprite\_collection: Object of type Sprites\\
+camera: Object of type Camera\\
+input: Object of type Input\\
+in\_air: $\mathbb{B}$\\
+in\_jump: $\mathbb{B}$\\
+animation: Object of type Animation\\
+traits: Seq of Traits\\
+level\_obj: Object of type Level\\
+collision: Object of type Collider\\
+screen: Object of type Display\\
+entity\_collider: Object of type EntityCollider\\
+dashboard: Object of type Dashboard\\
+restart: $\mathbb{B}$\\
+pause: $\mathbb{B}$\\
+pause\_obj: Object of type Pause\\
+lives: $\mathbb{N}$\\
+
+\subsubsection*{State Invariant}
+None
+
+\subsubsection*{Assumptions \& Design Decisions}
+
+\begin{itemize}
+    \item The Mario constructor is called before any other access routines are called. Once called, the constructor will then not be used again.
+\end{itemize}
+
+\subsubsection*{Access Routine Semantics}
+new Mario(x, y, level, screen, dashboard, gravity):
+\begin{itemize}
+    \item transition: sprite\_collection = Sprites().sprite\_collection\\
+camera = new Camera(rect, self)\\
+input = new Input(self)\\
+in\_air = False\\
+in\_jump = False\\
+animation = new Animation(Seq of sprite\_collection)\\
+traits = \\
+level\_obj: level\\
+collision: Collider(self)\\
+screen: screen\\
+EntityCollider: EntityCollider(self)\\
+dashboard: dashboard\\
+restart: False\\
+pause: False\\
+pause\_obj: Pause(screen, self, dashboard)\\
+lives: $\mathbb{N}$\\
+\end{itemize}
+
+update():
+\begin{itemize}
+    \item transition: updates the following functions update\_traits, move\_mario, camera, gravity, check\_entity\_collision and check\_for\_input.
+    \item exception: None
+\end{itemize}
+
+move\_mario():
+\begin{itemize}
+    \item transition: x, y := x + vel.get\_x, y + vel.get\_y
+    \item exception: None
+\end{itemize}
+
+check\_entity\_on\_collision():
+\begin{itemize}
+    \item transition: Checks if Mario collided with either of Item, Block or Mob entity and redirects to appropriate function.
+    \item exception: None
+\end{itemize}
+
+on\_collision\_with\_item(item):
+\begin{itemize}
+    \item transition: Collided item is removed from list of current items, dashboard.points increased by 100, dashboard.coins increased by 1.
+    \item exception: TypeError if item is not of type Item
+\end{itemize}
+
+on\_collision\_with\_block(block):
+\begin{itemize}
+    \item transition: Collided item is removed from list of current items, dashboard.points increased by 100, dashboard.coins increased by 1.
+    \item exception: TypeError if block is not of type RandomBlock
+\end{itemize}
+
+on\_collision\_with\_mob(mob, collision\_state):
+\begin{itemize}
+    \item transition: Collided block is activated, dashboard.coins is incremented by 1.
+    \item exception: TypeError if mob is not of type entity\_base
+\end{itemize}
+
+bounce():
+\begin{itemize}
+    \item transition: traits["bounceTrait"].jump := True
+    \item exception: None
+\end{itemize}
+
+kill\_entity(ent):
+\begin{itemize}
+    \item transition: If the entity is not a Koopa, then ent.alive := False, otherwise ent.alive := "sleeping". Dashboard.points is further incremented 100 points.
+    \item TypeError if ent is not of type entity\_base
+\end{itemize}
+
+game\_over():
+\begin{itemize}
+    \item transition: The screen is filled with black excluding a small circle around the player character. self.restart := True. 
+    \item exception: None
+\end{itemize}
+
+get\_pos():
+\begin{itemize}
+    \item output: camera.x + rect.x, y
+    \item exception: None
+\end{itemize}
+
+set\_pos(x, y):
+\begin{itemize}
+    \item transition: rect.x, rect.y = x, y
+    \item exception: TypeError if x, y are not of type Integer.
+\end{itemize}
+
+get\_lives():
+\begin{itemize}
+    \item output: out := self.lives
+    \item exception: None
+\end{itemize}
+
+death\_in\_game():
+\begin{itemize}
+    \item transition: if self.lives != 0 $\Rightarrow$ self.restart, lives := True, lives - 1 \emph{//If lives are not zero, then restart level.}\\
+    else call game\_over()
+    \item exception: None
+\end{itemize}
+
+\newpage
+
+\section*{Camera Module}
+\subsection*{Uses}
+None
+\subsection*{Syntax}
+\subsubsection*{Exported Constants}
+None
+\subsubsection*{Exported Access Programs}
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Camera & $\mathbb{N}$, entity & Camera & \\
+\hline
+move & & &\\
+\hline
+\end{tabular}
+
+\subsection*{Semantics}
+\subsubsection*{State Variables}
+pos: Object of type Vector2D \emph{Contains the coordinates for camera position.}\\ 
+entity: Object of type Entity\\
+x: $\mathbb{N}$\\ 
+y: $\mathbb{N}$\\
+
+\subsubsection*{State Invariant}
+None
+\subsubsection*{Assumptions \& Design Decisions}
+\begin{itemize}
+    \item The Camera Constructor is called before any other access routines are called. Once called, the constructor will then not be called upon again.
+\end{itemize}
+
+\subsubsection*{Access Routine Semantics}
+
+new Camera(pos, entity):
+\begin{itemize}
+    \item transition: \\self.pos := Vector2D(pos.x, pos.y)\\
+                      self.entity := entity\\
+                      self.x := pos.get\_x()\\
+                      self.y := pos.get\_y()\\
+    \item exception: None
+\end{itemize}
+
+move():
+\begin{itemize}
+    \item transition: x\_pos\_float := entity.get\_pos\_index\_as\_float().get\_x(). if $10 < \text{x\_pos\_float} < 50 \Rightarrow$ pos := Vector2D(x\_pos\_float + 10, pos.get\_y())\\
+    x := pos.get\_x() * 32\\
+    y := pos.get\_y() * 32
+    \item exception None
+\end{itemize}
+
+\newpage
+
+\section*{Level Module}
+\subsection*{Uses}
+None
+\subsection*{Syntax}
+\subsubsection*{Exported Constants}
+None
+\subsubsection*{Exported Access Programs}
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Level & Screen, Dashboard & Level & \\
+\hline
+load\_level & String & & FileNotFoundError\\
+\hline
+load\_entities & JSON &  & \\
+\hline
+load\_layers & JSON & & \\
+\hline
+load\_objects & JSON & &\\
+\hline
+update\_entities & Camera & &\\
+\hline
+draw\_level & Camera & & IndexError\\
+\hline
+add\_cloud\_sprite & $\mathbb{N}, \mathbb{N}$ & & IndexError\\
+\hline
+add\_pipe\_sprite  & $\mathbb{N}, \mathbb{N}, \mathbb{N}$ & & IndexError\\
+\hline
+add\_bush\_sprite & $\mathbb{N}, \mathbb{N}$ & & IndexError\\
+\hline
+add\_random\_box & $\mathbb{N}, \mathbb{N}$ & & \\
+\hline
+add\_coin & $\mathbb{N}, \mathbb{N}$ & &\\
+\hline
+add\_goomba & $\mathbb{N}, \mathbb{N}$ & &\\
+\hline
+add\_koopa & $\mathbb{N}, \mathbb{N}$ & &\\
+\hline
+\end{tabular}
+
+\subsection*{Semantics}
+\subsubsection*{State Variables}
+sprites: Object of type Sprite\\
+dashboard: Object of type Dashboard\\
+screen: Object of type Screen\\
+level: Object of type Level\\
+level\_length: $\mathbb{N}$\\
+entity\_list: Seq of Entity
+
+\subsubsection*{State Invariant}
+None
+\subsubsection*{Assumptions \& Design Decisions}
+\begin{itemize}
+    \item The Level constructor is called before any other access routines are called. Once called, the constructor will then not be called upon again.
+\end{itemize}
+
+\subsubsection*{Access Routine Semantics}
+new Level(screen, dashboard):
+\begin{itemize}
+    \item transition:\\
+    sprites := sprites()\\
+    dashboard := dashboard\\
+    screen := screen\\
+    level := None\\
+    level\_length := 0\\
+    entity\_list := []\\
+    \item exception: None
+\end{itemize}
+
+load\_level(levelname):
+\begin{itemize}
+    \item transition: \\
+    data := open(levelname) as json\_data $\Rightarrow$ json.load(json\_data)\\ 
+    Call load\_layers(data)\\
+    Call load\_objects(data)\\
+    Call load\_entities(data)\\
+    level\_length := data["length"]
+    \item exception: FileNotFoundError triggered if file is not found.
+\end{itemize}
+
+load\_entities(data):
+\begin{itemize}
+    \item transition: 
+\begin{tabular}{|p{3cm}|l|}
+\hhline{|-|-|}
+$c = \mbox{random\_box}$ & add\_random\_box(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
+\hhline{|-|-|}
+$c = \mbox{goomba}$ & add\_goomba(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
+\hhline{|-|-|}
+$c = \mbox{koopa}$ & add\_koopa(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
+\hhline{|-|-|}
+$c = \mbox{coin}$ & add\_coin \_box(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
+\hhline{|-|-|}
+\end{tabular}
+    \item exception: None
+\end{itemize}
+
+load\_layers(data):
+\begin{itemize}
+    \item transition:\\
+    layers := [ ]  //\emph{Initializes an empty sequence}\\
+    $\forall x \in data["level"]["layers"]["sky"]["x"] \mid (\forall y \in data["level"]["layers"]["sky"]["y"]$ : \text{layers + Tile(sprites.sprite\_collection.get("sky"), None))}$\\
+    $\forall x \in data["level"]["layers"]["ground"]["x"] \mid (\forall y \in data["level"]["layers"]["ground"]["y"]$ : \text{layers + Tile(sprites.sprite\_collection.get("ground"), None))}$\\
+    //\emph{This is initializing the sky and ground blocks and appending them to a layer sequence.}
+    \item exception: None
+\end{itemize}
+
+load\_objects(data):
+\begin{itemize}
+    \item transition: \\
+    \begin{tabular}{|p{3cm}|l|}
+\hhline{|-|-|}
+$i = \mbox{bush}$ & add\_bush\_sprite(x, y) $\Rightarrow \forall x, y \in data["level"]["objects"][c]$\\
+\hhline{|-|-|}
+$i = \mbox{cloud}$ & add\_cloud\_sprite(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
+\hhline{|-|-|}
+$i = \mbox{pipe}$ & add\_pipe\_sprite(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
+\hhline{|-|-|}
+\end{tabular}
+    \item exception: None
+\end{itemize}
+
+update\_entities(cam): 
+\begin{itemize}
+    \item transition: $\forall\ \text{entity} \in \text{entity\_list} : \text{entity.update(cam)} \land$\\
+\begin{tabular}{|p{3cm}|l|}
+\hhline{|-|-|}
+$\mbox{entity.alive}$ & None\\
+\hhline{|-|-|}
+$\lnot \mbox{entity.alive}$ & entity\_list.remove(entity)\\
+\hhline{|-|-|}
+\end{tabular}
+    \item exception: None
+\end{itemize}
+
+draw\_level(camera):
+\begin{itemize}
+    \item transition:
+    $\forall\ y \in [0 .. 15] : \forall\ x \in [0 - \text{camera.pos.get\_x()} + 1 .. 20 - \text{camera.pos.get\_x()} -1]$\\
+    
+% Please add the following required packages to your document preamble:
+
+\begin{table}[H]
+\begin{tabular}{lllll}
+\cline{1-3}
+\multicolumn{1}{|l|}{\multirow{8}{*}{level{[}y{]}{[}x{]}.sprite}} & \multicolumn{1}{l|}{\multirow{5}{*}{level{[}y{]}{[}x{]}.sprite.redraw\_background}}        & \multicolumn{1}{l|}{\multirow{5}{*}{\begin{tabular}[c]{@{}l@{}}screen.blit(sprite\_collection.get("sky").image, (x \\ + camera.pos.get\_x()) * 32, y * 32)\\ $\land$ level{[}y{]}{[}x{]}.sprite.draw\_sprite(x \\ + camera.pos.get(x), y, screen)) \\ $\land$ update\_entities(camera)\end{tabular}}} &  &  \\
+\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
+\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
+\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
+\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\ \cline{2-3}
+\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{\multirow{3}{*}{$\lnot$level{[}y{]}{[}x{]}.sprite.redraw\_background}} & \multicolumn{1}{l|}{\multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}level{[}y{]}{[}x{]}.sprite.draw\_sprite(x \\ + camera.pos.get(x), y, screen) \\ $\land$ update\_entities(camera)\end{tabular}}}                                                                                                        &  &  \\
+\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
+\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\ \cline{1-3}
+\multicolumn{1}{|l|}{$\lnot$level{[}y{]}{[}x{]}.sprite}           & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{update\_entities(camera)}                                                                                                                                                                                                                                                         &  &  \\ \cline{1-3}
+                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  &  \\
+                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  &  \\
+                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  &  \\
+                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  & 
+\end{tabular}
+\end{table}
+
+    \item exception: IndexError if x, y are out of range.
+\end{itemize}
+
+add\_cloud\_sprite(x, y):
+\begin{itemize}
+    \item transition: $\forall\ \text{y\_off} \in [0 .. 2] : (\forall\ \text{x\_off} \in [0 .. 3]$ : level[y + y\_off][x + x\_off] = Tile(sprites.sprite\_collection.get("cloud", None))
+    \item exception: IndexError if x, y are out of range.
+\end{itemize}
+
+add\_pipe\_sprite(x, y, length):
+\begin{itemize}
+    \item transition:\\ length := 2\\
+    level[y][x] = Tile(sprites.sprite\_collection.get("pipeL"), pygame.Rect(x * 32, y * 32, 32, 32))\\
+    level[y][x] = Tile(sprites.sprite\_collection.get("pipeR"), pygame.Rect(x * 32, y * 32, 32, 32))\\
+    $\forall\ i \in (1, length + 20) : $ level[y + i][x] = Tile(sprites.sprite\_collection.get("pipe2L"), pygame.Rect(x * 32, (y + i) * 32, 32, 32))\\
+    $\forall\ i \in (1, length + 20) : $ level[y + i][x + 1] = Tile(sprites.sprite\_collection.get("pipe2R"), pygame.Rect((x + 1) * 32, (y + i) * 32, 32, 32))\\
+    \item exception: IndexError if x, y are out of range.
+\end{itemize}
+
+add\_bush\_sprite(x, y):
+\begin{itemize}
+    \item transition: \\
+    level[y][x] = Tile(sprites.sprite\_collection.get("bush\_1"), None)\\
+    level[y][x+1] = Tile(sprites.sprite\_collection.get("bush\_2"), None)\\
+    level[y][x+2] = Tile(sprites.sprite\_collection.get("bush\_3"), None)\\
+    \item exception: IndexError if x, y are out of range.
+\end{itemize}
+
+add\_random\_box(x, y):
+\begin{itemize}
+    \item transition:\\ level[y][x] = Tile(None, pygame.Rect(x * 32, y * 32 - 1, 32, 32))\\
+    entity\_list := entity\_list + $\langle$Random\_Box(screen, sprites.sprite\_collection, x, y, dashboard)$\rangle$
+    \item exception: None
+\end{itemize}
+
+add\_coin(x, y):
+\begin{itemize}
+    \item transition: entity\_list := entity\_list + $\langle$Coin(screen, sprites.sprite\_collection, x, y)$\rangle$
+    \item exception: None
+\end{itemize}
+
+add\_goomba(x, y):
+\begin{itemize}
+    \item transition: entity\_list := entity\_list +$\langle$Goomba(screen, sprites.sprite\_collection, x, y, self)$\rangle$
+    \item exception: None
+\end{itemize}
+
+add\_koopa(x, y):
+\begin{itemize}
+    \item transition: entity\_list := entity\_list + $\langle$Koopa(screen, sprites.sprite\_collection, x, y, self)$\rangle$
+    \item exception: None
+\end{itemize}
+
+\newpage
+
+\section*{Input Module}
+\subsection*{Uses}
+None
+\subsection*{Syntax}\
+\subsubsection*{Exported Constants}
+None
+\subsubsection*{Exported Types}
+None
+\subsubsection*{Exported Access Programs}
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Input & Entity\_Base & Input & \\
+\hline
+check\_for\_input & & &\\
+\hline
+check\_for\_keyboard\_input & & &\\
+\hline
+check\_for\_quit\_and\_restart\_input\_events & & &\\
+\hline
+\end{tabular}
+
+\subsection*{Semantics}
+\subsubsection*{State Variables}
+mouse\_X: $\mathbb{N}$\\
+mouse\_Y: $\mathbb{N}$\\
+entity: Object of type Entity\_Base\\
+
+\subsubsection*{State Invariant}
+None
+
+\subsubsection*{Assumptions \& Design Decisions}
+\begin{itemize}
+    \item The Input constructor is called before any other access routines are called. Once called, the constructor will then not be called upon again.
+\end{itemize}
+
+\subsubsection*{Access Routine Semantics}
+new Input(entity):
+\begin{itemize}
+    \item transition:\\
+    mouse\_X := 0\\
+    mouse\_Y := 0\\
+    entity := entity
+    \item exception: None
+\end{itemize}
+
+check\_for\_input():
+\begin{itemize}
+    \item transition: \\
+    Call check\_for\_keyboard\_input()\\
+    Call check\_for\_mouse\_input()\\
+    check\_for\_quit\_and\_restart\_input\_events()\\
+    \item exception: None
+\end{itemize}
+
+check\_for\_keyboard\_input():
+\begin{itemize}
+    \item transition:\\ pressed\_keys := pygame.key.get\_pressed()\\
+    is\_jumping := pressed\_keys[K\_SPACE] $\lor$ pressed\_keys[K\_UP]\\
+    entity.traits["jumpTrait"].jump(is\_Jumping)
+    entity.traits["goTrait"].boost = pressed\_keys[L\_SHIFT]
+    direction := entity.traits["goTrait"].direction\\
+\begin{table}[H]
+\begin{tabular}{lllll}
+\cline{1-2}
+\multicolumn{1}{|l|}{pressed\_keys{[}K\_LEFT{]} $\land\ \lnot$ pressed\_keys{[}K\_RIGHT{]}} & \multicolumn{1}{l|}{direction = -1} &  &  &  \\ \cline{1-2}
+\multicolumn{1}{|l|}{pressed\_keys{[}K\_RIGHT{]} $\land\ \lnot$ pressed\_keys{[}K\_LEFT{]}} & \multicolumn{1}{l|}{direction = 1}  &  &  &  \\ \cline{1-2}
+\multicolumn{1}{|l|}{else}                                                                  & \multicolumn{1}{l|}{direction = 0}  &  &  &  \\ \cline{1-2}
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  &  \\
+                                                                                            &                                     &  &  & 
+\end{tabular}
+\end{table}
+    \item exception: None
+\end{itemize}
+
+check\_for\_quit\_and\_restart\_input\_events():
+\begin{itemize}
+    \item transition: \\ events := pygame.event.get()\\
+    $\forall\ \text{event} \in \text{events}$ | event.type == pygame.QUIT : pygame.quit() $\land$ sys.exit()\\
+    
+    $\forall\ \text{event} \in \text{events}$ | event.type == pygame.KEYDOWN $\land$ event.key == pygame.K\_ESCAPE : entity.pause := True $\land$ entity.pause\_obj.create\_background\_blur()
+    \item exception: None
+\end{itemize}
+
+\newpage
+
+
+\newpage
+
+\section* {Math Module}
+
+\subsection*{Module}
+
+\subsection* {Uses}
+
+N/A
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+
+
+TOTAL\_CARDS = 104\\
+ACE = 1\\
+JACK = 11\\
+QUEEN = 12\\
+KING = 13
+
+\subsubsection* {Exported Types}
+
+SuitT = \{Heart, Diamond, Club, Spade\}\\
+RankT = [1..13]\\
+CategoryT = \{Tableau, Foundation, Deck, Waste\}\\
+CardT = tuple of (s: SuitT, r: RankT)
+
+\subsubsection* {Exported Access Programs}
+
+None
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+None
+
+\subsubsection* {State Invariant}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Vector2D Module}
+
+\subsection* {Uses}
+
+N/A
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Types}
+
+Vector2D = tuple of (x: float, y: float)
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Vector2D & $\mathbb{R, R}$ & Vector2D & TypeError\\
+\hline
+get\_x       & ---          & $\mathbb{R}$ & ---\\
+\hline
+get\_y       & ---          & $\mathbb{R}$ & ---\\
+\hline
+add          & Vector2D     & ---          & TypeError\\
+\hline
+set\_x       & $\mathbb{R}$ & ---          & TypeError\\
+\hline
+set\_y       & $\mathbb{R}$ & ---          & TypeError\\
+\hline
+mag          & ---          & $\mathbb{R}$ & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$x$: $\mathbb{R}$ // Represents the x component of the vector\\ 
+$y$: $\mathbb{R}$ // Represents the y component of the vector
+
+\subsubsection* {State Invariant}
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Vector2D($x, y$):
+\begin{itemize}
+\item transition: $x, y := x, y$
+\item output: $\mathit{out} := \mathit{self}$
+\item exception: $x, y$ not of type $\mathbb{R} \Rightarrow$ TypeError.
+\end{itemize}
+
+\noindent get\_x():
+\begin{itemize}
+\item output: $out := x$
+\end{itemize}
+
+\noindent get\_y():
+\begin{itemize}
+\item output: $out := y$
+\end{itemize}
+
+\noindent add(v):
+\begin{itemize}
+\item transition: $x, y := x + v.get\_x(), y := y + v.get\_y()$
+\item exception: $v$ is not of type Vector2D $\Rightarrow$ TypeError 
+\end{itemize}
+
+\noindent set\_x(x):
+\begin{itemize}
+\item transition: $x := x$
+\item exception: $x$ is not of type $\mathbb{R} \Rightarrow$ TypeError
+\end{itemize}
+
+\noindent set\_y(y):
+\begin{itemize}
+\item transition: $y := y$
+\item exception: $y$ is not of type $\mathbb{R} \Rightarrow$ TypeError
+\end{itemize}
+
+\noindent mag():
+\begin{itemize}
+\item output: $out := \sqrt{x^2 + y^2}$
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Sound\_Controller Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    pygame.mixer.Channel & // & Contains methods for controlling a sound channel\\
+    pygame.mixer.Sound   & // & Contains methods for loading sounds from a file
+\end{tabular}
+\subsection* {Syntax}
+
+\subsubsection* {Exported Types}
+
+N/A
+
+\subsubsection* {Exported Constants}
+
+\begin{tabular}{lll}
+    SOUNDTRACK   & = & Main soundtrack\\
+    COIN\_SOUND  & = & Sound for collecting a coin\\
+    BUMP\_SOUND  & = & Sound when objects are bumped\\
+    STOMP\_SOUND & = & Sound when Mario stomps an enemy\\
+    JUMP\_SOUND  & = & Sound when Mario jumps\\
+    DEATH\_SOUND & = & Sound when Mario dies
+\end{tabular}
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Sound\_Controller & --- & Sound\_Controller & ---\\
+\hline
+play\_sfx             & Sound & ---          & TypeError\\
+\hline
+sfx\_muted            & ---   & $\mathbb{B}$ & ---\\
+\hline
+playing\_sfx          & ---   & $\mathbb{B}$ & ---\\
+\hline
+play\_music           & Sound & ---          & TypeError\\
+\hline
+music\_muted          & ---   & $\mathbb{B}$ & ---\\
+\hline
+playing\_music        & ---   & $\mathbb{B}$ & ---\\
+\hline
+stop\_sfx             & ---   & ---          & ---\\
+\hline
+mute\_sfx             & ---   & ---          & ---\\
+\hline
+unmute\_sfx           & ---   & ---          & ---\\
+\hline
+stop\_music           & ---   & ---          & ---\\
+\hline
+mute\_music           & ---   & ---          & ---\\
+\hline
+unmute\_music         & ---   & ---          & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+\begin{tabular}{lll}
+    music\_ch: Channel         & // & Channel over which music will be played\\ 
+    music\_muted: $\mathbb{B}$ & // & Represents whether music can be played\\
+    sfx\_ch: Channel           & // & Channel over which sound effects will be played\\
+    sfx\_muted: $\mathbb{B}$   & // & Represents whether sound effects can be played
+\end{tabular}
+\subsubsection* {State Invariant}
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Sound\_Controller():
+\begin{itemize}
+\item transition:
+    \begin{itemize}[]
+        \item sfx\_ch, music\_ch := Channel(0), Channel(1)
+        \item sfx\_muted, music\_muted $:= False, False$
+    \end{itemize}
+\item output: $\mathit{out} := \mathit{self}$
+\end{itemize}
+
+\noindent play\_sfx($s$):
+\begin{itemize}
+\item transition: $\lnot$ sfx\_muted() $\Rightarrow$ play $s$ over the sfx\_ch channel
+\item exception: $s$ not of type Sound $\Rightarrow$ TypeError
+\end{itemize}
+
+\noindent sfx\_muted():
+\begin{itemize}
+\item output: $out := $ sfx\_muted
+\end{itemize}
+
+\noindent playing\_sfx():
+\begin{itemize}
+\item output: $out := $ sfx\_ch.get\_busy() // This method returns: $True$ if a sound is playing on the channel, $False$ otherwise.
+\end{itemize}
+
+\noindent play\_music(s):
+\begin{itemize}
+\item transition: $\lnot$ music\_muted() $\Rightarrow$ play $s$ over the music\_ch channel
+\item exception: s not of type Sound $\Rightarrow$ TypeError
+\end{itemize}
+
+\noindent music\_muted():
+\begin{itemize}
+\item output: $out := $ music\_muted
+\end{itemize}
+
+\noindent playing\_music():
+\begin{itemize}
+\item output: $out := $ music\_ch.get\_busy()
+\end{itemize}
+
+\noindent stop\_sfx():
+\begin{itemize}
+\item transition: Call sfx\_ch.stop(), which stops any sound playing on the sfx\_ch channel
+\end{itemize}
+
+\noindent mute\_sfx():
+\begin{itemize}
+\item transition: Call stop\_sfx(), then set sfx\_muted := $True$
+\end{itemize}
+
+\noindent unmute\_sfx():
+\begin{itemize}
+\item transition: sfx\_muted := $False$
+\end{itemize}
+
+\noindent stop\_music():
+\begin{itemize}
+\item transition: Call music\_ch.stop()
+\end{itemize}
+
+\noindent mute\_music():
+\begin{itemize}
+\item transition: Call stop\_music(), then set music\_muted := $True$
+\end{itemize}
+
+\noindent unmute\_music():
+\begin{itemize}
+\item transition: music\_muted := $False$
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Spritesheet Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    pygame.Rect & // & Class that represents a rectangle\\
+    pygame.Surface & // & Class for representing images\\
+    pygame.image & // & Contains methods for loading images from files
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Types}
+
+N/A
+
+\subsubsection* {Exported Constants}
+
+N/A
+
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Spritesheet & string & Spritesheet & ---\\
+\hline
+image\_at & $\mathbb{N}, \mathbb{N}, \mathbb{R}, (\mathbb{N}, \mathbb{N}, \mathbb{N}), \mathbb{B}, \mathbb{N}, \mathbb{N}$ & Surface & TypeError\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+\begin{tabular}{lll}
+    sheet: Surface & // & Represents an entire sheet of images in blocks\\ 
+\end{tabular}
+\subsubsection* {State Invariant}
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Spritesheet(filename):
+\begin{itemize}
+\item transition:
+    \begin{itemize}[]
+        \item sheet := image.load(filename)
+        \item After assigning sheet, check if it has an alpha value in the pixels. If it does, then it is converted into a different pixel format while preserving the alpha, else it just converts the image.
+    \end{itemize}
+\item out: $out := self$
+\end{itemize}
+
+\noindent image\_at($x, y, scalingfactor, colorkey, ignoretilesize, xtilesize, ytilesize$):
+\begin{itemize}
+\item out: This method creates a rectangle of the appropriate size (Rect($x, y, xtilesize, ytilesize$) or Rect($x \cdot xtilesize, y \cdot ytilesize, xtilesize, ytilesize$)), then creates a surface from this rectangle. It then "cuts out" a portion of sheet of the rectangle size and copies it into the new surface. Lastly, the method returns an image that is scaled by the scalingfactor.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Collider Module}
+
+\subsection* {Uses}
+Entity
+Level
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+new Collider & Entity, Level & Collider & ---\\
+\hline
+checkX & --- & --- &\\
+\hline
+checkY & --- & --- &\\
+\hline
+rightLevelBorderReached & --- & $\mathbb{B}$ & ---\\
+\hline
+leftLevelBorderReached & --- & $\mathbb{B}$ & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+\begin{tabular}{lll}
+    entity: Entity & // & Entity to check collision for \\
+    level: list & // & list of objects to check for collidable objects \\
+    levelObj: Level & // & The level object itself
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Collider(entity, level):
+\begin{itemize}
+    \item transition: entity, levelObj, level := entity, level, level.level
+\end{itemize}
+
+checkX():
+\begin{itemize}
+    \item transition: Checks if entity is colliding with any level objects in the x direction. If so, it sets the entities horizontal velocity to 0, and updates the position of the entity so they are no longer colliding (if colliding on left, set x coordinate so that the objects are no longer intersecting).
+\end{itemize}
+
+checkY():
+\begin{itemize}
+    \item transition: Checks if entity is colliding with any level objects in the y direction. If so, it sets the entities vertical velocity to 0, and updates the position of the entity so they are no longer colliding (if colliding on top, set y coordinate so that the objects are no longer intersecting).
+\end{itemize}
+
+rightLevelBorderReached():
+\begin{itemize}
+    \item output: entity.x > level.levelLength $\Rightarrow$ True
+\end{itemize}
+
+leftLevelBorderReached():
+\begin{itemize}
+    \item output: entity.x < 0 $\Rightarrow$ True
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Animation Module}
+
+\subsection* {Uses}
+pygame.Surface
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Animation & List[Surface], Surface, Surface, $\mathbb{N}$ & Animation & ---\\
+\hline
+update & --- & --- & ---\\
+\hline
+idle & --- & --- & ---\\
+\hline
+inAir & --- & --- & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+\begin{tabular}{lll}
+    images: List[Surface] & // & Contains the images to be part of the animation sequence\\
+    timer: $\mathbb{N}$ & // & Keeps track of the time the animation has been going on\\
+    index: $\mathbb{N}$ & // & Keeps track of the index of the current frame from images\\
+    image: Surface & // & The current image in the animation\\
+    idleSprite: Surface & // & The default sprite when the animation is stopped\\
+    airSprite: Surface & // & The default sprite when an entity is in the air\\
+    deltaTime: $\mathbb{N}$ & // & The time it takes for the animation to complete a cycle\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Animation(images, idleSprite, airSprite, deltaTime):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item timer, index := 0, 0
+        \item images, image := images, images[index]
+        \item idleSprite, airSprite, deltaTime := idleSprite, airSprite, deltaTime
+    \end{itemize}
+\end{itemize}
+
+update():
+\begin{itemize}
+    \item transition:
+    \begin{itemize}[]
+        \item timer := timer + 1
+        \item \begin{tabular}{|l|l|}
+        \hline
+            timer \% deltaTime = 0 & \begin{tabular}{l}
+                index $< |$images$| - 1 \Rightarrow$ index := index + 1 \\
+                \hline
+                $\lnot$ index $< |$images$| - 1 \Rightarrow$ index := 0\\
+            \end{tabular}\\
+        \hline
+        \end{tabular}
+        \item image := images[index]\\
+    \end{itemize}
+\end{itemize}
+
+idle():
+\begin{itemize}
+    \item transition: image := idleSprite
+\end{itemize}
+
+inAir():
+\begin{itemize}
+    \item transition: image := airSprite
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Sprites Module}
+
+\subsection* {Uses}
+Spritesheet
+Animation
+pygame.Surface
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+new Sprites & --- & Sprites & ---\\
+\hline
+loadSprites & Sequence[string] & Map[string:Surface | Animation] & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+\begin{tabular}{lll}
+    spriteCollection: Map[string:Surface | Animation] & // & Contains the name of sprites mapped to their image
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Sprites():
+\begin{itemize}
+    \item transition: Initialize spriteCollection by calling loadSprites with a list of file paths.
+\end{itemize}
+
+loadSprites(file\_paths):
+\begin{itemize}
+    \item transition: Goes through each .json file (defined in file\_paths) and parses them. Creates a Spritesheet object, and using information in the json file, it calls Spritesheet.imageAt(...). It then updates resDict, and maps the name from the .json file to the image it gets from Spritesheet.imageAt(...). If the image is part of a sequence of images, then an Animation object is created with the sequence of images instead of a Surface. 
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Sprite Module}
+
+\subsection* {Uses}
+
+Animation
+pygame.Surface
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Sprite & Surface, $\mathbb{B}$ Animation, $\mathbb{B}$ & Sprite & ---\\
+\hline
+drawSprite & $\mathbb{N, N}$, Surface & --- & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+\hline
+image: Surface & // & Represents the sprite image
+\hline
+colliding: $\mathbb{B}$ & // & Represents the collision state of the sprite
+\hline
+animation: Animation & // & Represents an animation object, if it is not None
+\hline
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {?>??>?>? Module}
+
+\subsection* {Uses}
+Entity
+Level
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+\begin{tabular}{lll}
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section* {Game Board ADT Module}
+
+\subsection* {Uses}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+& & &\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+\subsubsection* {State Invariant}
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+\subsubsection* {Access Routine Semantics}
+
+\subsection*{Local Types}
+
+\subsection*{Local Functions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section {Menu Module}
+
+\subsection{Template Module}
+
+Menu(screen, dashboard, level)
+
+\subsection {Uses}
+
+animation - spritesheet
+dashboard
+levels
+display - screen
+settings.json
+
+\subsection {Syntax}
+
+\subsubsection {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new menu & screen, dashboard, level & menu & invalid\_argument\\
+\hline
+update & & & \\
+\hline
+draw\_dot & & & \\
+\hline
+load\_settings & string & & \\
+\hline
+save\_settings & string & & \\
+\hline
+draw\_menu & & & \\
+\hline
+draw\_menu\_background & & & \\
+\hline
+draw\_settings & & & \\
+\hline
+choose\_level & & & \\
+\hline
+draw\_border & $\mathbb{N}$, $\mathbb{N}$, $\mathbb{N}$, $\mathbb{N}$, set of $\mathbb{R}$, $\mathbb{N}$ & & \\
+\hline
+draw\_level\_chooser & & & \\
+\hline
+load\_level\_names & & list of strings & \\
+\hline
+check\_input & & & \\
+\hline
+\end{tabular}
+
+\subsection {Semantics}
+
+\subsubsection {State Variables}
+
+$screen$ : screen // from display module\\
+$start$ : $\mathbb{B}$ \\
+$in\_settings$: $\mathbb{B}$ \\
+$state$: $\mathbb{N}$ // Represents where in menu user is\\
+$level$: level // from level module\\
+$music$ : $\mathbb{B}$ \\
+$sfx$: $\mathbb{B}$ \\
+$current\_selected\_level$ : $\mathbb{N}$ // defaults to first level\\
+$level\_names$ : [] \\
+$in\_choosing\_level$ : $\mathbb{B}$ \\
+$dashboard$ : dashboard // from dashboard module\\
+$level\_count$ : $\mathbb{N}$ \\
+$spritesheet$ : $spritesheet$ from module Spritesheet \\
+$menu\_banner$ : obejct from $spritesheet$ \\
+$menu\_dot$ : object from $spritesheet$ \\
+$menu\_dot2$ : object from $spritesheet$
+
+\subsubsection {State Invariant}
+
+$spritesheet$ $\neq$ None \\
+$|level\_names|$ $\geq$  $current\_selected\_level$
+
+\subsubsection {Assumptions and Design Decisions}
+
+\begin{itemize}
+    \item None
+\end{itemize}
+
+\subsubsection {Access Routine Semantics}
+
+\noindent menu($\mathit{screen, dashboard, level}$):
+\begin{itemize}
+\item transition:
+\begin{itemize}
+    \item $screen$ := screen
+    \item $start$ : False
+    \item $in\_settings$: False
+    \item $state$: 0 // Represents where in menu user is
+    \item $level$: level // from level module
+    \item $music$ : True
+    \item $sfx$: True
+    \item $current\_selected\_level$ : 0
+    \item $level\_names$ : []
+    \item $in\_choosing\_level$ : False
+    \item $dashboard$ : dashboard
+    \item $level\_count$ : 0
+    \item $spritesheet$ : Spritesheet("./resources/img/title\_screen.png")
+    \item $menu\_banner$ :$spritesheet$.image\_at(0, 60, 2, colorkey=[255, 0, 220], ignoreTileSize=True, xTileSize=180, yTileSize=88)
+    \item $menu\_dot$ : $spritesheet$.image\_at(0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)
+    \item $menu\_dot2$ : $spritesheet$.image\_at(20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)
+    \item load\settings("./settings.json")
+\end{itemize}
+\item exception: $exc := (screen \equiv None \lor dashboard \equiv None \lor level \equiv None) \Rightarrow \text{invalid\_argument})$
+\end{itemize}
+
+\noindent update():
+\begin{itemize}
+\item transition: first check inputs using $check\_input$ before:
+
+\begin{tabular}{|l|l|}
+\hline
+$in\_choosing\_level$ \equiv True & exit \\
+\hline
+$in\_choosing\_level$ \equiv False & $draw\_menu\_background$, update $dashboard$\\
+\hline
+$in\_choosing\_level$ \equiv False & $draw\_menu$\\
+\land $ in\_settings $ \equiv False & \\
+\hline
+$in\_choosing\_level$ \equiv False & $draw\_settings$\\
+\land $ in\_settings $ \equiv True & \\
+\hline
+\end{tabular}
+
+\item exception: None
+\end{itemize}
+
+\noindent draw\_dot():
+\begin{itemize}
+\item transition: 
+
+\begin{tabular}{|l|l|}
+\hline
+$state \equiv 0$ & $screen$.blit($menu\_dot$, (145, 273))\\
+ & $screen$.blit($menu\_dot2$, (145, 313)) \\
+ & $screen$.blit($menu\_dot2$, (145, 353)) \\
+\hline
+$state \equiv 1$ & $screen$.blit($menu\_dot$, (145, 313)) \\
+ & $screen$.blit($menu\_dot2$, (145, 273)) \\
+ & $screen$.blit($menu\_dot2$, (145, 353)) \\
+\hline
+$state \equiv 2$ & $screen$.blit($menu\_dot$, (145, 353)) \\
+ & $screen$.blit($menu\_dot2$, (145, 273)) \\
+ & $screen$.blit($menu\_dot2$, (145, 313)) \\
+\hline
+\end{tabular}
+
+\item exception: None
+\end{itemize}
+
+\noindent load\_settings(string):
+\begin{itemize}
+\item transition: open $url$ and use json.load to create required $data$
+
+\begin{tabular}{|p{5cm}|l|}
+\hhline{|-|-|}
+$data$ \equiv "sound" & $music$ = True, \\
+ & $SOUND\_CONTROLLER$.unmute\_music(), \\
+ & $SOUND\_CONTROLLER$.play\_music($SOUNDTRACK$)\\
+\hhline{|-|-|}
+$data$ \neq "sound" & $music$ = False, $SOUND\_CONTROLLER$.mute\_music() \\
+\hhline{|-|-|}
+$data$ \equiv "sfx" & $sfx$ = True, $SOUND\_CONTROLLER$.unmute\_sfx() \\
+\hhline{|-|-|}
+$data$ \neq "sfx" & $sfx$ = False, $SOUND\_CONTROLLER$.mute\_sfx() \\
+\hhline{|-|-|}
+\end{tabular}
+
+\item exception: $IOError \lor OSError \Rightarrow music = False \land sfx = False \land \\ SOUND\_CONTROLLER.mute\_music() \land SOUND\_CONTROLLER.mute\_sfx() \land save\_settings("./settings.json")$
+\end{itemize}
+
+\noindent save\_settings(string):
+\begin{itemize}
+\item transition: create a dictionary for $music$ and $sfx$ before using $json.dump$
+
+\item exception: None
+\end{itemize}
+
+\noindent draw\_menu():
+\begin{itemize}
+\item transition:\\
+$draw\_dot()$\\
+The options "CHOOSE LEVEL", "SETTINGS", "EXIT" are written on the dashboard.
+
+\item exception: None
+\end{itemize}
+
+\noindent draw\_menu\_background():
+\begin{itemize}
+\item transition: \\
+$(\forall y : \mathbb{N}|y \in [0..13] : \forall x : (\mathbb{N}|x \in [0..20] : screen.blit(self.level.sprites.spriteCollection.get("sky").image, \\
+(x * 32, y * 32)))$
+
+$(\forall y : \mathbb{N}|y \in [13..15] : \forall x : (\mathbb{N}|x \in [0..20] : screen.blit\\
+(self.level.sprites.spriteCollection.get("ground").image,
+(x * 32, y * 32)))$
+
+Using the function $blit$ from the module screen, the banner, mario and goomba icons and the bushes are placed on the menu background.
+
+\item exception: None
+\end{itemize}
+
+\noindent draw\_settings():
+\begin{itemize}
+\item transition: \\
+$draw\_dot()$\\
+
+In the settings menu, writes using the dashboard method $draw\_text$ to write the words "MUSIC", "SFX" and "BACK" as well as:
+
+\begin{tabular}{|l|l|}
+\hline
+$music$ \equiv True & "ON" \\
+\hline
+$music$ \equiv False & "OFF" \\
+\hline
+$sfx$ \equiv True & "ON" \\
+\hline
+$sfx$ \equiv False & "OFF" \\
+\hline
+\end{tabular}
+
+\item exception: None
+
+\end{itemize}
+
+\noindent choose\_level():
+\begin{itemize}
+\item transition: \\
+$draw\_menu\_background(False)$ \land $in_choosing_level = True \land level\_names = load\_level\_names() \land draw\_level\_chooser()$
+
+\item exception: None
+
+\end{itemize}
+
+\noindent draw\_level\_chooser():
+\begin{itemize}
+\item transition: Using data from $load\_level\_names$, each level is titled and drawn as a button in the correct location in the menu.
+
+\item exception: None
+
+\end{itemize}
+
+\noindent load\_level\_names():
+\begin{itemize}
+\item output: Loads level names from the file in "./resources/levels" and returns them into a list.
+\item transition: Updates $level\_count$ to equal the length of the created list.
+
+\item exception: None
+
+\end{itemize}
+
+\noindent check\_input():
+\begin{itemize}
+\item transition: Uses $pygame.event$ to collect all the user's inputs and place them into $events$, after which the type of event in sequence is funnelled into a state machine using a for statement composed of if statements:
+
+\begin{longtable}{|l|l|}
+\hline
+$event.type$ \equiv $pygame.QUIT$ & $pygame.quit(), sys.exit()$ \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $in\_choosing\_level = False, in\_settings = False, $\\
+$event.key \equiv pygame.K\_ESCAPE$ \land & re-initialize $screen, dashboard, level$ \\
+$(in\_choosing\_level \equiv True \lor in\_settings \equiv True$ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $pygame.quit(), sys.exit()$\\
+$event.key \equiv pygame.K\_ESCAPE$ \land & \\
+$(in\_choosing\_level \equiv False \lor in\_settings \equiv False$ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $current\_selected\_level -= 3, draw\_level\_chooser$ \\
+$event.key \equiv pygame.K\_UP \land $ & \\
+$(in\_choosing\_level \equiv True \land $ & \\
+$current\_selected\_level > 3 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $state -= 1$\\
+$event.key \equiv pygame.K\_UP \land $ & \\
+$state > 0 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $current\_selected\_level += 3, draw\_level\_chooser$\\
+$event.key \equiv pygame.K\_DOWN \land $ & \\
+$(in\_choosing\_level \equiv True \land $ & \\
+$current\_selected\_level+3 <= level\_count $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $state += 1$\\
+$event.key \equiv pygame.K\_DOWN \land $ & \\
+$state < 2 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $current\_selected\_level -= 1, draw\_level\_chooser$\\
+$event.key \equiv pygame.K\_LEFT \land $ & \\
+$current\_selected\_level > 1 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $current\_selected\_level += 1, draw\_level\_chooser$ \\
+$event.key \equiv pygame.K\_RIGHT \land $ & \\
+$current\_selected\_level < level\_count $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $in\_choosing\_level = False, dashboard.state = "start",$\\
+$event.key \equiv pygame.K\_RETURN \land $ & $dashboard.time = 420, $\\
+$(in\_choosing\_level \equiv True $ & $level.load\_level(level\_names[$\\
+ & $current\_selected\_level-1]),$ \\
+ & $dashboard.level\_name = level\_names[$ \\
+ & $current\_selected\_level -1].split("Level")[1],$ \\
+ & $start = True$, EXIT \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $choose\_level()$\\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv False \land state \equiv 0 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $in\_settings = True, state = 0$\\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv False \land state \equiv 1 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $pygame.quit(), sys.exit()$\\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv False \land state \equiv 2 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $music = False, $ \\
+$event.key \equiv pygame.K\_RETURN \land $ & $SOUND\_CONTROLLER.stop\_music()$\\
+$(in\_settings \equiv True \land state \equiv 0 $ & \\
+$\land music \equiv True$ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $music = TRUE, $ \\
+$event.key \equiv pygame.K\_RETURN \land $ & $SOUND\_CONTROLLER.play\_music($\\
+$(in\_settings \equiv True \land state \equiv 0 $ & $SOUNDTRACK)$\\
+$\land music \equiv False$ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $save\_settings("./settings.json")$ \\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv True \land state \equiv 0 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $sfx = False, SOUND\_CONTROLLER.mute\_sfx()$\\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv True \land state \equiv 1 $ & \\
+$\land sfx \equiv True$ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $sfx = True, SOUND\_CONTROLLER.unmute\_sfx()$\\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv True \land state \equiv 1 $ & \\
+$\land sfx \equiv False$ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $save\_settings("./settings.json")$\\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv True \land state \equiv 1 $ & \\
+\hline
+$event.type$ \equiv $pygame.KEYDOWN$ \land & $in\_settings = False$\\
+$event.key \equiv pygame.K\_RETURN \land $ & \\
+$(in\_settings \equiv True \land state \equiv 2 $ & \\
+\hline
+\end{longtable}
+
+After the state machine runs through, and if it doesn't exit the method during execution, the display is updated using $pygame.display.update()$.
+\item exception: None
+
+\end{itemize}
+
+\subsection {Local Types}
+
+None
+
+\subsection {Local Functions}
+
+None
+
+\newpage
+
+\section {Dashboard Module}
+
+\subsection{Template Module}
+
+dashboard
+
+\subsection {Uses}
+
+display - screen
+Mario
+
+\subsection {Syntax}
+
+\subsubsection {Exported Constants}
+
+None
+
+\subsubsection {Exported Types}
+
+None
+
+\subsubsection {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Dashboard & screen, $\mathbb{N}$ & Dashboard & invalidArgument\\
+\hline
+update & & & \\
+\hline
+draw\_text & string, $\mathbb{N}$, $\mathbb{N}$, $\mathbb{N}$ & & \\
+\hline
+coin\_string & & string & \\
+\hline
+point\_string & & string & \\
+\hline
+time\_string & & string & \\
+\hline
+\end{tabular}
+
+\subsection {Semantics}
+
+\subsubsection {State Variables}
+
+$state$ : string \\
+$screen$ : instance of type screen \\
+$level\_name$ : string \\
+$points$ : $\mathbb{N}$ \\
+$coins$ : $\mathbb{N}$ \\
+$ticks$ : $\mathbb{N}$ \\
+$time$ : $\mathbb{N}$ \\
+$lives$: $\mathbb{N}$
+
+
+\subsubsection {State Invariant}
+\begin{itemize}
+    \item $time \leq 420$
+    \item $coins \geq 0$
+    \item $points \geq 0$
+    \item $1 \leq lives \leq 3$
+\end{itemize}
+
+\subsubsection {Assumptions and Design Decisions}
+
+None
+
+\subsubsection {Access Routine Semantics}
+
+\noindent dashboard(screen, size):
+\begin{itemize}
+    \item transition:
+    $state$ = "menu" \\
+    $screen$ = screen \\
+    $level\_name$ = "" //empty string \\
+    $points$ = 0 \\
+    $coins$ = 0 \\
+    $ticks$ = 0 \\
+    $time$ = 420 \\
+    $lives$ = $Mario.get_lives()$ \\
+    \item exception: $exc := screen \equiv None \Rightarrow invalidArguemnt$
+\end{itemize}
+
+\noindent update():
+\begin{itemize}
+    \item transition: Uses the methods $draw\_text$ to write the words "MARIO", "WORLD", "TIME" as well using $coin\_string, point\_string, time\_string$ to write the official values of coin, point and time. The official value of time is only written when $state \neq$ "menu". Upon the player losing a life, the $lives$ state variable is updated by $lives = Mario.get_lives().$ Lastly, this method also updates the time value:
+
+    \begin{tabular}{|l|l|}
+    \hline
+    $True$ & $ticks += 1$ \\
+    \hline
+    $ticks$ \equiv 60 & $ticks$ = 0, $time -= 1$ \\
+    \hline
+    \end{tabular}
+    
+    \item exception: None
+\end{itemize}
+
+\noindent draw\_text(text, x, y, size):
+\begin{itemize}
+    \item transition: $(\forall char \in text : char\_sprite = pygame.transform.scale(FONT\_SPRITES[char], (size, size)) \land screen.blit(char\_sprite, (x,y)) \land $
+    \begin{tabular}{|l|l|}
+    \hline
+    $char \equiv$ " " & $x += size//2$ \\
+    \hline
+    $char \neq $ " " & $x += size$ \\
+    \hline
+    \end{tabular}
+    )
+    
+    \item exception: None
+\end{itemize}
+
+\noindent coin\_string():
+\begin{itemize}
+    \item output: "\{:02d\}".format($coins$)
+    
+    \item exception: None
+\end{itemize}
+
+\noindent point\_string():
+\begin{itemize}
+    \item output: "\{:06d\}".format($points$)
+    
+    \item exception: None
+\end{itemize}
+
+\noindent time\_string():
+\begin{itemize}
+    \item output: "\{:03d\}".format($time$)
+    
+    \item exception: None
+\end{itemize}
+
+\subsection {Local Types}
+
+None
+
+\subsection {Local Functions}
+
+None
+
+\newpage
+
+\section {Pause Module}
+
+\subsection{Template Module}
+
+Pause
+
+\subsection {Uses}
+
+animation - spritesheet \\
+dashboard \\
+entity \\
+display - screen \\
+menu \\
+
+\subsection {Syntax}
+
+\subsubsection {Exported Constants}
+
+None
+
+\subsubsection {Exported Types}
+
+None
+
+\subsubsection {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Pause & $screen, entity, dashboard$ & Pause & invalidArgument\\
+\hline
+update & & & \\
+\hline
+draw\_dot & & & \\
+\hline
+check\_input & & & \\
+\hline
+create\_background\_blur & & & \\
+\hline
+\end{tabular}
+
+\subsection {Semantics}
+
+\subsubsection {State Variables}
+
+$screen$ : instance of type screen \\
+$entity$ : instance of type entity \\
+$dashboard$ : instance of type dashboard\\
+$state$ : $\mathbb{N}$ \\
+$spritesheet$ : value of $Spritesheet()$ \\
+$pause\_srfc$ : value of $GaussianBlur()$ \\
+$dot$ : instance of $spritesheet$ \\
+$gray\_dot$ : instance of $spritesheet$ \\
+
+\subsubsection {State Invariant}
+
+\begin{itemize}
+    \item $0 \leq state \leq 1$
+\end{itemize}
+
+\subsubsection {Assumptions and Design Decisions}
+
+None
+
+\subsubsection {Access Routine Semantics}
+
+\noindent pause(screen, entity, dashboard):
+\begin{itemize}
+    \item transition: 
+    $screen$ : screen \\
+    $entity$ : entity \\
+    $dashboard$ : dashboard\\
+    $state$ : 0 \\
+    $spritesheet$ : $Spritesheet("./resources/img/title\_screen.png")$ \\
+    $pause\_srfc$ : $GaussianBlur().filter(screen, 0, 0, 640, 480)$ \\
+    $dot$ : $spritesheet.image\_at(0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)$ \\
+    $gray\_dot$ : $spritesheet.image\_at(20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)$ \\
+    
+    \item exception: $exc := screen \equiv None \lor entity \equiv None \lor dashboard \equiv None \Rightarrow invalidArgument$
+\end{itemize}
+
+\noindent update():
+\begin{itemize}
+    \item transition: Creates the pause menu over top of the game play screen using $pause\_srfc$ which blurs the background. The words "PAUSED", "CONTINUE" and "BACK TO MENU" are written on the screen, respectively top to bottom, and dots are placed to determine where the selector is. 
+    
+    \item exception: None
+\end{itemize}
+
+\noindent draw\_dot():
+\begin{itemize}
+    \item transition:
+    
+    \begin{tabular}{|l|l|}
+    \hline
+    $state \equiv 0$ & $grey\_dot$ placed beside lower option, \\
+     & $dot$ placed beside upper \\
+    \hline
+    $state \equiv 1$ \equiv 60 & $grey\_dot$ placed beside upper option, \\
+     & $dot$ placed beside upper \\
+    \hline
+    \end{tabular}
+    
+    \item exception: None
+\end{itemize}
+
+\noindent check\_input():
+\begin{itemize}
+    \item transition: Uses $pygame.event$ to collect all the user's inputs and place them into $events$, after which the type of event in sequence is funnelled into a state machine using a for statement composed of if statements:
+    
+    \begin{tabular}{|l|l|}
+    \hline
+    $event.type \equiv pygame.QUIT$ & $pygame.quit(), sys.exit()$ \\
+    \hline
+    $event.type \equiv pygame.KEYDOWN \land$ & $entity.pause = False$ \\
+    $event.key \equiv pygame.K\_RETURN \land$ & \\
+    $state \equiv 0$ &*\\
+    \hline
+    $event.type \equiv pygame.KEYDOWN \land$ & $entity.restart = True$ \\
+    $event.key \equiv pygame.K\_RETURN \land$ & \\
+    $state \equiv 1$ & \\
+    \hline
+    $event.type \equiv pygame.KEYDOWN \land$ & $state -= 1$ \\
+    $event.key \equiv pygame.K\_UP \land$ & \\
+    $state > 0$ & \\
+    \hline
+    $event.type \equiv pygame.KEYDOWN \land$ & $state += 1$ \\
+    $event.key \equiv pygame.K\_DOWN \land$ & \\
+    $state < 1$ & \\
+    \hline
+    \end{tabular}
+    
+    \item exception: None
+\end{itemize}
+
+\noindent create\_background\_blur():
+\begin{itemize}
+    \item transition: $pause\_srfc = GaussianBlur().filter(self.screen, 0, 0, 640, 480)$
+    
+    \item exception: None
+\end{itemize}
+
+\subsection {Local Types}
+
+None
+
+\subsection {Local Functions}
+
+None
+
+\newpage
+
+\section {levels.json Module}
+
+\subsection{Template Module}
+
+levels.json
+
+\subsection {Description}
+
+This is a document that contains the outlines of where different entities such as ground blocks or item boxes or sky etc. will be placed for a given level. This document is used to create the levels upon level initialization and menu initialization.
+
+\end {document}
+
