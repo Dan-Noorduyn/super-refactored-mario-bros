@@ -56,7 +56,6 @@ def _load_font(font_path: str):
     return font
 
 pygame.init()
-pygame.display.init()
 
 WINDOW_SIZE: tuple = (640, 480)
 SCREEN: pygame.Surface = pygame.display.set_mode(WINDOW_SIZE)
@@ -64,3 +63,11 @@ SCREEN: pygame.Surface = pygame.display.set_mode(WINDOW_SIZE)
 _CHARS: str = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 _FONT_PATH: str = "./resources/img/font.png"
 FONT_SPRITES: dict = _load_font(_FONT_PATH)
+FONT_SIZE: int = 8
+
+# rect1 = pygame.Rect(0, 0, 32, 32)
+# surf1 = pygame.Surface()
+# pygame.Surface.
+
+# sleep(10)
+# pygame.display.quit()

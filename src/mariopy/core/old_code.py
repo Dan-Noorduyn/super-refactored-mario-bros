@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from copy import copy
+from itertools import chain
 from random import randint
 
 import pygame
@@ -63,47 +64,38 @@ class Collider:
     def checkX(self):
         if self.leftLevelBorderReached() or self.rightLevelBorderReached():
             return
-        # try:
-        rows = [
-            self.level[self.entity.getPosIndex().get_x()],
-            self.level[self.entity.getPosIndex().get_y() + 1],
+        x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
+
+        r_x, r_y = self.entity.rect.x, self.entity.rect.y
+        w, h = self.entity.rect.w, self.entity.rect.h
+
+        tiles = [
+            self.level[y - 1][x - 1], self.level[y - 1][x], self.level[y - 1][x + 1],
+            self.level[y][x - 1], self.level[y][x], self.level[y][x + 1],
+            self.level[y + 1][x - 1], self.level[y + 1][x], self.level[y + 1][x + 1],
         ]
-        # except Exception:
-            # return
-        for row in rows:
-            tiles = row[self.entity.getPosIndex().get_x() : self.entity.getPosIndex().get_x() + 2]
-            for tile in tiles:
+
+        def _get_pos_idx(x, t):
+            return int((x + t) / 32)
+
+        self.entity.onGround = False
+
+        for col in self.level[y - 1 : _get_pos_idx(r_y, h) + 1]:
+            print(col)
+            for tile in col[x - 1 : _get_pos_idx(r_x, w) + 1]:
+                print(tile)
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
                         if self.entity.vel.get_x() > 0:
-                            self.entity.rect.right = tile.rect.left
-                            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
+                            self.entity.rect.x = int(tile.rect.x - w)
+                            self.entity.vel.set_x(0)
                         if self.entity.vel.get_x() < 0:
-                            self.entity.rect.left = tile.rect.right
-                            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
-
-    def checkY(self):
-        self.entity.onGround = False
-        # try:
-        rows = [
-            self.level[self.entity.getPosIndex().get_x()],
-            self.level[self.entity.getPosIndex().get_y() + 1],
-        ]
-        # except Exception:
-            # try:
-                # self.entity.gameOver()
-            # except Exception:
-                # self.entity.alive = None
-            # return
-        for row in rows:
-            tiles = row[self.entity.getPosIndex().get_x() : self.entity.getPosIndex().get_x() + 2]
-            for tile in tiles:
-                if tile.rect is not None:
-                    if self.entity.rect.colliderect(tile.rect):
+                            self.entity.rect.x = round(tile.rect.x + w)
+                            self.entity.vel.set_x(0)
                         if self.entity.vel.get_y() > 0:
                             self.entity.onGround = True
-                            self.entity.rect.bottom = tile.rect.top
-                            self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
+                            self.entity.rect.y = int(tile.rect.y - h)
+                            self.entity.vel.set_y(0)
                             # reset jump on bottom
                             if self.entity.traits is not None:
                                 if "jumpTrait" in self.entity.traits:
@@ -111,26 +103,47 @@ class Collider:
                                 if "bounceTrait" in self.entity.traits:
                                     self.entity.traits["bounceTrait"].reset()
                         if self.entity.vel.get_y() < 0:
-                            self.entity.rect.top = tile.rect.bottom
-                            self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
+                            self.entity.rect.y = round(tile.rect.y + h)
+                            self.entity.vel.set_y(0)
+
+    def checkY(self):
+        self.entity.onGround = False
+        x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
+        tiles = [LEVEL[y - 1][x], LEVEL[y][x], LEVEL[y + 1][x]]
+
+        for tile in tiles:
+            if tile.rect is not None:
+                if self.entity.rect.colliderect(tile.rect):
+                    if self.entity.vel.get_y() > 0:
+                        self.entity.onGround = True
+                        self.entity.rect.y = round(tile.rect.y - self.entity.rect.h)
+                        self.entity.vel.set_y(0)
+                        # reset jump on bottom
+                        if self.entity.traits is not None:
+                            if "jumpTrait" in self.entity.traits:
+                                self.entity.traits["jumpTrait"].reset()
+                            if "bounceTrait" in self.entity.traits:
+                                self.entity.traits["bounceTrait"].reset()
+                    if self.entity.vel.get_y() < 0:
+                        self.entity.rect.y = tile.rect.bottom
+                        self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
 
     def rightLevelBorderReached(self):
         if self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1:
             self.entity.rect.x = (self.levelObj.levelLength - 1) * 32
-            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
+            self.entity.vel.set_x(0)
             return True
 
     def leftLevelBorderReached(self):
         if self.entity.rect.x < 0:
             self.entity.rect.x = 0
-            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
+            self.entity.vel.set_x(0)
             return True
 
 class Dashboard():
-    def __init__(self, screen, size):
+    def __init__(self):
         self.state = "menu"
-        self.screen = screen
-        self.levelName = ""
+        LEVELName = ""
         self.points = 0
         self.coins = 0
         self.ticks = 0
@@ -143,7 +156,7 @@ class Dashboard():
         self.drawText("@x{}".format(self.coinString()), 225, 37, 15)
 
         self.drawText("WORLD", 380, 20, 15)
-        self.drawText(str(self.levelName), 395, 37, 15)
+        self.drawText(str(LEVELName), 395, 37, 15)
 
         self.drawText("TIME", 520, 20, 15)
         if self.state != "menu":
@@ -158,7 +171,7 @@ class Dashboard():
     def drawText(self, text, x, y, size):
         for char in text:
             charSprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
-            self.screen.blit(charSprite, (x, y))
+            SCREEN.blit(charSprite, (x, y))
             if char == " ":
                 x += size//2
             else:
@@ -273,12 +286,10 @@ class Input:
         return pygame.mouse.get_pressed()[2]
 
 class Level:
-    def __init__(self, screen, dashboard):
+    def __init__(self):
         self.sprites = Sprites()
-        self.dashboard = dashboard
-        self.screen = screen
-        self.level = None
-        self.levelLength = 0
+        LEVEL = None
+        LEVELLength = 0
         self.entityList = []
 
     def loadLevel(self, levelname):
@@ -287,7 +298,7 @@ class Level:
             self.loadLayers(data)
             self.loadObjects(data)
             self.loadEntities(data)
-            self.levelLength = data["length"]
+            LEVELLength = data["length"]
 
     def loadEntities(self, data):
         try:
@@ -317,7 +328,7 @@ class Level:
                     ]
                 )
             )
-        self.level = list(map(list, zip(*layers)))
+        LEVEL = list(map(list, zip(*layers)))
 
     def loadObjects(self, data):
         for x, y in data["level"]["objects"]["bush"]:
@@ -327,9 +338,9 @@ class Level:
         for x, y, z in data["level"]["objects"]["pipe"]:
             self.addPipeSprite(x, y, z)
         for x, y in data["level"]["objects"]["sky"]:
-            self.level[y][x] = Tile(self.sprites.spriteCollection.get("sky"), None)
+            LEVEL[y][x] = Tile(self.sprites.spriteCollection.get("sky"), None)
         for x, y in data["level"]["objects"]["ground"]:
-            self.level[y][x] = Tile(
+            LEVEL[y][x] = Tile(
                 self.sprites.spriteCollection.get("ground"),
                 pygame.Rect(x * 32, y * 32, 32, 32),
             )
@@ -344,14 +355,14 @@ class Level:
         try:
             for y in range(0, 15):
                 for x in range(0 - int(camera.pos.get_x() + 1), 20 - int(camera.pos.get_x() - 1)):
-                    if self.level[y][x].sprite is not None:
-                        if self.level[y][x].sprite.redrawBackground:
-                            self.screen.blit(
+                    if LEVEL[y][x].sprite is not None:
+                        if LEVEL[y][x].sprite.redrawBackground:
+                            SCREEN.blit(
                                 self.sprites.spriteCollection.get("sky").image,
                                 ((x + camera.pos.get_x()) * 32, y * 32),
                             )
-                        self.level[y][x].sprite.drawSprite(
-                            x + camera.pos.get_x(), y, self.screen
+                        LEVEL[y][x].sprite.drawSprite(
+                            x + camera.pos.get_x(), y, SCREEN
                         )
             self.updateEntities(camera)
         except IndexError:
@@ -361,7 +372,7 @@ class Level:
         try:
             for yOff in range(0, 2):
                 for xOff in range(0, 3):
-                    self.level[y + yOff][x + xOff] = Tile(
+                    LEVEL[y + yOff][x + xOff] = Tile(
                         self.sprites.spriteCollection.get(
                             "cloud{}_{}".format(yOff + 1, xOff + 1)
                         ),
@@ -373,21 +384,21 @@ class Level:
     def addPipeSprite(self, x, y, length=2):
         try:
             # add Pipe Head
-            self.level[y][x] = Tile(
+            LEVEL[y][x] = Tile(
                 self.sprites.spriteCollection.get("pipeL"),
                 pygame.Rect(x * 32, y * 32, 32, 32),
             )
-            self.level[y][x + 1] = Tile(
+            LEVEL[y][x + 1] = Tile(
                 self.sprites.spriteCollection.get("pipeR"),
                 pygame.Rect((x + 1) * 32, y * 32, 32, 32),
             )
             # add pipe Body
             for i in range(1, length + 20):
-                self.level[y + i][x] = Tile(
+                LEVEL[y + i][x] = Tile(
                     self.sprites.spriteCollection.get("pipe2L"),
                     pygame.Rect(x * 32, (y + i) * 32, 32, 32),
                 )
-                self.level[y + i][x + 1] = Tile(
+                LEVEL[y + i][x + 1] = Tile(
                     self.sprites.spriteCollection.get("pipe2R"),
                     pygame.Rect((x + 1) * 32, (y + i) * 32, 32, 32),
                 )
@@ -396,56 +407,53 @@ class Level:
 
     def addBushSprite(self, x, y):
         try:
-            self.level[y][x] = Tile(self.sprites.spriteCollection.get("bush_1"), None)
-            self.level[y][x + 1] = Tile(
+            LEVEL[y][x] = Tile(self.sprites.spriteCollection.get("bush_1"), None)
+            LEVEL[y][x + 1] = Tile(
                 self.sprites.spriteCollection.get("bush_2"), None
             )
-            self.level[y][x + 2] = Tile(
+            LEVEL[y][x + 2] = Tile(
                 self.sprites.spriteCollection.get("bush_3"), None
             )
         except IndexError:
             return
 
     def addRandomBox(self, x, y):
-        self.level[y][x] = Tile(None, pygame.Rect(x * 32, y * 32 - 1, 32, 32))
+        LEVEL[y][x] = Tile(None, pygame.Rect(x * 32, y * 32 - 1, 32, 32))
         self.entityList.append(
             RandomBox(
-                self.screen,
+                SCREEN,
                 self.sprites.spriteCollection,
                 x,
                 y,
-                self.dashboard,
+                DASHBOARD,
             )
         )
 
     def addCoin(self, x, y):
-        self.entityList.append(Coin(self.screen, self.sprites.spriteCollection, x, y))
+        self.entityList.append(Coin(SCREEN, self.sprites.spriteCollection, x, y))
 
     def addGoomba(self, x, y):
         self.entityList.append(
-            Goomba(self.screen, self.sprites.spriteCollection, x, y, self)
+            Goomba(SCREEN, self.sprites.spriteCollection, x, y, self)
         )
 
     def addKoopa(self, x, y):
         self.entityList.append(
-            Koopa(self.screen, self.sprites.spriteCollection, x, y, self)
+            Koopa(SCREEN, self.sprites.spriteCollection, x, y, self)
         )
 
 class Menu:
-    def __init__(self, screen, dashboard, level):
-        self.screen = screen
+    def __init__(self):
         self.start = False
         self.inSettings = False
         self.state = 0
-        self.level = level
         self.music = True
         self.sfx = True
         self.currSelectedLevel = 1
         self.levelNames = []
         self.inChoosingLevel = False
-        self.dashboard = dashboard
         self.levelCount = 0
-        self.spritesheet = Spritesheet("./resources/img/title_screen.png")
+        self.spritesheet = Spritesheet("./resources/img/title_SCREEN.png")
         self.menu_banner = self.spritesheet.image_at(
             0,
             60,
@@ -463,13 +471,17 @@ class Menu:
         )
         self.loadSettings("./settings.json")
 
+    def run(self):
+        while not self.start:
+            self.update()
+
     def update(self):
         self.checkInput()
         if self.inChoosingLevel:
             return
 
         self.drawMenuBackground()
-        self.dashboard.update()
+        DASHBOARD.update()
 
         if not self.inSettings:
             self.drawMenu()
@@ -478,17 +490,17 @@ class Menu:
 
     def drawDot(self):
         if self.state == 0:
-            self.screen.blit(self.menu_dot, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 313))
-            self.screen.blit(self.menu_dot2, (145, 353))
+            SCREEN.blit(self.menu_dot, (145, 273))
+            SCREEN.blit(self.menu_dot2, (145, 313))
+            SCREEN.blit(self.menu_dot2, (145, 353))
         elif self.state == 1:
-            self.screen.blit(self.menu_dot, (145, 313))
-            self.screen.blit(self.menu_dot2, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 353))
+            SCREEN.blit(self.menu_dot, (145, 313))
+            SCREEN.blit(self.menu_dot2, (145, 273))
+            SCREEN.blit(self.menu_dot2, (145, 353))
         elif self.state == 2:
-            self.screen.blit(self.menu_dot, (145, 353))
-            self.screen.blit(self.menu_dot2, (145, 273))
-            self.screen.blit(self.menu_dot2, (145, 313))
+            SCREEN.blit(self.menu_dot, (145, 353))
+            SCREEN.blit(self.menu_dot2, (145, 273))
+            SCREEN.blit(self.menu_dot2, (145, 313))
 
     def loadSettings(self, url):
         try:
@@ -522,71 +534,71 @@ class Menu:
 
     def drawMenu(self):
         self.drawDot()
-        self.dashboard.drawText("CHOOSE LEVEL", 180, 280, 24)
-        self.dashboard.drawText("SETTINGS", 180, 320, 24)
-        self.dashboard.drawText("EXIT", 180, 360, 24)
+        DASHBOARD.drawText("CHOOSE LEVEL", 180, 280, 24)
+        DASHBOARD.drawText("SETTINGS", 180, 320, 24)
+        DASHBOARD.drawText("EXIT", 180, 360, 24)
 
     def drawMenuBackground(self, withBanner=True):
         for y in range(0, 13):
             for x in range(0, 20):
-                self.screen.blit(
-                    self.level.sprites.spriteCollection.get("sky").image,
+                SCREEN.blit(
+                    LEVEL.sprites.spriteCollection.get("sky").image,
                     (x * 32, y * 32),
                 )
         for y in range(13, 15):
             for x in range(0, 20):
-                self.screen.blit(
-                    self.level.sprites.spriteCollection.get("ground").image,
+                SCREEN.blit(
+                    LEVEL.sprites.spriteCollection.get("ground").image,
                     (x * 32, y * 32),
                 )
         if(withBanner):
-            self.screen.blit(self.menu_banner, (150, 80))
-        self.screen.blit(
-            self.level.sprites.spriteCollection.get("mario_idle").image,
+            SCREEN.blit(self.menu_banner, (150, 80))
+        SCREEN.blit(
+            LEVEL.sprites.spriteCollection.get("mario_idle").image,
             (2 * 32, 12 * 32),
         )
-        self.screen.blit(
-            self.level.sprites.spriteCollection.get("bush_1").image, (14 * 32, 12 * 32)
+        SCREEN.blit(
+            LEVEL.sprites.spriteCollection.get("bush_1").image, (14 * 32, 12 * 32)
         )
-        self.screen.blit(
-            self.level.sprites.spriteCollection.get("bush_2").image, (15 * 32, 12 * 32)
+        SCREEN.blit(
+            LEVEL.sprites.spriteCollection.get("bush_2").image, (15 * 32, 12 * 32)
         )
-        self.screen.blit(
-            self.level.sprites.spriteCollection.get("bush_2").image, (16 * 32, 12 * 32)
+        SCREEN.blit(
+            LEVEL.sprites.spriteCollection.get("bush_2").image, (16 * 32, 12 * 32)
         )
-        self.screen.blit(
-            self.level.sprites.spriteCollection.get("bush_2").image, (17 * 32, 12 * 32)
+        SCREEN.blit(
+            LEVEL.sprites.spriteCollection.get("bush_2").image, (17 * 32, 12 * 32)
         )
-        self.screen.blit(
-            self.level.sprites.spriteCollection.get("bush_3").image, (18 * 32, 12 * 32)
+        SCREEN.blit(
+            LEVEL.sprites.spriteCollection.get("bush_3").image, (18 * 32, 12 * 32)
         )
-        self.screen.blit(self.level.sprites.spriteCollection.get("goomba-1").image,(18.5*32,12*32))
+        SCREEN.blit(LEVEL.sprites.spriteCollection.get("goomba-1").image,(18.5*32,12*32))
 
     def drawSettings(self):
         self.drawDot()
-        self.dashboard.drawText("MUSIC", 180, 280, 24)
+        DASHBOARD.drawText("MUSIC", 180, 280, 24)
         if self.music:
-            self.dashboard.drawText("ON", 340, 280, 24)
+            DASHBOARD.drawText("ON", 340, 280, 24)
         else:
-            self.dashboard.drawText("OFF", 340, 280, 24)
-        self.dashboard.drawText("SFX", 180, 320, 24)
+            DASHBOARD.drawText("OFF", 340, 280, 24)
+        DASHBOARD.drawText("SFX", 180, 320, 24)
         if self.sfx:
-            self.dashboard.drawText("ON", 340, 320, 24)
+            DASHBOARD.drawText("ON", 340, 320, 24)
         else:
-            self.dashboard.drawText("OFF", 340, 320, 24)
-        self.dashboard.drawText("BACK", 180, 360, 24)
+            DASHBOARD.drawText("OFF", 340, 320, 24)
+        DASHBOARD.drawText("BACK", 180, 360, 24)
 
     def chooseLevel(self):
         self.drawMenuBackground(False)
         self.inChoosingLevel = True
-        self.levelNames = self.loadLevelNames()
+        LEVELNames = self.loadLevelNames()
         self.drawLevelChooser()
 
     def drawBorder(self,x,y,width,height,color,thickness):
-        pygame.draw.rect(self.screen,color,(x,y,width,thickness))
-        pygame.draw.rect(self.screen,color,(x,y+width,width,thickness))
-        pygame.draw.rect(self.screen,color,(x,y,thickness,width))
-        pygame.draw.rect(self.screen,color,(x+width,y,thickness,width+thickness))
+        pygame.draw.rect(SCREEN,color,(x,y,width,thickness))
+        pygame.draw.rect(SCREEN,color,(x,y+width,width,thickness))
+        pygame.draw.rect(SCREEN,color,(x,y,thickness,width))
+        pygame.draw.rect(SCREEN,color,(x+width,y,thickness,width+thickness))
 
     def drawLevelChooser(self):
         j = 0
@@ -598,10 +610,10 @@ class Menu:
             else:
                 color = (150,150,150)
             if i < 3:
-                self.dashboard.drawText(levelName,175*i+textOffset,100,12)
+                DASHBOARD.drawText(levelName,175*i+textOffset,100,12)
                 self.drawBorder(175*i+offset,55,125,75,color,5)
             else:
-                self.dashboard.drawText(levelName,175*j+textOffset,250,12)
+                DASHBOARD.drawText(levelName,175*j+textOffset,250,12)
                 self.drawBorder(175*j+offset,210,125,75,color,5)
                 j+=1
 
@@ -613,7 +625,7 @@ class Menu:
                 files.append(os.path.join(r, file))
         for f in files:
             res.append(os.path.split(f)[1].split(".")[0])
-        self.levelCount = len(res)
+        LEVELCount = len(res)
         return res
 
     def checkInput(self):
@@ -627,7 +639,7 @@ class Menu:
                     if self.inChoosingLevel or self.inSettings:
                         self.inChoosingLevel = False
                         self.inSettings = False
-                        self.__init__(self.screen, self.dashboard, self.level)
+                        self.__init__(SCREEN, DASHBOARD, LEVEL)
                     else:
                         pygame.quit()
                         sys.exit()
@@ -640,7 +652,7 @@ class Menu:
                         self.state -= 1
                 elif event.key == pygame.K_DOWN:
                     if self.inChoosingLevel:
-                        if self.currSelectedLevel+3 <= self.levelCount:
+                        if self.currSelectedLevel+3 <= LEVELCount:
                             self.currSelectedLevel += 3
                             self.drawLevelChooser()
                     if self.state < 2:
@@ -650,16 +662,16 @@ class Menu:
                         self.currSelectedLevel -= 1
                         self.drawLevelChooser()
                 elif event.key == pygame.K_RIGHT:
-                    if self.currSelectedLevel < self.levelCount:
+                    if self.currSelectedLevel < LEVELCount:
                         self.currSelectedLevel += 1
                         self.drawLevelChooser()
                 elif event.key == pygame.K_RETURN:
                     if self.inChoosingLevel:
                         self.inChoosingLevel = False
-                        self.dashboard.state = "start"
-                        self.dashboard.time = 0
-                        self.level.loadLevel(self.levelNames[self.currSelectedLevel-1])
-                        self.dashboard.levelName = self.levelNames[self.currSelectedLevel-1].split("Level")[1]
+                        DASHBOARD.state = "start"
+                        DASHBOARD.time = 0
+                        LEVEL.loadLevel(LEVELNames[self.currSelectedLevel-1])
+                        DASHBOARD.levelName = LEVELNames[self.currSelectedLevel-1].split("Level")[1]
                         self.start = True
                         return
                     if not self.inSettings:
@@ -693,13 +705,11 @@ class Menu:
         pygame.display.update()
 
 class Pause:
-    def __init__(self, screen, entity, dashboard):
-        self.screen = screen
+    def __init__(self, entity):
         self.entity = entity
-        self.dashboard = dashboard
         self.state = 0
-        self.spritesheet = Spritesheet("./resources/img/title_screen.png")
-        self.pause_srfc = GaussianBlur().filter(self.screen, 0, 0, 640, 480)
+        self.spritesheet = Spritesheet("./resources/img/title_SCREEN.png")
+        self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
         self.dot = self.spritesheet.image_at(
             0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
@@ -708,21 +718,21 @@ class Pause:
         )
 
     def update(self):
-        self.screen.blit(self.pause_srfc,(0,0))
-        self.dashboard.drawText("PAUSED", 120, 160, 68)
-        self.dashboard.drawText("CONTINUE", 150, 280, 32)
-        self.dashboard.drawText("BACK TO MENU", 150, 320, 32)
+        SCREEN.blit(self.pause_srfc,(0,0))
+        DASHBOARD.drawText("PAUSED", 120, 160, 68)
+        DASHBOARD.drawText("CONTINUE", 150, 280, 32)
+        DASHBOARD.drawText("BACK TO MENU", 150, 320, 32)
         self.drawDot()
         pygame.display.update()
         self.checkInput()
 
     def drawDot(self):
         if self.state == 0:
-            self.screen.blit(self.dot, (100, 275))
-            self.screen.blit(self.gray_dot, (100, 315))
+            SCREEN.blit(self.dot, (100, 275))
+            SCREEN.blit(self.gray_dot, (100, 315))
         elif self.state == 1:
-            self.screen.blit(self.dot, (100, 315))
-            self.screen.blit(self.gray_dot, (100, 275))
+            SCREEN.blit(self.dot, (100, 315))
+            SCREEN.blit(self.gray_dot, (100, 275))
 
     def checkInput(self):
         events = pygame.event.get()
@@ -744,7 +754,7 @@ class Pause:
                         self.state += 1
 
     def createBackgroundBlur(self):
-        self.pause_srfc = GaussianBlur().filter(self.screen, 0, 0, 640, 480)
+        self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
 
 class Sprite:
     def __init__(self, image, colliding, animation=None, redrawBackground=False):
@@ -753,14 +763,13 @@ class Sprite:
         self.animation = animation
         self.redrawBackground = redrawBackground
 
-    def drawSprite(self, x, y, screen):
+    def drawSprite(self, x, y, SCREEN):
         dimensions = (x * 32, y * 32)
         if self.animation is None:
-            screen.blit(self.image, dimensions)
+            SCREEN.blit(self.image, dimensions)
         else:
             self.animation.update()
-            screen.blit(self.animation.image, dimensions)
-
+            SCREEN.blit(self.animation.image, dimensions)
 
 
 
@@ -848,7 +857,14 @@ class Sprites:
 class Tile:
     def __init__(self, sprite, rect):
         self.sprite = sprite
-        self.rect = rect
+        self.rect: Rect = rect
+
+    def __repr__(self):
+        if self.rect:
+            return f"Rect({self.rect.x}, {self.rect.y})"
+        else:
+            return ""
+
 
 class EntityBase(object):
     def __init__(self, x, y, gravity):
@@ -862,7 +878,7 @@ class EntityBase(object):
         self.type = ""
         self.onGround = False
         self.obeygravity = True
-        
+
     def applyGravity(self):
         if self.obeygravity:
             if not self.onGround:
@@ -884,9 +900,8 @@ class EntityBase(object):
         return Vector2D(self.rect.x / 32.0, self.rect.y / 32.0)
 
 class Coin(EntityBase):
-    def __init__(self, screen, spriteCollection, x, y, gravity=0):
+    def __init__(self, spriteCollection, x, y, gravity=0):
         super(Coin, self).__init__(x, y, gravity)
-        self.screen = screen
         self.spriteCollection = spriteCollection
         self.animation = copy(self.spriteCollection.get("coin").animation)
         self.type = "Item"
@@ -894,10 +909,10 @@ class Coin(EntityBase):
     def update(self, cam):
         if self.alive:
             self.animation.update()
-            self.screen.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y))
+            SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y))
 
 class Goomba(EntityBase):
-    def __init__(self, screen, spriteColl, x, y, level):
+    def __init__(self, spriteColl, x, y):
         super(Goomba, self).__init__(y, x - 1, 1.25)
         self.spriteCollection = spriteColl
         self.animation = Animation(
@@ -905,11 +920,9 @@ class Goomba(EntityBase):
                 self.spriteCollection.get("goomba-1").image,
                 self.spriteCollection.get("goomba-2").image,
             ]
-        )
-        self.screen = screen
+        )   
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
-        self.dashboard = level.dashboard
 
     def update(self, camera):
         if self.alive:
@@ -920,7 +933,7 @@ class Goomba(EntityBase):
             self.onDead(camera)
 
     def drawGoomba(self, camera):
-        self.screen.blit(self.animation.image, (self.rect.x + camera.x, self.rect.y))
+        SCREEN.blit(self.animation.image, (self.rect.x + camera.x, self.rect.y))
         self.animation.update()
 
     def onDead(self, camera):
@@ -934,7 +947,7 @@ class Goomba(EntityBase):
         self.timer += 0.1
 
     def drawFlatGoomba(self, camera):
-        self.screen.blit(
+        SCREEN.blit(
             self.spriteCollection.get("goomba-flat").image,
             (self.rect.x + camera.x, self.rect.y),
         )
@@ -944,17 +957,13 @@ class Goomba(EntityBase):
 
     def movePointsTextUpAndDraw(self, camera):
         self.textPos += Vector2D(-0.5, 0)
-        self.dashboard.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+        DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
 
-
-
-
-class Item(Dashboard):
-    def __init__(self, collection, screen, x, y):
-        super(Item, self).__init__(8, screen)
+class Item():
+    def __init__(self, collection, x, y):
+        super(Item, self).__init__(8, SCREEN)
         self.ItemPos = Vector2D(x, y)
         self.itemVel = Vector2D(0, 0)
-        self.screen = screen
         self.coin_animation = copy(collection.get("coin-item").animation)
         self.sound_played = False
 
@@ -971,7 +980,7 @@ class Item(Dashboard):
             elif self.coin_animation.timer < 45:
                 self.itemVel += Vector2D(0, 0.5)
                 self.ItemPos += Vector2D(0, self.itemVel.get_y())
-            self.screen.blit(
+            SCREEN.blit(
                 self.coin_animation.image, (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
             )
         elif self.coin_animation.timer < 80:
@@ -983,7 +992,7 @@ class Item(Dashboard):
 
 
 class Koopa(EntityBase):
-    def __init__(self, screen, spriteColl, x, y, level):
+    def __init__(self, spriteColl, x, y):
         super(Koopa, self).__init__(y - 1, x, 1.25)
         self.spriteCollection = spriteColl
         self.animation = Animation(
@@ -992,12 +1001,10 @@ class Koopa(EntityBase):
                 self.spriteCollection.get("koopa-2").image,
             ]
         )
-        self.screen = screen
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.timer = 0
         self.timeAfterDeath = 35
         self.type = "Mob"
-        self.dashboard = level.dashboard
 
     def update(self, camera):
         if self.alive == True:
@@ -1011,15 +1018,15 @@ class Koopa(EntityBase):
 
     def drawKoopa(self, camera):
         if self.leftrightTrait.direction == -1:
-            self.screen.blit(
+            SCREEN.blit(
                 self.animation.image, (self.rect.x + camera.x, self.rect.y - 32)
             )
         else:
-            self.screen.blit(
+            SCREEN.blit(
                 pygame.transform.flip(self.animation.image, True, False),
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
-
+     
     def shellBouncing(self, camera):
         self.leftrightTrait.speed = 4
         self.applyGravity()
@@ -1032,10 +1039,10 @@ class Koopa(EntityBase):
             self.textPos = Vector2D(self.rect.x + 3, self.rect.y - 32)
         if self.timer < self.timeAfterDeath:
             self.textPos += Vector2D(0, -0.5)
-            self.dashboard.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
             self.vel -= Vector2D(0, 0.5)
             self.rect.y += self.vel.get_y()
-            self.screen.blit(
+            SCREEN.blit(
                 self.spriteCollection.get("koopa-hiding").image,
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
@@ -1043,8 +1050,8 @@ class Koopa(EntityBase):
             self.vel += Vector2D(0, 0.3)
             self.rect.y += self.vel.get_y()
             self.textPos += Vector2D(0, -0.5)
-            self.dashboard.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
-            self.screen.blit(
+            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+            SCREEN.blit(
                 self.spriteCollection.get("koopa-hiding").image,
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
@@ -1055,7 +1062,7 @@ class Koopa(EntityBase):
 
     def sleepingInShell(self, camera):
         if self.timer < self.timeAfterDeath:
-            self.screen.blit(
+            SCREEN.blit(
                 self.spriteCollection.get("koopa-hiding").image,
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
@@ -1074,7 +1081,7 @@ class Koopa(EntityBase):
 
 
 class Mario(EntityBase):
-    def __init__(self, x, y, level, screen, dashboard, gravity=0.75):
+    def __init__(self, x, y, gravity=0.75):
         super(Mario, self).__init__(x, y, gravity)
         self.spriteCollection = Sprites().spriteCollection
         self.camera = Camera(self.rect, self)
@@ -1093,18 +1100,15 @@ class Mario(EntityBase):
 
         self.traits = {
             "jumpTrait": jumpTrait(self),
-            "goTrait": goTrait(self.animation, screen, self.camera, self),
+            "goTrait": goTrait(self.animation, self.camera, self),
             "bounceTrait": bounceTrait(self),
         }
 
-        self.levelObj = level
-        self.collision = Collider(self, level)
-        self.screen = screen
+        self.collision = Collider(self)
         self.EntityCollider = EntityCollider(self)
-        self.dashboard = dashboard
         self.restart = False
         self.pause = False
-        self.pauseObj = Pause(screen, self, dashboard)
+        self.pauseObj = Pause(self)
 
     def update(self):
         self.updateTraits()
@@ -1115,9 +1119,11 @@ class Mario(EntityBase):
         self.input.checkForInput()
 
     def moveMario(self):
-        self.rect.y += self.vel.get_y()
-        self.collision.checkY()
         self.rect.x += self.vel.get_x()
+        self.rect.y += self.vel.get_y()
+        
+        # self.collision.checkY()
+        
         self.collision.checkX()
 
     def checkEntityCollision(self):
@@ -1133,13 +1139,13 @@ class Mario(EntityBase):
 
     def _onCollisionWithItem(self, item):
         self.levelObj.entityList.remove(item)
-        self.dashboard.points += 100
-        self.dashboard.coins += 1
+        DASHBOARD.points += 100
+        DASHBOARD.coins += 1
         SOUND_CONTROLLER.play_sfx(COIN_SOUND)
 
     def _onCollisionWithBlock(self, block):
         if not block.triggered:
-            self.dashboard.coins += 1
+            DASHBOARD.coins += 1
             SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
         block.triggered = True
 
@@ -1175,7 +1181,7 @@ class Mario(EntityBase):
         else:
             ent.timer = 0
             ent.alive = "sleeping"
-        self.dashboard.points += 100
+        DASHBOARD.points += 100
 
     def gameOver(self):
         srf = pygame.Surface((640, 480))
@@ -1193,7 +1199,7 @@ class Mario(EntityBase):
                 (int(self.camera.x + self.rect.x) + 16, self.rect.y + 16),
                 i,
             )
-            self.screen.blit(srf, (0, 0))
+            SCREEN.blit(srf, (0, 0))
             pygame.display.update()
             self.input.checkForInput()
         while SOUND_CONTROLLER.playing_music():
@@ -1209,28 +1215,24 @@ class Mario(EntityBase):
         self.rect.y = y
 
 
-
-
 class RandomBox(EntityBase):
-    def __init__(self, screen, spriteCollection, x, y, dashboard, gravity=0):
+    def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
         super(RandomBox, self).__init__(x, y, gravity)
-        self.screen = screen
         self.spriteCollection = spriteCollection
         self.animation = copy(self.spriteCollection.get("randomBox").animation)
         self.type = "Block"
         self.triggered = False
         self.time = 0
         self.maxTime = 10
-        self.dashboard = dashboard
         self.vel = 1
-        self.item = Item(spriteCollection, screen, self.rect.x, self.rect.y)
+        self.item = Item(spriteCollection, SCREEN, self.rect.x, self.rect.y)
 
     def update(self, cam):
         if self.alive and not self.triggered:
             self.animation.update()
         else:
             self.animation.image = self.spriteCollection.get("empty").image
-            self.item.spawnCoin(cam, self.dashboard)
+            self.item.spawnCoin(cam, DASHBOARD)
             if self.time < self.maxTime:
                 self.time += 1
                 self.rect.y -= self.vel
@@ -1238,11 +1240,11 @@ class RandomBox(EntityBase):
                 if self.time < self.maxTime * 2:
                     self.time += 1
                     self.rect.y += self.vel
-        self.screen.blit(
+        SCREEN.blit(
             self.spriteCollection.get("sky").image,
             (self.rect.x + cam.x, self.rect.y + 2),
         )
-        self.screen.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y - 1))
+        SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y - 1))
 
 class bounceTrait:
     def __init__(self, entity):
@@ -1263,14 +1265,13 @@ class bounceTrait:
 
 
 class goTrait:
-    def __init__(self, animation, screen, camera, ent):
+    def __init__(self, animation, camera, ent):
         self.animation = animation
         self.direction = 0
         self.heading = 1
         self.accelVel = 0.4
         self.decelVel = 0.25
         self.maxVel = 3.0
-        self.screen = screen
         self.boost = False
         self.camera = camera
         self.entity = ent
@@ -1314,9 +1315,9 @@ class goTrait:
 
     def drawEntity(self):
         if self.heading == 1:
-            self.screen.blit(self.animation.image, self.entity.getPos())
+            SCREEN.blit(self.animation.image, self.entity.getPos())
         elif self.heading == -1:
-            self.screen.blit(
+            SCREEN.blit(
                 flip(self.animation.image, True, False), self.entity.getPos()
             )
 
@@ -1366,3 +1367,7 @@ class LeftRightWalkTrait:
         self.collDetection.checkY()
         self.entity.rect.x += self.entity.vel.get_x()
         self.collDetection.checkX()
+
+DASHBOARD = Dashboard()
+LEVEL: Level = Level()
+MENU: Menu = Menu()

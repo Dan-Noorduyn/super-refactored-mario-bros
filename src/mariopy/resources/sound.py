@@ -42,9 +42,6 @@ class _Sound_Controller():
 
     def unmute_music(self) -> None:
         self.__music_muted = False
-
-    def toggle_music(self) -> None:
-        self.__music_muted = not self.__music_muted
     
     def music_muted(self) -> bool:
         return self.__music_muted
@@ -57,11 +54,11 @@ mixer.init()
 SOUND_CONTROLLER = _Sound_Controller()
 
 # DEFAULT SOUNDS
-SOUNDTRACK = mixer.Sound("./resources/sfx/main_theme.ogg")
-COIN_SOUND = mixer.Sound("./resources/sfx/coin.ogg")
-BUMP_SOUND = mixer.Sound("./resources/sfx/bump.ogg")
+SOUNDTRACK  = mixer.Sound("./resources/sfx/main_theme.ogg")
+COIN_SOUND  = mixer.Sound("./resources/sfx/coin.ogg")
+BUMP_SOUND  = mixer.Sound("./resources/sfx/bump.ogg")
 STOMP_SOUND = mixer.Sound("./resources/sfx/stomp.ogg")
-JUMP_SOUND = mixer.Sound("./resources/sfx/small_jump.ogg")
+JUMP_SOUND  = mixer.Sound("./resources/sfx/small_jump.ogg")
 DEATH_SOUND = mixer.Sound("./resources/sfx/death.wav")
 
 __all__ = [
