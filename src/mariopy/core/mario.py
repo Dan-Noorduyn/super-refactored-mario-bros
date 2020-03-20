@@ -146,6 +146,8 @@ class Mario(EntityBase):
             self.rect.x = 0
             self.rect.y = 0
             DASHBOARD.lives = self.lives
+            SOUND_CONTROLLER.play_music(SOUNDTRACK)
+            self.camera.pos = Vector2D(self.rect.x, self.rect.y)
 
 
     def getPos(self):
