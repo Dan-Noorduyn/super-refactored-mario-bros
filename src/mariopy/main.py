@@ -22,7 +22,7 @@ class _Game_Controller():
                     mario.pauseObj.update()
                 else:
                     LEVEL.drawLevel(mario.camera)
-                    DASHBOARD.update(mario)
+                    DASHBOARD.update()
                     mario.update()
                 pygame.display.update()
                 self.__clock.tick(MAX_FRAME_RATE)
