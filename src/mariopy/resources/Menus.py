@@ -32,10 +32,10 @@ class PauseMenu:
         self.spritesheet = Spritesheet("./resources/img/title_screen.png")
         self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
         self.dot = self.spritesheet.image_at(
-            0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
+            0, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
         )
         self.gray_dot = self.spritesheet.image_at(
-            20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
+            20, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
         )
 
     def run(self):
@@ -108,10 +108,10 @@ class MainMenu:
             yTileSize=88,
         )
         self.menu_dot = self.spritesheet.image_at(
-            0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
+            0, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
         )
         self.menu_dot2 = self.spritesheet.image_at(
-            20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
+            20, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
         )
         self.loadSettings("./settings.json")
 

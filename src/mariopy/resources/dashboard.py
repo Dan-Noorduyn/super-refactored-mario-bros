@@ -15,7 +15,7 @@ class Dashboard():
         self.new_level = False
         self.sprite_sheet = Spritesheet("./resources/img/title_screen.png")
         self.mushroom_life = self.sprite_sheet.image_at(
-            0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
+            0, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
         )
 
     def update(self):

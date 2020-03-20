@@ -143,6 +143,9 @@ class Mario(EntityBase):
             DASHBOARD.state = "start"
             DASHBOARD.time = 420
             LEVEL.loadLevel("Level"+DASHBOARD.level_name)
+            self.rect.x = 0
+            self.rect.y = 0
+            DASHBOARD.lives = self.lives
 
 
     def getPos(self):
