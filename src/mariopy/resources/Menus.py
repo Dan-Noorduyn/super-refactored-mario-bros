@@ -87,7 +87,7 @@ class PauseMenu:
         self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
 
 
-class Menu:
+class MainMenu:
     def __init__(self):
         self.start = False
         self.in_settings = False
