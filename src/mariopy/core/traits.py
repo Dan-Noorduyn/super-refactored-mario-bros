@@ -69,7 +69,6 @@ class Collider:
         self.entity.onGround = False
         try:
             rows = [
-                self.level[self.entity.getPosIndex().get_x()],
                 self.level[self.entity.getPosIndex().get_y() + 1],
             ]
         except Exception:

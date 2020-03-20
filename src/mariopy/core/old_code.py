@@ -19,19 +19,19 @@ from utils.physics import Vector2D
 from .entity_base import *
 
 
-class Camera:
-    def __init__(self, pos, entity):
-        self.pos = Vector2D(pos.x, pos.y)
-        self.entity = entity
-        self.x = self.pos.get_x() * 32
-        self.y = self.pos.get_y() * 32
+# class Camera:
+#     def __init__(self, pos, entity):
+#         self.pos = Vector2D(pos.x, pos.y)
+#         self.entity = entity
+#         self.x = self.pos.get_x() * 32
+#         self.y = self.pos.get_y() * 32
 
-    def move(self):
-        xPosFloat = self.entity.getPosIndexAsFloat().get_x()
-        if 10 < xPosFloat < 50:
-            self.pos = Vector2D(-xPosFloat + 10, self.pos.get_y())
-        self.x = self.pos.get_x() * 32
-        self.y = self.pos.get_y() * 32
+#     def move(self):
+#         xPosFloat = self.entity.getPosIndexAsFloat().get_x()
+#         if 10 < xPosFloat < 50:
+#             self.pos = Vector2D(-xPosFloat + 10, self.pos.get_y())
+#         self.x = self.pos.get_x() * 32
+#         self.y = self.pos.get_y() * 32
 
 
 # class Collider:
