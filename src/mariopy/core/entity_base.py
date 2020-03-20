@@ -182,7 +182,7 @@ class Item():
                 self.itemVel += Vector2D(0, 0.5)
                 self.ItemPos += Vector2D(0, self.itemVel.get_y())
             SCREEN.blit(
-                self.coin_animation.image, (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
+                self.coin_animation.get_image(), (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
             )
         elif self.coin_animation.timer < 80:
             self.itemVel = Vector2D(0, -0.75)
