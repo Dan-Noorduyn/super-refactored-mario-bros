@@ -10,6 +10,8 @@ from pygame.locals import *
 from pygame.transform import flip
 from scipy.ndimage.filters import gaussian_filter
 
+
+from core.input import *
 from resources.sound import *
 from resources.display import FONT_SPRITES, Spritesheet, SCREEN, SPRITE_COLLECTION
 from resources.level import LEVEL
@@ -205,62 +207,62 @@ class GaussianBlur:
         del pxa
         return nSrfc
 
-class Input:
-    def __init__(self, entity):
-        self.mouseX = 0
-        self.mouseY = 0
-        self.entity = entity
+# class Input:
+#     def __init__(self, entity):
+#         self.mouseX = 0
+#         self.mouseY = 0
+#         self.entity = entity
 
-    def checkForInput(self):
-        self.checkForKeyboardInput()
-        self.checkForMouseInput()
-        self.checkForQuitAndRestartInputEvents()
+#     def checkForInput(self):
+#         self.checkForKeyboardInput()
+#         self.checkForMouseInput()
+#         self.checkForQuitAndRestartInputEvents()
 
-    def checkForKeyboardInput(self):
-        pressedKeys = pygame.key.get_pressed()
+#     def checkForKeyboardInput(self):
+#         pressedKeys = pygame.key.get_pressed()
 
-        if pressedKeys[K_LEFT] and not pressedKeys[K_RIGHT]:
-            self.entity.traits["goTrait"].direction = -1
-        elif pressedKeys[K_RIGHT] and not pressedKeys[K_LEFT]:
-            self.entity.traits["goTrait"].direction = 1
-        else:
-            self.entity.traits['goTrait'].direction = 0
+#         if pressedKeys[K_LEFT] and not pressedKeys[K_RIGHT]:
+#             self.entity.traits["goTrait"].direction = -1
+#         elif pressedKeys[K_RIGHT] and not pressedKeys[K_LEFT]:
+#             self.entity.traits["goTrait"].direction = 1
+#         else:
+#             self.entity.traits['goTrait'].direction = 0
 
-        isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP]
-        self.entity.traits['jumpTrait'].jump(isJumping)
+#         isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP]
+#         self.entity.traits['jumpTrait'].jump(isJumping)
 
-        self.entity.traits['goTrait'].boost = pressedKeys[K_LSHIFT]
+#         self.entity.traits['goTrait'].boost = pressedKeys[K_LSHIFT]
 
-    def checkForMouseInput(self):
-        mouseX, mouseY = pygame.mouse.get_pos()
-        if self.isRightMouseButtonPressed():
-            self.entity.levelObj.addKoopa(
-                mouseY / 32, mouseX / 32 - self.entity.camera.pos.get_x()
-            )
-            self.entity.levelObj.addGoomba(
-                mouseY / 32, mouseX / 32 - self.entity.camera.pos.get_x()
-            )
-        if self.isLeftMouseButtonPressed():
-            self.entity.levelObj.addCoin(
-                mouseX / 32 - self.entity.camera.pos.get_x(), mouseY / 32
-            )
+#     # def checkForMouseInput(self):
+#     #     mouseX, mouseY = pygame.mouse.get_pos()
+#     #     if self.isRightMouseButtonPressed():
+#     #         self.entity.levelObj.addKoopa(
+#     #             mouseY / 32, mouseX / 32 - self.entity.camera.pos.get_x()
+#     #         )
+#     #         self.entity.levelObj.addGoomba(
+#     #             mouseY / 32, mouseX / 32 - self.entity.camera.pos.get_x()
+#     #         )
+#     #     if self.isLeftMouseButtonPressed():
+#     #         self.entity.levelObj.addCoin(
+#     #             mouseX / 32 - self.entity.camera.pos.get_x(), mouseY / 32
+#     #         )
 
-    def checkForQuitAndRestartInputEvents(self):
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN and \
-                (event.key == pygame.K_ESCAPE or event.key == pygame.K_F5):
-                self.entity.pause = True
-                self.entity.pauseObj.createBackgroundBlur()
+#     def checkForQuitAndRestartInputEvents(self):
+#         events = pygame.event.get()
+#         for event in events:
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+#             if event.type == pygame.KEYDOWN and \
+#                 (event.key == pygame.K_ESCAPE or event.key == pygame.K_F5):
+#                 self.entity.pause = True
+#                 self.entity.pauseObj.createBackgroundBlur()
 
-    def isLeftMouseButtonPressed(self):
-        return pygame.mouse.get_pressed()[0]
+#     # def isLeftMouseButtonPressed(self):
+#     #     return pygame.mouse.get_pressed()[0]
 
-    def isRightMouseButtonPressed(self):
-        return pygame.mouse.get_pressed()[2]
+#     # def isRightMouseButtonPressed(self):
+#     #     return pygame.mouse.get_pressed()[2]
 
 class Menu:
     def __init__(self):
@@ -806,136 +808,136 @@ class Pause:
 
 
 
-class Mario(EntityBase):
-    def __init__(self, x, y, gravity=0.75):
-        super(Mario, self).__init__(x, y, gravity)
-        self.camera = Camera(self.rect, self)
-        self.input = Input(self)
-        self.inAir = False
-        self.inJump = False
-        self.animation = Animation(
-            [
-                SPRITE_COLLECTION.get("mario_run1"),
-                SPRITE_COLLECTION.get("mario_run2"),
-                SPRITE_COLLECTION.get("mario_run3"),
-            ],
-            SPRITE_COLLECTION.get("mario_idle"),
-            SPRITE_COLLECTION.get("mario_jump"),
-        )
+# class Mario(EntityBase):
+    # def __init__(self, x, y, gravity=0.75):
+    #     super(Mario, self).__init__(x, y, gravity)
+    #     self.camera = Camera(self.rect, self)
+    #     self.input = Input(self)
+    #     self.inAir = False
+    #     self.inJump = False
+    #     self.animation = Animation(
+    #         [
+    #             SPRITE_COLLECTION.get("mario_run1"),
+    #             SPRITE_COLLECTION.get("mario_run2"),
+    #             SPRITE_COLLECTION.get("mario_run3"),
+    #         ],
+    #         SPRITE_COLLECTION.get("mario_idle"),
+    #         SPRITE_COLLECTION.get("mario_jump"),
+    #     )
 
-        self.traits = {
-            "jumpTrait": jumpTrait(self),
-            "goTrait": goTrait(self.animation, self.camera, self),
-            "bounceTrait": bounceTrait(self),
-        }
-        self.levelObj = LEVEL
-        self.collision = Collider(self, self.levelObj)
-        self.EntityCollider = EntityCollider(self)
-        self.restart = False
-        self.pause = False
-        self.pauseObj = Pause(self)
+    #     self.traits = {
+    #         "jumpTrait": jumpTrait(self),
+    #         "goTrait": goTrait(self.animation, self.camera, self),
+    #         "bounceTrait": bounceTrait(self),
+    #     }
+    #     self.levelObj = LEVEL
+    #     self.collision = Collider(self, self.levelObj)
+    #     self.EntityCollider = EntityCollider(self)
+    #     self.restart = False
+    #     self.pause = False
+    #     self.pauseObj = Pause(self)
 
-    def update(self):
-        self.updateTraits()
-        self.moveMario()
-        self.camera.move()
-        self.applyGravity()
-        self.checkEntityCollision()
-        self.input.checkForInput()
+    # def update(self):
+    #     self.updateTraits()
+    #     self.moveMario()
+    #     self.camera.move()
+    #     self.applyGravity()
+    #     self.checkEntityCollision()
+    #     self.input.checkForInput()
 
-    def moveMario(self):
-        self.rect.x += self.vel.get_x()
-        self.collision.checkX()
-        self.rect.y += self.vel.get_y()
-        self.collision.checkY()
+    # def moveMario(self):
+    #     self.rect.x += self.vel.get_x()
+    #     self.collision.checkX()
+    #     self.rect.y += self.vel.get_y()
+    #     self.collision.checkY()
 
-    def checkEntityCollision(self):
-        for ent in self.levelObj.entityList:
-            collisionState = self.EntityCollider.check(ent)
-            if collisionState.isColliding:
-                if ent.type == "Item":
-                    self._onCollisionWithItem(ent)
-                elif ent.type == "Block":
-                    self._onCollisionWithBlock(ent)
-                elif ent.type == "Mob":
-                    self._onCollisionWithMob(ent, collisionState)
+    # def checkEntityCollision(self):
+    #     for ent in self.levelObj.entityList:
+    #         collisionState = self.EntityCollider.check(ent)
+    #         if collisionState.isColliding:
+    #             if ent.type == "Item":
+    #                 self._onCollisionWithItem(ent)
+    #             elif ent.type == "Block":
+    #                 self._onCollisionWithBlock(ent)
+    #             elif ent.type == "Mob":
+    #                 self._onCollisionWithMob(ent, collisionState)
 
-    def _onCollisionWithItem(self, item):
-        self.levelObj.entityList.remove(item)
-        DASHBOARD.points += 100
-        DASHBOARD.coins += 1
-        SOUND_CONTROLLER.play_sfx(COIN_SOUND)
+    # def _onCollisionWithItem(self, item):
+    #     self.levelObj.entityList.remove(item)
+    #     DASHBOARD.points += 100
+    #     DASHBOARD.coins += 1
+    #     SOUND_CONTROLLER.play_sfx(COIN_SOUND)
 
-    def _onCollisionWithBlock(self, block):
-        if not block.triggered:
-            DASHBOARD.coins += 1
-            SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
-        block.triggered = True
+    # def _onCollisionWithBlock(self, block):
+    #     if not block.triggered:
+    #         DASHBOARD.coins += 1
+    #         SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
+    #     block.triggered = True
 
-    def _onCollisionWithMob(self, mob, collisionState):
-        if collisionState.isTop and (mob.alive or mob.alive == "shellBouncing"):
-            SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
-            self.rect.bottom = mob.rect.top
-            self.bounce()
-            self.killEntity(mob)
-        elif collisionState.isTop and mob.alive == "sleeping":
-            SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
-            self.rect.bottom = mob.rect.top
-            mob.timer = 0
-            self.bounce()
-            mob.alive = False
-        elif collisionState.isColliding and mob.alive == "sleeping":
-            if mob.rect.x < self.rect.x:
-                mob.leftrightTrait.direction = -1
-                mob.rect.x += -5
-            else:
-                mob.rect.x += 5
-                mob.leftrightTrait.direction = 1
-            mob.alive = "shellBouncing"
-        elif collisionState.isColliding and mob.alive:
-            self.gameOver()
+    # def _onCollisionWithMob(self, mob, collisionState):
+    #     if collisionState.isTop and (mob.alive or mob.alive == "shellBouncing"):
+    #         SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
+    #         self.rect.bottom = mob.rect.top
+    #         self.bounce()
+    #         self.killEntity(mob)
+    #     elif collisionState.isTop and mob.alive == "sleeping":
+    #         SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
+    #         self.rect.bottom = mob.rect.top
+    #         mob.timer = 0
+    #         self.bounce()
+    #         mob.alive = False
+    #     elif collisionState.isColliding and mob.alive == "sleeping":
+    #         if mob.rect.x < self.rect.x:
+    #             mob.leftrightTrait.direction = -1
+    #             mob.rect.x += -5
+    #         else:
+    #             mob.rect.x += 5
+    #             mob.leftrightTrait.direction = 1
+    #         mob.alive = "shellBouncing"
+    #     elif collisionState.isColliding and mob.alive:
+    #         self.gameOver()
 
-    def bounce(self):
-        self.traits["bounceTrait"].jump = True
+    # def bounce(self):
+    #     self.traits["bounceTrait"].jump = True
 
-    def killEntity(self, ent):
-        if ent.__class__.__name__ != "Koopa":
-            ent.alive = False
-        else:
-            ent.timer = 0
-            ent.alive = "sleeping"
-        DASHBOARD.points += 100
+    # def killEntity(self, ent):
+    #     if ent.__class__.__name__ != "Koopa":
+    #         ent.alive = False
+    #     else:
+    #         ent.timer = 0
+    #         ent.alive = "sleeping"
+    #     DASHBOARD.points += 100
 
-    def gameOver(self):
-        srf = pygame.Surface((640, 480))
-        srf.set_colorkey((255, 255, 255), pygame.RLEACCEL)
-        srf.set_alpha(128)
-        SOUND_CONTROLLER.stop_music()
-        SOUND_CONTROLLER.stop_sfx()
-        SOUND_CONTROLLER.play_music(DEATH_SOUND)
+    # def gameOver(self):
+    #     srf = pygame.Surface((640, 480))
+    #     srf.set_colorkey((255, 255, 255), pygame.RLEACCEL)
+    #     srf.set_alpha(128)
+    #     SOUND_CONTROLLER.stop_music()
+    #     SOUND_CONTROLLER.stop_sfx()
+    #     SOUND_CONTROLLER.play_music(DEATH_SOUND)
 
-        for i in range(500, 20, -2):
-            srf.fill((0, 0, 0))
-            pygame.draw.circle(
-                srf,
-                (255, 255, 255),
-                (int(self.camera.x + self.rect.x) + 16, self.rect.y + 16),
-                i,
-            )
-            SCREEN.blit(srf, (0, 0))
-            pygame.display.update()
-            self.input.checkForInput()
-        while SOUND_CONTROLLER.playing_music():
-            pygame.display.update()
-            self.input.checkForInput()
-        self.restart = True
+    #     for i in range(500, 20, -2):
+    #         srf.fill((0, 0, 0))
+    #         pygame.draw.circle(
+    #             srf,
+    #             (255, 255, 255),
+    #             (int(self.camera.x + self.rect.x) + 16, self.rect.y + 16),
+    #             i,
+    #         )
+    #         SCREEN.blit(srf, (0, 0))
+    #         pygame.display.update()
+    #         self.input.checkForInput()
+    #     while SOUND_CONTROLLER.playing_music():
+    #         pygame.display.update()
+    #         self.input.checkForInput()
+    #     self.restart = True
 
-    def getPos(self):
-        return self.camera.x + self.rect.x, self.rect.y
+    # def getPos(self):
+    #     return self.camera.x + self.rect.x, self.rect.y
 
-    def setPos(self,x,y):
-        self.rect.x = x
-        self.rect.y = y
+    # def setPos(self,x,y):
+    #     self.rect.x = x
+    #     self.rect.y = y
 
 
 # class RandomBox(EntityBase):

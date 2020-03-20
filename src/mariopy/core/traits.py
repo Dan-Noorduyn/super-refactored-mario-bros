@@ -211,3 +211,39 @@ class LeftRightWalkTrait:
         self.collDetection.checkY()
         self.entity.rect.x += self.entity.vel.get_x()
         self.collDetection.checkX()
+
+
+class EntityCollider:
+    def __init__(self, entity):
+        self.entity = entity
+        ##initially own class
+        self.isColliding = False
+        self.isTop = False
+
+    def check(self, target):
+        if self.entity.rect.colliderect(target.rect):
+            return self.determineSide(target.rect, self.entity.rect)
+        self.isColliding, self.isTop = False, False
+        return self.isColliding, self.isTop
+        ##return CollisionState(False, False)
+
+    def determineSide(self, rect1, rect2):
+        if (
+            rect1.collidepoint(rect2.bottomleft)
+            or rect1.collidepoint(rect2.bottomright)
+            or rect1.collidepoint(rect2.midbottom)
+        ):
+            if rect2.collidepoint(
+                (rect1.midleft[0] / 2, rect1.midleft[1] / 2)
+            ) or rect2.collidepoint((rect1.midright[0] / 2, rect1.midright[1] / 2)):
+                self.isColliding, self.isTop = True, False
+                return self.isColliding, self.isTop
+                #return CollisionState(True, False)
+            else:
+                if self.entity.vel.get_y() > 0:
+                    self.isColliding, self.isTop = True, True
+                    return self.isColliding, self.isTop
+                    #return CollisionState(True, True)
+        self.isColliding, self.isTop = True, False
+        return self.isColliding, self.isTop
+        #return CollisionState(True, False)

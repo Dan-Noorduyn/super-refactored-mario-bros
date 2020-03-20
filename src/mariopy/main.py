@@ -1,6 +1,7 @@
 import pygame
 from resources.level import LEVEL
-from core.old_code import DASHBOARD, MENU, Mario
+from core.old_code import DASHBOARD, MENU
+from core.mario import *
 
 MAX_FRAME_RATE: int = 60
 

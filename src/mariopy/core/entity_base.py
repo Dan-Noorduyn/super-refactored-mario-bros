@@ -3,6 +3,7 @@ from copy import copy
 import pygame
 
 from core.traits import *
+from core.input import *
 from utils.physics import Vector2D
 from resources.display import SCREEN, Animation, SPRITE_COLLECTION
 from resources.dashboard import DASHBOARD
@@ -58,9 +59,14 @@ class Entity():
         self.__vel += Vector2D(self.__acc.get_x(), self.__acc.get_y())
         self.__pos += Vector2D(self.__vel.get_y(), self.__vel.get_y())
 
-class EntityBase(object):
+class EntityBase(pygame.sprite.Sprite):
     def __init__(self, x, y, gravity):
+        pygame.sprite.Sprite.__init__(self)
         self.vel = Vector2D(0, 0)
+        ##self.image = pygame.Surface([x, y])
+        ##print(self.image)
+        ##self.rect = pygame.Rect(self.image.get_rect())
+        ##print(self.rect)
         self.rect = pygame.Rect(x * 32, y * 32, 32, 32)
         self.gravity = gravity
         self.traits = None
@@ -90,6 +96,8 @@ class EntityBase(object):
 
     def getPosIndexAsFloat(self):
         return Vector2D(self.rect.x / 32.0, self.rect.y / 32.0)
+
+
 
 class Coin(EntityBase):
     def __init__(self, spriteCollection, x, y, gravity=0):
@@ -296,3 +304,17 @@ class RandomBox(EntityBase):
             (self.rect.x + cam.x, self.rect.y + 2),
         )
         SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y - 1))
+
+class Camera:
+    def __init__(self, pos, entity):
+        self.pos = Vector2D(pos.x, pos.y)
+        self.entity = entity
+        self.x = self.pos.get_x() * 32
+        self.y = self.pos.get_y() * 32
+
+    def move(self):
+        xPosFloat = self.entity.getPosIndexAsFloat().get_x()
+        if 10 < xPosFloat < 50:
+            self.pos = Vector2D(-xPosFloat + 10, self.pos.get_y())
+        self.x = self.pos.get_x() * 32
+        self.y = self.pos.get_y() * 32
