@@ -39,7 +39,6 @@ class Dashboard():
         self.drawText("TIME", 550, 20, 15)
         if self.state != "menu":
             self.drawText(self.timeString(), 552, 37, 15)
-
         # update Time
         if self.state == "start":
             self.ticks += 1
@@ -50,7 +49,6 @@ class Dashboard():
     def drawText(self, text, x, y, size):
         for char in text:
             charSprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
-            print(charSprite)
             SCREEN.blit(charSprite, (x, y))
             if char == " ":
                 x += size//2

@@ -23,6 +23,8 @@ class _Level():
         self.level = None
 
     def loadLevel(self, levelname):
+        self.entityList: list = []
+        self.level = None
         with open("./resources/levels/{}.json".format(levelname)) as jsonData:
             data: dict = json.load(jsonData)
             self.loadLayers(data)

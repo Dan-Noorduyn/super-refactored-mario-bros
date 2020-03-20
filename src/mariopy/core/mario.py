@@ -137,7 +137,12 @@ class Mario(EntityBase):
         while SOUND_CONTROLLER.playing_music():
             pygame.display.update()
             self.input.checkForInput()
-        self.restart = True
+        if self.lives == 0:
+            self.restart = True
+        else:
+            DASHBOARD.state = "start"
+            DASHBOARD.time = 420
+            LEVEL.loadLevel("Level"+DASHBOARD.level_name)
 
 
     def getPos(self):

@@ -318,9 +318,8 @@ class MainMenu:
                         DASHBOARD.state = "start"
                         DASHBOARD.time = 420
                         LEVEL.loadLevel(self.level_names[self.curr_selected_level-1])
-                        DASHBOARD.levelName = self.level_names[self.curr_selected_level-1].split("Level")[
+                        DASHBOARD.level_name = self.level_names[self.curr_selected_level-1].split("Level")[
                             1]
-                        print(DASHBOARD.levelName)
                         self.start = True
                         return
                     if not self.in_settings:
