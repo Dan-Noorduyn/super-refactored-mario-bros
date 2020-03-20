@@ -22,23 +22,23 @@ class Dashboard():
         self.drawText("MARIO", 20, 20, 15)
         self.drawText(self.pointString(), 20, 37, 15)
 
-        self.drawText("LIVES", 150, 20, 15)
+        self.drawText("LIVES", 160, 20, 15)
         for lives in range(self.lives):
             if lives == 0:
-                SCREEN.blit(self.mushroom_life, (150, 37))
+                SCREEN.blit(self.mushroom_life, (160, 37))
             if lives == 1:
-                SCREEN.blit(self.mushroom_life, (175, 37))
+                SCREEN.blit(self.mushroom_life, (185, 37))
             if lives == 2:
-                SCREEN.blit(self.mushroom_life, (200, 37))
+                SCREEN.blit(self.mushroom_life, (210, 37))
 
-        self.drawText("@x{}".format(self.coinString()), 300, 37, 15)
+        self.drawText("@x{}".format(self.coinString()), 310, 37, 15)
 
-        self.drawText("WORLD", 410, 20, 15)
+        self.drawText("WORLD", 420, 20, 15)
         self.drawText(str(self.level_name), 410, 37, 15)
 
         self.drawText("TIME", 550, 20, 15)
         if self.state != "menu":
-            self.drawText(self.timeString(), 550, 37, 15)
+            self.drawText(self.timeString(), 552, 37, 15)
 
         # update Time
         if self.state == "start":
