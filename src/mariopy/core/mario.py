@@ -39,6 +39,7 @@ class Mario(EntityBase):
         self.restart = False
         self.pause = False
         self.pauseObj = Pause(self)
+        self.lives = 3
     
     def update(self) :
         self.updateTraits()
@@ -134,6 +135,7 @@ class Mario(EntityBase):
             pygame.display.update()
             self.input.checkForInput()
         self.restart = True
+        
 
     def getPos(self):
         return self.camera.x + self.rect.x, self.rect.y
@@ -141,4 +143,5 @@ class Mario(EntityBase):
     def setPos(self,x,y):
         self.rect.x = x
         self.rect.y = y
+
 

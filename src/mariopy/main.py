@@ -25,6 +25,8 @@ class _Game_Controller():
                     mario.update()
                 pygame.display.update()
                 self.__clock.tick(MAX_FRAME_RATE)
+                
+
 
 
 if __name__ == "__main__":
