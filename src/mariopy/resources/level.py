@@ -33,18 +33,17 @@ class _Level():
             self.levelLength = data["length"]
 
     def loadEntities(self, data):
-        # json.dump(data, stdout, indent=4)
-        # try:
-            for x, y in data["level"]["entities"]["randomBox"]:
-                #print(x, y)
-                self.addRandomBox(x, y)
-            # [self.addRandomBox(x, y) for x, y in data["level"]["entities"]["randomBox"]]
-            [self.addGoomba(x, y) for x, y in data["level"]["entities"]["Goomba"]]
-            [self.addKoopa(x, y) for x, y in data["level"]["entities"]["Koopa"]]
-            [self.addCoin(x, y) for x, y in data["level"]["entities"]["coin"]]
-        # except:
-            #if no entities in Level
-            # ...
+        if "entities" not in data["level"]:
+            return
+
+        for x, y in data["level"]["entities"]["randomBox"]:
+            self.addRandomBox(x, y)
+        for x, y in data["level"]["entities"]["Goomba"]:
+            self.addGoomba(x, y)
+        for x, y in data["level"]["entities"]["Koopa"]:
+            self.addKoopa(x, y)
+        for x, y in data["level"]["entities"]["coin"]:
+            self.addCoin(x, y)
 
     def loadLayers(self, data):
         layers = []
