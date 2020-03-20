@@ -11,33 +11,10 @@ from pygame.transform import flip
 from scipy.ndimage.filters import gaussian_filter
 
 from resources.sound import *
-from resources.display import FONT_SPRITES, Spritesheet, SCREEN
+from resources.display import FONT_SPRITES, Spritesheet, SCREEN, SPRITE_COLLECTION
+from resources.level import LEVEL
 from utils.physics import Vector2D
-
-class Animation:
-    def __init__(self, images, idleSprite=None, airSprite=None, deltaTime=7):
-        self.images = images
-        self.timer = 0
-        self.index = 0
-        self.image = self.images[self.index]
-        self.idleSprite = idleSprite
-        self.airSprite = airSprite
-        self.deltaTime = deltaTime
-
-    def update(self):
-        self.timer += 1
-        if self.timer % self.deltaTime == 0:
-            if self.index < len(self.images) - 1:
-                self.index += 1
-            else:
-                self.index = 0
-        self.image = self.images[self.index]
-
-    def idle(self):
-        self.image = self.idleSprite
-
-    def inAir(self):
-        self.image = self.airSprite
+from .entity_base import *
 
 class Camera:
     def __init__(self, pos, entity):
@@ -54,137 +31,137 @@ class Camera:
         self.y = self.pos.get_y() * 32
 
 
-class Collider:
-    def __init__(self, entity, level):
-        self.entity = entity
-        self.level = level.level
-        self.levelObj = level
-        self.result = []
+# class Collider:
+#     def __init__(self, entity, level):
+#         self.entity = entity
+#         self.level = level.level
+#         self.levelObj = level
+#         self.result = []
 
-    def checkX(self):
-        if self.leftLevelBorderReached() or self.rightLevelBorderReached():
-            return
-        x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
+#     def checkX(self):
+#         if self.leftLevelBorderReached() or self.rightLevelBorderReached():
+#             return
+#         x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
 
-        r_x, r_y = self.entity.rect.x, self.entity.rect.y
-        w, h = self.entity.rect.w, self.entity.rect.h
+#         r_x, r_y = self.entity.rect.x, self.entity.rect.y
+#         w, h = self.entity.rect.w, self.entity.rect.h
 
-        tiles = [
-            self.level[y - 1][x - 1], self.level[y - 1][x], self.level[y - 1][x + 1],
-            self.level[y][x - 1], self.level[y][x], self.level[y][x + 1],
-            self.level[y + 1][x - 1], self.level[y + 1][x], self.level[y + 1][x + 1],
-        ]
+#         tiles = [
+#             self.level[y - 1][x - 1], self.level[y - 1][x], self.level[y - 1][x + 1],
+#             self.level[y][x - 1], self.level[y][x], self.level[y][x + 1],
+#             self.level[y + 1][x - 1], self.level[y + 1][x], self.level[y + 1][x + 1],
+#         ]
 
-        def _get_pos_idx(x, t):
-            return int((x + t) / 32)
+#         def _get_pos_idx(x, t):
+#             return int((x + t) / 32)
 
-        self.entity.onGround = False
+#         self.entity.onGround = False
 
-        for col in self.level[y - 1 : _get_pos_idx(r_y, h) + 1]:
-            print(col)
-            for tile in col[x - 1 : _get_pos_idx(r_x, w) + 1]:
-                print(tile)
-                if tile.rect is not None:
-                    if self.entity.rect.colliderect(tile.rect):
-                        if self.entity.vel.get_x() > 0:
-                            self.entity.rect.x = int(tile.rect.x - w)
-                            self.entity.vel.set_x(0)
-                        if self.entity.vel.get_x() < 0:
-                            self.entity.rect.x = round(tile.rect.x + w)
-                            self.entity.vel.set_x(0)
-                        if self.entity.vel.get_y() > 0:
-                            self.entity.onGround = True
-                            self.entity.rect.y = int(tile.rect.y - h)
-                            self.entity.vel.set_y(0)
-                            # reset jump on bottom
-                            if self.entity.traits is not None:
-                                if "jumpTrait" in self.entity.traits:
-                                    self.entity.traits["jumpTrait"].reset()
-                                if "bounceTrait" in self.entity.traits:
-                                    self.entity.traits["bounceTrait"].reset()
-                        if self.entity.vel.get_y() < 0:
-                            self.entity.rect.y = round(tile.rect.y + h)
-                            self.entity.vel.set_y(0)
+#         for col in self.level[y - 1 : _get_pos_idx(r_y, h) + 1]:
+#             print(col)
+#             for tile in col[x - 1 : _get_pos_idx(r_x, w) + 1]:
+#                 print(tile)
+#                 if tile.rect is not None:
+#                     if self.entity.rect.colliderect(tile.rect):
+#                         if self.entity.vel.get_x() > 0:
+#                             self.entity.rect.x = int(tile.rect.x - w)
+#                             self.entity.vel.set_x(0)
+#                         if self.entity.vel.get_x() < 0:
+#                             self.entity.rect.x = round(tile.rect.x + w)
+#                             self.entity.vel.set_x(0)
+#                         if self.entity.vel.get_y() > 0:
+#                             self.entity.onGround = True
+#                             self.entity.rect.y = int(tile.rect.y - h)
+#                             self.entity.vel.set_y(0)
+#                             # reset jump on bottom
+#                             if self.entity.traits is not None:
+#                                 if "jumpTrait" in self.entity.traits:
+#                                     self.entity.traits["jumpTrait"].reset()
+#                                 if "bounceTrait" in self.entity.traits:
+#                                     self.entity.traits["bounceTrait"].reset()
+#                         if self.entity.vel.get_y() < 0:
+#                             self.entity.rect.y = round(tile.rect.y + h)
+#                             self.entity.vel.set_y(0)
 
-    def checkY(self):
-        self.entity.onGround = False
-        x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
-        tiles = [LEVEL[y - 1][x], LEVEL[y][x], LEVEL[y + 1][x]]
+#     def checkY(self):
+#         self.entity.onGround = False
+#         x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
+#         tiles = [LEVEL[y - 1][x], LEVEL[y][x], LEVEL[y + 1][x]]
 
-        for tile in tiles:
-            if tile.rect is not None:
-                if self.entity.rect.colliderect(tile.rect):
-                    if self.entity.vel.get_y() > 0:
-                        self.entity.onGround = True
-                        self.entity.rect.y = round(tile.rect.y - self.entity.rect.h)
-                        self.entity.vel.set_y(0)
-                        # reset jump on bottom
-                        if self.entity.traits is not None:
-                            if "jumpTrait" in self.entity.traits:
-                                self.entity.traits["jumpTrait"].reset()
-                            if "bounceTrait" in self.entity.traits:
-                                self.entity.traits["bounceTrait"].reset()
-                    if self.entity.vel.get_y() < 0:
-                        self.entity.rect.y = tile.rect.bottom
-                        self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
+#         for tile in tiles:
+#             if tile.rect is not None:
+#                 if self.entity.rect.colliderect(tile.rect):
+#                     if self.entity.vel.get_y() > 0:
+#                         self.entity.onGround = True
+#                         self.entity.rect.y = round(tile.rect.y - self.entity.rect.h)
+#                         self.entity.vel.set_y(0)
+#                         # reset jump on bottom
+#                         if self.entity.traits is not None:
+#                             if "jumpTrait" in self.entity.traits:
+#                                 self.entity.traits["jumpTrait"].reset()
+#                             if "bounceTrait" in self.entity.traits:
+#                                 self.entity.traits["bounceTrait"].reset()
+#                     if self.entity.vel.get_y() < 0:
+#                         self.entity.rect.y = tile.rect.bottom
+#                         self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
 
-    def rightLevelBorderReached(self):
-        if self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1:
-            self.entity.rect.x = (self.levelObj.levelLength - 1) * 32
-            self.entity.vel.set_x(0)
-            return True
+#     def rightLevelBorderReached(self):
+#         if self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1:
+#             self.entity.rect.x = (self.levelObj.levelLength - 1) * 32
+#             self.entity.vel.set_x(0)
+#             return True
 
-    def leftLevelBorderReached(self):
-        if self.entity.rect.x < 0:
-            self.entity.rect.x = 0
-            self.entity.vel.set_x(0)
-            return True
+#     def leftLevelBorderReached(self):
+#         if self.entity.rect.x < 0:
+#             self.entity.rect.x = 0
+#             self.entity.vel.set_x(0)
+#             return True
 
-class Dashboard():
-    def __init__(self):
-        self.state = "menu"
-        LEVELName = ""
-        self.points = 0
-        self.coins = 0
-        self.ticks = 0
-        self.time = 0
+# class Dashboard():
+#     def __init__(self):
+#         self.state = "menu"
+#         self.levelName = ""
+#         self.points = 0
+#         self.coins = 0
+#         self.ticks = 0
+#         self.time = 0
 
-    def update(self):
-        self.drawText("MARIO", 50, 20, 15)
-        self.drawText(self.pointString(), 50, 37, 15)
+#     def update(self):
+#         self.drawText("MARIO", 50, 20, 15)
+#         self.drawText(self.pointString(), 50, 37, 15)
 
-        self.drawText("@x{}".format(self.coinString()), 225, 37, 15)
+#         self.drawText("@x{}".format(self.coinString()), 225, 37, 15)
 
-        self.drawText("WORLD", 380, 20, 15)
-        self.drawText(str(LEVELName), 395, 37, 15)
+#         self.drawText("WORLD", 380, 20, 15)
+#         self.drawText(str(LEVELName), 395, 37, 15)
 
-        self.drawText("TIME", 520, 20, 15)
-        if self.state != "menu":
-            self.drawText(self.timeString(), 535, 37, 15)
+#         self.drawText("TIME", 520, 20, 15)
+#         if self.state != "menu":
+#             self.drawText(self.timeString(), 535, 37, 15)
 
-        # update Time
-        self.ticks += 1
-        if self.ticks == 60:
-            self.ticks = 0
-            self.time += 1
+#         # update Time
+#         self.ticks += 1
+#         if self.ticks == 60:
+#             self.ticks = 0
+#             self.time += 1
 
-    def drawText(self, text, x, y, size):
-        for char in text:
-            charSprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
-            SCREEN.blit(charSprite, (x, y))
-            if char == " ":
-                x += size//2
-            else:
-                x += size
+#     def drawText(self, text, x, y, size):
+#         for char in text:
+#             charSprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
+#             SCREEN.blit(charSprite, (x, y))
+#             if char == " ":
+#                 x += size//2
+#             else:
+#                 x += size
 
-    def coinString(self):
-        return "{:02d}".format(self.coins)
+#     def coinString(self):
+#         return "{:02d}".format(self.coins)
 
-    def pointString(self):
-        return "{:06d}".format(self.points)
+#     def pointString(self):
+#         return "{:06d}".format(self.points)
 
-    def timeString(self):
-        return "{:03d}".format(self.time)
+#     def timeString(self):
+#         return "{:03d}".format(self.time)
 
 class EntityCollider:
     def __init__(self, entity):
@@ -284,163 +261,6 @@ class Input:
 
     def isRightMouseButtonPressed(self):
         return pygame.mouse.get_pressed()[2]
-
-class Level:
-    def __init__(self):
-        self.sprites = Sprites()
-        LEVEL = None
-        LEVELLength = 0
-        self.entityList = []
-
-    def loadLevel(self, levelname):
-        with open("./resources/levels/{}.json".format(levelname)) as jsonData:
-            data = json.load(jsonData)
-            self.loadLayers(data)
-            self.loadObjects(data)
-            self.loadEntities(data)
-            LEVELLength = data["length"]
-
-    def loadEntities(self, data):
-        try:
-            [self.addRandomBox(x, y) for x, y in data["level"]["entities"]["randomBox"]]
-            [self.addGoomba(x, y) for x, y in data["level"]["entities"]["Goomba"]]
-            [self.addKoopa(x, y) for x, y in data["level"]["entities"]["Koopa"]]
-            [self.addCoin(x, y) for x, y in data["level"]["entities"]["coin"]]
-        except:
-            #if no entities in Level
-            pass
-
-    def loadLayers(self, data):
-        layers = []
-        for x in range(*data["level"]["layers"]["sky"]["x"]):
-            layers.append(
-                (
-                    [
-                        Tile(self.sprites.spriteCollection.get("sky"), None)
-                        for y in range(*data["level"]["layers"]["sky"]["y"])
-                    ]
-                    + [
-                        Tile(
-                            self.sprites.spriteCollection.get("ground"),
-                            pygame.Rect(x * 32, (y - 1) * 32, 32, 32),
-                        )
-                        for y in range(*data["level"]["layers"]["ground"]["y"])
-                    ]
-                )
-            )
-        LEVEL = list(map(list, zip(*layers)))
-
-    def loadObjects(self, data):
-        for x, y in data["level"]["objects"]["bush"]:
-            self.addBushSprite(x, y)
-        for x, y in data["level"]["objects"]["cloud"]:
-            self.addCloudSprite(x, y)
-        for x, y, z in data["level"]["objects"]["pipe"]:
-            self.addPipeSprite(x, y, z)
-        for x, y in data["level"]["objects"]["sky"]:
-            LEVEL[y][x] = Tile(self.sprites.spriteCollection.get("sky"), None)
-        for x, y in data["level"]["objects"]["ground"]:
-            LEVEL[y][x] = Tile(
-                self.sprites.spriteCollection.get("ground"),
-                pygame.Rect(x * 32, y * 32, 32, 32),
-            )
-
-    def updateEntities(self, cam):
-        for entity in self.entityList:
-            entity.update(cam)
-            if entity.alive is None:
-                self.entityList.remove(entity)
-
-    def drawLevel(self, camera):
-        try:
-            for y in range(0, 15):
-                for x in range(0 - int(camera.pos.get_x() + 1), 20 - int(camera.pos.get_x() - 1)):
-                    if LEVEL[y][x].sprite is not None:
-                        if LEVEL[y][x].sprite.redrawBackground:
-                            SCREEN.blit(
-                                self.sprites.spriteCollection.get("sky").image,
-                                ((x + camera.pos.get_x()) * 32, y * 32),
-                            )
-                        LEVEL[y][x].sprite.drawSprite(
-                            x + camera.pos.get_x(), y, SCREEN
-                        )
-            self.updateEntities(camera)
-        except IndexError:
-            return
-
-    def addCloudSprite(self, x, y):
-        try:
-            for yOff in range(0, 2):
-                for xOff in range(0, 3):
-                    LEVEL[y + yOff][x + xOff] = Tile(
-                        self.sprites.spriteCollection.get(
-                            "cloud{}_{}".format(yOff + 1, xOff + 1)
-                        ),
-                        None,
-                    )
-        except IndexError:
-            return
-
-    def addPipeSprite(self, x, y, length=2):
-        try:
-            # add Pipe Head
-            LEVEL[y][x] = Tile(
-                self.sprites.spriteCollection.get("pipeL"),
-                pygame.Rect(x * 32, y * 32, 32, 32),
-            )
-            LEVEL[y][x + 1] = Tile(
-                self.sprites.spriteCollection.get("pipeR"),
-                pygame.Rect((x + 1) * 32, y * 32, 32, 32),
-            )
-            # add pipe Body
-            for i in range(1, length + 20):
-                LEVEL[y + i][x] = Tile(
-                    self.sprites.spriteCollection.get("pipe2L"),
-                    pygame.Rect(x * 32, (y + i) * 32, 32, 32),
-                )
-                LEVEL[y + i][x + 1] = Tile(
-                    self.sprites.spriteCollection.get("pipe2R"),
-                    pygame.Rect((x + 1) * 32, (y + i) * 32, 32, 32),
-                )
-        except IndexError:
-            return
-
-    def addBushSprite(self, x, y):
-        try:
-            LEVEL[y][x] = Tile(self.sprites.spriteCollection.get("bush_1"), None)
-            LEVEL[y][x + 1] = Tile(
-                self.sprites.spriteCollection.get("bush_2"), None
-            )
-            LEVEL[y][x + 2] = Tile(
-                self.sprites.spriteCollection.get("bush_3"), None
-            )
-        except IndexError:
-            return
-
-    def addRandomBox(self, x, y):
-        LEVEL[y][x] = Tile(None, pygame.Rect(x * 32, y * 32 - 1, 32, 32))
-        self.entityList.append(
-            RandomBox(
-                SCREEN,
-                self.sprites.spriteCollection,
-                x,
-                y,
-                DASHBOARD,
-            )
-        )
-
-    def addCoin(self, x, y):
-        self.entityList.append(Coin(SCREEN, self.sprites.spriteCollection, x, y))
-
-    def addGoomba(self, x, y):
-        self.entityList.append(
-            Goomba(SCREEN, self.sprites.spriteCollection, x, y, self)
-        )
-
-    def addKoopa(self, x, y):
-        self.entityList.append(
-            Koopa(SCREEN, self.sprites.spriteCollection, x, y, self)
-        )
 
 class Menu:
     def __init__(self):
@@ -542,37 +362,37 @@ class Menu:
         for y in range(0, 13):
             for x in range(0, 20):
                 SCREEN.blit(
-                    LEVEL.sprites.spriteCollection.get("sky").image,
+                    SPRITE_COLLECTION.get("sky"),
                     (x * 32, y * 32),
                 )
         for y in range(13, 15):
             for x in range(0, 20):
                 SCREEN.blit(
-                    LEVEL.sprites.spriteCollection.get("ground").image,
+                    SPRITE_COLLECTION.get("ground"),
                     (x * 32, y * 32),
                 )
         if(withBanner):
             SCREEN.blit(self.menu_banner, (150, 80))
         SCREEN.blit(
-            LEVEL.sprites.spriteCollection.get("mario_idle").image,
+            SPRITE_COLLECTION.get("mario_idle"),
             (2 * 32, 12 * 32),
         )
         SCREEN.blit(
-            LEVEL.sprites.spriteCollection.get("bush_1").image, (14 * 32, 12 * 32)
+            SPRITE_COLLECTION.get("bush_1"), (14 * 32, 12 * 32)
         )
         SCREEN.blit(
-            LEVEL.sprites.spriteCollection.get("bush_2").image, (15 * 32, 12 * 32)
+            SPRITE_COLLECTION.get("bush_2"), (15 * 32, 12 * 32)
         )
         SCREEN.blit(
-            LEVEL.sprites.spriteCollection.get("bush_2").image, (16 * 32, 12 * 32)
+            SPRITE_COLLECTION.get("bush_2"), (16 * 32, 12 * 32)
         )
         SCREEN.blit(
-            LEVEL.sprites.spriteCollection.get("bush_2").image, (17 * 32, 12 * 32)
+            SPRITE_COLLECTION.get("bush_2"), (17 * 32, 12 * 32)
         )
         SCREEN.blit(
-            LEVEL.sprites.spriteCollection.get("bush_3").image, (18 * 32, 12 * 32)
+            SPRITE_COLLECTION.get("bush_3"), (18 * 32, 12 * 32)
         )
-        SCREEN.blit(LEVEL.sprites.spriteCollection.get("goomba-1").image,(18.5*32,12*32))
+        SCREEN.blit(SPRITE_COLLECTION.get("goomba-1"),(18.5*32,12*32))
 
     def drawSettings(self):
         self.drawDot()
@@ -591,7 +411,7 @@ class Menu:
     def chooseLevel(self):
         self.drawMenuBackground(False)
         self.inChoosingLevel = True
-        LEVELNames = self.loadLevelNames()
+        self.levelNames = self.loadLevelNames()
         self.drawLevelChooser()
 
     def drawBorder(self,x,y,width,height,color,thickness):
@@ -652,7 +472,7 @@ class Menu:
                         self.state -= 1
                 elif event.key == pygame.K_DOWN:
                     if self.inChoosingLevel:
-                        if self.currSelectedLevel+3 <= LEVELCount:
+                        if self.currSelectedLevel+3 <= self.levelCount:
                             self.currSelectedLevel += 3
                             self.drawLevelChooser()
                     if self.state < 2:
@@ -662,7 +482,7 @@ class Menu:
                         self.currSelectedLevel -= 1
                         self.drawLevelChooser()
                 elif event.key == pygame.K_RIGHT:
-                    if self.currSelectedLevel < LEVELCount:
+                    if self.currSelectedLevel < self.levelCount:
                         self.currSelectedLevel += 1
                         self.drawLevelChooser()
                 elif event.key == pygame.K_RETURN:
@@ -670,8 +490,8 @@ class Menu:
                         self.inChoosingLevel = False
                         DASHBOARD.state = "start"
                         DASHBOARD.time = 0
-                        LEVEL.loadLevel(LEVELNames[self.currSelectedLevel-1])
-                        DASHBOARD.levelName = LEVELNames[self.currSelectedLevel-1].split("Level")[1]
+                        LEVEL.loadLevel(self.levelNames[self.currSelectedLevel])
+                        DASHBOARD.levelName = self.levelNames[self.currSelectedLevel].split("Level")[1]
                         self.start = True
                         return
                     if not self.inSettings:
@@ -756,326 +576,232 @@ class Pause:
     def createBackgroundBlur(self):
         self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
 
-class Sprite:
-    def __init__(self, image, colliding, animation=None, redrawBackground=False):
-        self.image = image
-        self.colliding = colliding
-        self.animation = animation
-        self.redrawBackground = redrawBackground
+# class Sprite:
+#     def __init__(self, image, colliding, animation=None, redrawBackground=False):
+#         self.image = image
+#         self.colliding = colliding
+#         self.animation = animation
+#         self.redrawBackground = redrawBackground
 
-    def drawSprite(self, x, y, SCREEN):
-        dimensions = (x * 32, y * 32)
-        if self.animation is None:
-            SCREEN.blit(self.image, dimensions)
-        else:
-            self.animation.update()
-            SCREEN.blit(self.animation.image, dimensions)
-
-
-
-class Sprites:
-    def __init__(self):
-        self.spriteCollection = self.loadSprites(
-            [
-                "./resources/sprites/Mario.json",
-                "./resources/sprites/Goomba.json",
-                "./resources/sprites/Koopa.json",
-                "./resources/sprites/Animations.json",
-                "./resources/sprites/BackgroundSprites.json",
-                "./resources/sprites/ItemAnimations.json",
-            ]
-        )
-
-    def loadSprites(self, urlList):
-        resDict = {}
-        for url in urlList:
-            with open(url) as jsonData:
-                data = json.load(jsonData)
-                mySpritesheet = Spritesheet(data["spriteSheetURL"])
-                dic = {}
-                if data["type"] == "background":
-                    for sprite in data["sprites"]:
-                        try:
-                            colorkey = sprite["colorKey"]
-                        except KeyError:
-                            colorkey = None
-                        dic[sprite["name"]] = Sprite(
-                            mySpritesheet.image_at(
-                                sprite["x"],
-                                sprite["y"],
-                                sprite["scalefactor"],
-                                colorkey,
-                            ),
-                            sprite["collision"],
-                            None,
-                            sprite["redrawBg"],
-                        )
-                    resDict.update(dic)
-                    continue
-                elif data["type"] == "animation":
-                    for sprite in data["sprites"]:
-                        images = []
-                        for image in sprite["images"]:
-                            images.append(
-                                mySpritesheet.image_at(
-                                    image["x"],
-                                    image["y"],
-                                    image["scale"],
-                                    colorkey=sprite["colorKey"],
-                                )
-                            )
-                        dic[sprite["name"]] = Sprite(
-                            None,
-                            None,
-                            animation=Animation(images, deltaTime=sprite["deltaTime"]),
-                        )
-                    resDict.update(dic)
-                    continue
-                elif data["type"] == "character" or data["type"] == "item":
-                    for sprite in data["sprites"]:
-                        try:
-                            colorkey = sprite["colorKey"]
-                        except KeyError:
-                            colorkey = None
-                        dic[sprite["name"]] = Sprite(
-                            mySpritesheet.image_at(
-                                sprite["x"],
-                                sprite["y"],
-                                sprite["scalefactor"],
-                                colorkey,
-                                True,
-                                xTileSize=data["size"][0],
-                                yTileSize=data["size"][1],
-                            ),
-                            sprite["collision"],
-                        )
-                    resDict.update(dic)
-                    continue
-        return resDict
+#     def drawSprite(self, x, y, SCREEN):
+#         dimensions = (x * 32, y * 32)
+#         if self.animation is None:
+#             SCREEN.blit(self.image, dimensions)
+#         else:
+#             self.animation.update()
+#             SCREEN.blit(self.animation.image, dimensions)
 
 
-class Tile:
-    def __init__(self, sprite, rect):
-        self.sprite = sprite
-        self.rect: Rect = rect
+# class EntityBase(object):
+#     def __init__(self, x, y, gravity):
+#         self.vel = Vector2D(0, 0)
+#         self.rect = pygame.Rect(x * 32, y * 32, 32, 32)
+#         self.gravity = gravity
+#         self.traits = None
+#         self.alive = True
+#         self.timeAfterDeath = 5
+#         self.timer = 0
+#         self.type = ""
+#         self.onGround = False
+#         self.obeygravity = True
 
-    def __repr__(self):
-        if self.rect:
-            return f"Rect({self.rect.x}, {self.rect.y})"
-        else:
-            return ""
+#     def applyGravity(self):
+#         if self.obeygravity:
+#             if not self.onGround:
+#                 self.vel += Vector2D(0, self.gravity)
+#             else:
+#                 self.vel = Vector2D(self.vel.get_x(), 0)
 
+#     def updateTraits(self):
+#         for trait in self.traits.values():
+#             try:
+#                 trait.update()
+#             except AttributeError:
+#                 pass
 
-class EntityBase(object):
-    def __init__(self, x, y, gravity):
-        self.vel = Vector2D(0, 0)
-        self.rect = pygame.Rect(x * 32, y * 32, 32, 32)
-        self.gravity = gravity
-        self.traits = None
-        self.alive = True
-        self.timeAfterDeath = 5
-        self.timer = 0
-        self.type = ""
-        self.onGround = False
-        self.obeygravity = True
+#     def getPosIndex(self):
+#         return Vector2D(int(self.rect.x / 32), int(self.rect.y / 32))
 
-    def applyGravity(self):
-        if self.obeygravity:
-            if not self.onGround:
-                self.vel += Vector2D(0, self.gravity)
-            else:
-                self.vel = Vector2D(self.vel.get_x(), 0)
+#     def getPosIndexAsFloat(self):
+#         return Vector2D(self.rect.x / 32.0, self.rect.y / 32.0)
 
-    def updateTraits(self):
-        for trait in self.traits.values():
-            try:
-                trait.update()
-            except AttributeError:
-                pass
+# class Coin(EntityBase):
+#     def __init__(self, spriteCollection, x, y, gravity=0):
+#         super(Coin, self).__init__(x, y, gravity)
+#         SPRITE_COLLECTION = spriteCollection
+#         self.animation = copy(SPRITE_COLLECTION.get("coin").animation)
+#         self.type = "Item"
 
-    def getPosIndex(self):
-        return Vector2D(int(self.rect.x / 32), int(self.rect.y / 32))
+#     def update(self, cam):
+#         if self.alive:
+#             self.animation.update()
+#             SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y))
 
-    def getPosIndexAsFloat(self):
-        return Vector2D(self.rect.x / 32.0, self.rect.y / 32.0)
+# class Goomba(EntityBase):
+#     def __init__(self, spriteColl, x, y):
+#         super(Goomba, self).__init__(y, x - 1, 1.25)
+#         SPRITE_COLLECTION = spriteColl
+#         self.animation = Animation(
+#             [
+#                 SPRITE_COLLECTION.get("goomba-1").image,
+#                 SPRITE_COLLECTION.get("goomba-2").image,
+#             ]
+#         )   
+#         self.leftrightTrait = LeftRightWalkTrait(self, level)
+#         self.type = "Mob"
 
-class Coin(EntityBase):
-    def __init__(self, spriteCollection, x, y, gravity=0):
-        super(Coin, self).__init__(x, y, gravity)
-        self.spriteCollection = spriteCollection
-        self.animation = copy(self.spriteCollection.get("coin").animation)
-        self.type = "Item"
+#     def update(self, camera):
+#         if self.alive:
+#             self.applyGravity()
+#             self.drawGoomba(camera)
+#             self.leftrightTrait.update()
+#         else:
+#             self.onDead(camera)
 
-    def update(self, cam):
-        if self.alive:
-            self.animation.update()
-            SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y))
+#     def drawGoomba(self, camera):
+#         SCREEN.blit(self.animation.image, (self.rect.x + camera.x, self.rect.y))
+#         self.animation.update()
 
-class Goomba(EntityBase):
-    def __init__(self, spriteColl, x, y):
-        super(Goomba, self).__init__(y, x - 1, 1.25)
-        self.spriteCollection = spriteColl
-        self.animation = Animation(
-            [
-                self.spriteCollection.get("goomba-1").image,
-                self.spriteCollection.get("goomba-2").image,
-            ]
-        )   
-        self.leftrightTrait = LeftRightWalkTrait(self, level)
-        self.type = "Mob"
+#     def onDead(self, camera):
+#         if self.timer == 0:
+#             self.setPointsTextStartPosition(self.rect.x + 3, self.rect.y)
+#         if self.timer < self.timeAfterDeath:
+#             self.movePointsTextUpAndDraw(camera)
+#             self.drawFlatGoomba(camera)
+#         else:
+#             self.alive = None
+#         self.timer += 0.1
 
-    def update(self, camera):
-        if self.alive:
-            self.applyGravity()
-            self.drawGoomba(camera)
-            self.leftrightTrait.update()
-        else:
-            self.onDead(camera)
+#     def drawFlatGoomba(self, camera):
+#         SCREEN.blit(
+#             SPRITE_COLLECTION.get("goomba-flat").image,
+#             (self.rect.x + camera.x, self.rect.y),
+#         )
 
-    def drawGoomba(self, camera):
-        SCREEN.blit(self.animation.image, (self.rect.x + camera.x, self.rect.y))
-        self.animation.update()
+#     def setPointsTextStartPosition(self, x, y):
+#         self.textPos = Vector2D(x, y)
 
-    def onDead(self, camera):
-        if self.timer == 0:
-            self.setPointsTextStartPosition(self.rect.x + 3, self.rect.y)
-        if self.timer < self.timeAfterDeath:
-            self.movePointsTextUpAndDraw(camera)
-            self.drawFlatGoomba(camera)
-        else:
-            self.alive = None
-        self.timer += 0.1
+#     def movePointsTextUpAndDraw(self, camera):
+#         self.textPos += Vector2D(-0.5, 0)
+#         DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
 
-    def drawFlatGoomba(self, camera):
-        SCREEN.blit(
-            self.spriteCollection.get("goomba-flat").image,
-            (self.rect.x + camera.x, self.rect.y),
-        )
+# class Item():
+#     def __init__(self, collection, x, y):
+#         super(Item, self).__init__(8, SCREEN)
+#         self.ItemPos = Vector2D(x, y)
+#         self.itemVel = Vector2D(0, 0)
+#         self.coin_animation = copy(collection.get("coin-item").animation)
+#         self.sound_played = False
 
-    def setPointsTextStartPosition(self, x, y):
-        self.textPos = Vector2D(x, y)
-
-    def movePointsTextUpAndDraw(self, camera):
-        self.textPos += Vector2D(-0.5, 0)
-        DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
-
-class Item():
-    def __init__(self, collection, x, y):
-        super(Item, self).__init__(8, SCREEN)
-        self.ItemPos = Vector2D(x, y)
-        self.itemVel = Vector2D(0, 0)
-        self.coin_animation = copy(collection.get("coin-item").animation)
-        self.sound_played = False
-
-    def spawnCoin(self, cam, dashboard):
-        if not self.sound_played:
-            self.sound_played = True
-            dashboard.points += 100
-            SOUND_CONTROLLER.play_sfx(COIN_SOUND)
-        self.coin_animation.update()
-        if self.coin_animation.timer < 45:
-            if self.coin_animation.timer < 15:
-                self.itemVel -= Vector2D(0, 0.5)
-                self.ItemPos += Vector2D(0, self.itemVel.get_y())
-            elif self.coin_animation.timer < 45:
-                self.itemVel += Vector2D(0, 0.5)
-                self.ItemPos += Vector2D(0, self.itemVel.get_y())
-            SCREEN.blit(
-                self.coin_animation.image, (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
-            )
-        elif self.coin_animation.timer < 80:
-            self.itemVel = Vector2D(0, -0.75)
-            self.ItemPos += Vector2D(0, self.itemVel.get_y())
-            self.drawText("100", self.ItemPos.get_x() + 3 + cam.x, self.ItemPos.get_y(), 8)
+#     def spawnCoin(self, cam, dashboard):
+#         if not self.sound_played:
+#             self.sound_played = True
+#             dashboard.points += 100
+#             SOUND_CONTROLLER.play_sfx(COIN_SOUND)
+#         self.coin_animation.update()
+#         if self.coin_animation.timer < 45:
+#             if self.coin_animation.timer < 15:
+#                 self.itemVel -= Vector2D(0, 0.5)
+#                 self.ItemPos += Vector2D(0, self.itemVel.get_y())
+#             elif self.coin_animation.timer < 45:
+#                 self.itemVel += Vector2D(0, 0.5)
+#                 self.ItemPos += Vector2D(0, self.itemVel.get_y())
+#             SCREEN.blit(
+#                 self.coin_animation.image, (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
+#             )
+#         elif self.coin_animation.timer < 80:
+#             self.itemVel = Vector2D(0, -0.75)
+#             self.ItemPos += Vector2D(0, self.itemVel.get_y())
+#             self.drawText("100", self.ItemPos.get_x() + 3 + cam.x, self.ItemPos.get_y(), 8)
 
 
 
 
-class Koopa(EntityBase):
-    def __init__(self, spriteColl, x, y):
-        super(Koopa, self).__init__(y - 1, x, 1.25)
-        self.spriteCollection = spriteColl
-        self.animation = Animation(
-            [
-                self.spriteCollection.get("koopa-1").image,
-                self.spriteCollection.get("koopa-2").image,
-            ]
-        )
-        self.leftrightTrait = LeftRightWalkTrait(self, level)
-        self.timer = 0
-        self.timeAfterDeath = 35
-        self.type = "Mob"
+# class Koopa(EntityBase):
+#     def __init__(self, spriteColl, x, y):
+#         super(Koopa, self).__init__(y - 1, x, 1.25)
+#         SPRITE_COLLECTION = spriteColl
+#         self.animation = Animation(
+#             [
+#                 SPRITE_COLLECTION.get("koopa-1").image,
+#                 SPRITE_COLLECTION.get("koopa-2").image,
+#             ]
+#         )
+#         self.leftrightTrait = LeftRightWalkTrait(self, level)
+#         self.timer = 0
+#         self.timeAfterDeath = 35
+#         self.type = "Mob"
 
-    def update(self, camera):
-        if self.alive == True:
-            self.updateAlive(camera)
-        elif self.alive == "sleeping":
-            self.sleepingInShell(camera)
-        elif self.alive == "shellBouncing":
-            self.shellBouncing(camera)
-        elif self.alive == False:
-            self.die(camera)
+#     def update(self, camera):
+#         if self.alive == True:
+#             self.updateAlive(camera)
+#         elif self.alive == "sleeping":
+#             self.sleepingInShell(camera)
+#         elif self.alive == "shellBouncing":
+#             self.shellBouncing(camera)
+#         elif self.alive == False:
+#             self.die(camera)
 
-    def drawKoopa(self, camera):
-        if self.leftrightTrait.direction == -1:
-            SCREEN.blit(
-                self.animation.image, (self.rect.x + camera.x, self.rect.y - 32)
-            )
-        else:
-            SCREEN.blit(
-                pygame.transform.flip(self.animation.image, True, False),
-                (self.rect.x + camera.x, self.rect.y - 32),
-            )
+#     def drawKoopa(self, camera):
+#         if self.leftrightTrait.direction == -1:
+#             SCREEN.blit(
+#                 self.animation.image, (self.rect.x + camera.x, self.rect.y - 32)
+#             )
+#         else:
+#             SCREEN.blit(
+#                 pygame.transform.flip(self.animation.image, True, False),
+#                 (self.rect.x + camera.x, self.rect.y - 32),
+#             )
      
-    def shellBouncing(self, camera):
-        self.leftrightTrait.speed = 4
-        self.applyGravity()
-        self.animation.image = self.spriteCollection.get("koopa-hiding").image
-        self.drawKoopa(camera)
-        self.leftrightTrait.update()
+#     def shellBouncing(self, camera):
+#         self.leftrightTrait.speed = 4
+#         self.applyGravity()
+#         self.animation.image = SPRITE_COLLECTION.get("koopa-hiding").image
+#         self.drawKoopa(camera)
+#         self.leftrightTrait.update()
 
-    def die(self, camera):
-        if self.timer == 0:
-            self.textPos = Vector2D(self.rect.x + 3, self.rect.y - 32)
-        if self.timer < self.timeAfterDeath:
-            self.textPos += Vector2D(0, -0.5)
-            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
-            self.vel -= Vector2D(0, 0.5)
-            self.rect.y += self.vel.get_y()
-            SCREEN.blit(
-                self.spriteCollection.get("koopa-hiding").image,
-                (self.rect.x + camera.x, self.rect.y - 32),
-            )
-        else:
-            self.vel += Vector2D(0, 0.3)
-            self.rect.y += self.vel.get_y()
-            self.textPos += Vector2D(0, -0.5)
-            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
-            SCREEN.blit(
-                self.spriteCollection.get("koopa-hiding").image,
-                (self.rect.x + camera.x, self.rect.y - 32),
-            )
-            if self.timer > 500:
-                # delete entity
-                self.alive = None
-        self.timer += 6
+#     def die(self, camera):
+#         if self.timer == 0:
+#             self.textPos = Vector2D(self.rect.x + 3, self.rect.y - 32)
+#         if self.timer < self.timeAfterDeath:
+#             self.textPos += Vector2D(0, -0.5)
+#             DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+#             self.vel -= Vector2D(0, 0.5)
+#             self.rect.y += self.vel.get_y()
+#             SCREEN.blit(
+#                 SPRITE_COLLECTION.get("koopa-hiding").image,
+#                 (self.rect.x + camera.x, self.rect.y - 32),
+#             )
+#         else:
+#             self.vel += Vector2D(0, 0.3)
+#             self.rect.y += self.vel.get_y()
+#             self.textPos += Vector2D(0, -0.5)
+#             DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+#             SCREEN.blit(
+#                 SPRITE_COLLECTION.get("koopa-hiding").image,
+#                 (self.rect.x + camera.x, self.rect.y - 32),
+#             )
+#             if self.timer > 500:
+#                 # delete entity
+#                 self.alive = None
+#         self.timer += 6
 
-    def sleepingInShell(self, camera):
-        if self.timer < self.timeAfterDeath:
-            SCREEN.blit(
-                self.spriteCollection.get("koopa-hiding").image,
-                (self.rect.x + camera.x, self.rect.y - 32),
-            )
-        else:
-            self.alive = True
-            self.timer = 0
-        self.timer += 0.1
+#     def sleepingInShell(self, camera):
+#         if self.timer < self.timeAfterDeath:
+#             SCREEN.blit(
+#                 SPRITE_COLLECTION.get("koopa-hiding").image,
+#                 (self.rect.x + camera.x, self.rect.y - 32),
+#             )
+#         else:
+#             self.alive = True
+#             self.timer = 0
+#         self.timer += 0.1
 
-    def updateAlive(self, camera):
-        self.applyGravity()
-        self.drawKoopa(camera)
-        self.animation.update()
-        self.leftrightTrait.update()
+#     def updateAlive(self, camera):
+#         self.applyGravity()
+#         self.drawKoopa(camera)
+#         self.animation.update()
+#         self.leftrightTrait.update()
 
 
 
@@ -1083,19 +809,18 @@ class Koopa(EntityBase):
 class Mario(EntityBase):
     def __init__(self, x, y, gravity=0.75):
         super(Mario, self).__init__(x, y, gravity)
-        self.spriteCollection = Sprites().spriteCollection
         self.camera = Camera(self.rect, self)
         self.input = Input(self)
         self.inAir = False
         self.inJump = False
         self.animation = Animation(
             [
-                self.spriteCollection["mario_run1"].image,
-                self.spriteCollection["mario_run2"].image,
-                self.spriteCollection["mario_run3"].image,
+                SPRITE_COLLECTION.get("mario_run1"),
+                SPRITE_COLLECTION.get("mario_run2"),
+                SPRITE_COLLECTION.get("mario_run3"),
             ],
-            self.spriteCollection["mario_idle"].image,
-            self.spriteCollection["mario_jump"].image,
+            SPRITE_COLLECTION.get("mario_idle"),
+            SPRITE_COLLECTION.get("mario_jump"),
         )
 
         self.traits = {
@@ -1103,8 +828,8 @@ class Mario(EntityBase):
             "goTrait": goTrait(self.animation, self.camera, self),
             "bounceTrait": bounceTrait(self),
         }
-
-        self.collision = Collider(self)
+        self.levelObj = LEVEL
+        self.collision = Collider(self, self.levelObj)
         self.EntityCollider = EntityCollider(self)
         self.restart = False
         self.pause = False
@@ -1120,11 +845,9 @@ class Mario(EntityBase):
 
     def moveMario(self):
         self.rect.x += self.vel.get_x()
-        self.rect.y += self.vel.get_y()
-        
-        # self.collision.checkY()
-        
         self.collision.checkX()
+        self.rect.y += self.vel.get_y()
+        self.collision.checkY()
 
     def checkEntityCollision(self):
         for ent in self.levelObj.entityList:
@@ -1215,159 +938,159 @@ class Mario(EntityBase):
         self.rect.y = y
 
 
-class RandomBox(EntityBase):
-    def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
-        super(RandomBox, self).__init__(x, y, gravity)
-        self.spriteCollection = spriteCollection
-        self.animation = copy(self.spriteCollection.get("randomBox").animation)
-        self.type = "Block"
-        self.triggered = False
-        self.time = 0
-        self.maxTime = 10
-        self.vel = 1
-        self.item = Item(spriteCollection, SCREEN, self.rect.x, self.rect.y)
+# class RandomBox(EntityBase):
+#     def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
+#         super(RandomBox, self).__init__(x, y, gravity)
+#         SPRITE_COLLECTION = spriteCollection
+#         self.animation = copy(SPRITE_COLLECTION.get("randomBox").animation)
+#         self.type = "Block"
+#         self.triggered = False
+#         self.time = 0
+#         self.maxTime = 10
+#         self.vel = 1
+#         self.item = Item(spriteCollection, SCREEN, self.rect.x, self.rect.y)
 
-    def update(self, cam):
-        if self.alive and not self.triggered:
-            self.animation.update()
-        else:
-            self.animation.image = self.spriteCollection.get("empty").image
-            self.item.spawnCoin(cam, DASHBOARD)
-            if self.time < self.maxTime:
-                self.time += 1
-                self.rect.y -= self.vel
-            else:
-                if self.time < self.maxTime * 2:
-                    self.time += 1
-                    self.rect.y += self.vel
-        SCREEN.blit(
-            self.spriteCollection.get("sky").image,
-            (self.rect.x + cam.x, self.rect.y + 2),
-        )
-        SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y - 1))
+#     def update(self, cam):
+#         if self.alive and not self.triggered:
+#             self.animation.update()
+#         else:
+#             self.animation.image = SPRITE_COLLECTION.get("empty").image
+#             self.item.spawnCoin(cam, DASHBOARD)
+#             if self.time < self.maxTime:
+#                 self.time += 1
+#                 self.rect.y -= self.vel
+#             else:
+#                 if self.time < self.maxTime * 2:
+#                     self.time += 1
+#                     self.rect.y += self.vel
+#         SCREEN.blit(
+#             SPRITE_COLLECTION.get("sky").image,
+#             (self.rect.x + cam.x, self.rect.y + 2),
+#         )
+#         SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y - 1))
 
-class bounceTrait:
-    def __init__(self, entity):
-        self.vel = 5
-        self.jump = False
-        self.entity = entity
+# class bounceTrait:
+#     def __init__(self, entity):
+#         self.vel = 5
+#         self.jump = False
+#         self.entity = entity
 
-    def update(self):
-        if self.jump:
-            self.entity.vel = Vector2D(self.entity.get_x(), 0)
-            self.entity.vel -= Vector(0, self.vel)
-            self.jump = False
-            self.entity.inAir = True
+#     def update(self):
+#         if self.jump:
+#             self.entity.vel = Vector2D(self.entity.get_x(), 0)
+#             self.entity.vel -= Vector(0, self.vel)
+#             self.jump = False
+#             self.entity.inAir = True
 
-    def reset(self):
-        self.entity.inAir = False
-
-
-
-class goTrait:
-    def __init__(self, animation, camera, ent):
-        self.animation = animation
-        self.direction = 0
-        self.heading = 1
-        self.accelVel = 0.4
-        self.decelVel = 0.25
-        self.maxVel = 3.0
-        self.boost = False
-        self.camera = camera
-        self.entity = ent
-
-    def update(self):
-        if self.boost:
-            self.maxVel = 5.0
-            self.animation.deltaTime = 4
-        else:
-            self.animation.deltaTime = 7
-            if abs(self.entity.vel.get_x()) > 3.2:
-                self.entity.vel = Vector2D(3.2 * self.heading, self.entity.vel.get_y())
-            self.maxVel = 3.2
-
-        if self.direction != 0:
-            self.heading = self.direction
-            if self.heading == 1:
-                if self.entity.vel.get_x() < self.maxVel:
-                    self.entity.vel += Vector2D(self.accelVel * self.heading, 0)
-            else:
-                if self.entity.vel.get_x() > -self.maxVel:
-                    self.entity.vel += Vector2D(self.accelVel * self.heading, 0)
-
-            if not self.entity.inAir:
-                self.animation.update()
-            else:
-                self.animation.inAir()
-        else:
-            self.animation.update()
-            if self.entity.vel.get_x() >= 0:
-                self.entity.vel -= Vector2D(self.decelVel, 0)
-            else:
-                self.entity.vel += Vector2D(self.decelVel, 0)
-            if int(self.entity.vel.get_x()) == 0:
-                self.entity.vel = Vector2D(0, self.entity.vel.get_y())
-                if self.entity.inAir:
-                    self.animation.inAir()
-                else:
-                    self.animation.idle()
-        self.drawEntity()
-
-    def drawEntity(self):
-        if self.heading == 1:
-            SCREEN.blit(self.animation.image, self.entity.getPos())
-        elif self.heading == -1:
-            SCREEN.blit(
-                flip(self.animation.image, True, False), self.entity.getPos()
-            )
+#     def reset(self):
+#         self.entity.inAir = False
 
 
-class jumpTrait:
-    def __init__(self, entity):
-        self.vertical_speed = -12 #jump speed
-        self.jumpHeight = 120 #jump height in pixels
-        self.entity = entity
-        self.initalHeight = 384 #stores the position of mario at jump
-        self.deaccelerationHeight = self.jumpHeight - ((self.vertical_speed*self.vertical_speed)/(2*self.entity.gravity))
 
-    def jump(self,jumping):
-        if jumping:
-            if not self.entity.inAir and not self.entity.inJump: #only jump when mario is on ground and not in a jump. redundant check
-                SOUND_CONTROLLER.play_sfx(JUMP_SOUND)
-                self.entity.vel = Vector2D(self.entity.vel.get_x(), self.vertical_speed)
-                self.entity.inAir = True
-                self.initalHeight = self.entity.rect.y
-                self.entity.inJump = True
-                self.entity.obeygravity = False #dont obey gravity in jump so as to reach jump height no matter what the speed
+# class goTrait:
+#     def __init__(self, animation, camera, ent):
+#         self.animation = animation
+#         self.direction = 0
+#         self.heading = 1
+#         self.accelVel = 0.4
+#         self.decelVel = 0.25
+#         self.maxVel = 3.0
+#         self.boost = False
+#         self.camera = camera
+#         self.entity = ent
 
-        if self.entity.inJump: #check vertical distance travelled while mario is in a jump
-            if (self.initalHeight-self.entity.rect.y) >= self.deaccelerationHeight or self.entity.vel.get_y() == 0:
-                self.entity.inJump = False
-                self.entity.obeygravity = True #mario obeys gravity again and continues normal play
+#     def update(self):
+#         if self.boost:
+#             self.maxVel = 5.0
+#             self.animation.deltaTime = 4
+#         else:
+#             self.animation.deltaTime = 7
+#             if abs(self.entity.vel.get_x()) > 3.2:
+#                 self.entity.vel = Vector2D(3.2 * self.heading, self.entity.vel.get_y())
+#             self.maxVel = 3.2
 
-    def reset(self):
-        self.entity.inAir = False
+#         if self.direction != 0:
+#             self.heading = self.direction
+#             if self.heading == 1:
+#                 if self.entity.vel.get_x() < self.maxVel:
+#                     self.entity.vel += Vector2D(self.accelVel * self.heading, 0)
+#             else:
+#                 if self.entity.vel.get_x() > -self.maxVel:
+#                     self.entity.vel += Vector2D(self.accelVel * self.heading, 0)
 
-class LeftRightWalkTrait:
-    def __init__(self, entity, level):
-        self.direction = -1 if randint(0, 1) == 0 else 1
-        self.entity = entity
-        self.collDetection = Collider(self.entity, level)
-        self.speed = 1
-        self.entity.vel = Vector2D(self.speed * self.direction, self.entity.vel.get_y())
+#             if not self.entity.inAir:
+#                 self.animation.update()
+#             else:
+#                 self.animation.inAir()
+#         else:
+#             self.animation.update()
+#             if self.entity.vel.get_x() >= 0:
+#                 self.entity.vel -= Vector2D(self.decelVel, 0)
+#             else:
+#                 self.entity.vel += Vector2D(self.decelVel, 0)
+#             if int(self.entity.vel.get_x()) == 0:
+#                 self.entity.vel = Vector2D(0, self.entity.vel.get_y())
+#                 if self.entity.inAir:
+#                     self.animation.inAir()
+#                 else:
+#                     self.animation.idle()
+#         self.drawEntity()
 
-    def update(self):
-        if self.entity.vel.get_x() == 0:
-            self.direction *= -1
-        self.entity.vel = Vector2D(self.speed * self.direction, self.entity.vel.get_y())
-        self.moveEntity()
+#     def drawEntity(self):
+#         if self.heading == 1:
+#             SCREEN.blit(self.animation.image, self.entity.getPos())
+#         elif self.heading == -1:
+#             SCREEN.blit(
+#                 flip(self.animation.image, True, False), self.entity.getPos()
+#             )
 
-    def moveEntity(self):
-        self.entity.rect.y += self.entity.vel.get_y()
-        self.collDetection.checkY()
-        self.entity.rect.x += self.entity.vel.get_x()
-        self.collDetection.checkX()
 
-DASHBOARD = Dashboard()
-LEVEL: Level = Level()
+# class jumpTrait:
+#     def __init__(self, entity):
+#         self.vertical_speed = -12 #jump speed
+#         self.jumpHeight = 120 #jump height in pixels
+#         self.entity = entity
+#         self.initalHeight = 384 #stores the position of mario at jump
+#         self.deaccelerationHeight = self.jumpHeight - ((self.vertical_speed*self.vertical_speed)/(2*self.entity.gravity))
+
+#     def jump(self,jumping):
+#         if jumping:
+#             if not self.entity.inAir and not self.entity.inJump: #only jump when mario is on ground and not in a jump. redundant check
+#                 SOUND_CONTROLLER.play_sfx(JUMP_SOUND)
+#                 self.entity.vel = Vector2D(self.entity.vel.get_x(), self.vertical_speed)
+#                 self.entity.inAir = True
+#                 self.initalHeight = self.entity.rect.y
+#                 self.entity.inJump = True
+#                 self.entity.obeygravity = False #dont obey gravity in jump so as to reach jump height no matter what the speed
+
+#         if self.entity.inJump: #check vertical distance travelled while mario is in a jump
+#             if (self.initalHeight-self.entity.rect.y) >= self.deaccelerationHeight or self.entity.vel.get_y() == 0:
+#                 self.entity.inJump = False
+#                 self.entity.obeygravity = True #mario obeys gravity again and continues normal play
+
+#     def reset(self):
+#         self.entity.inAir = False
+
+# class LeftRightWalkTrait:
+#     def __init__(self, entity, level):
+#         self.direction = -1 if randint(0, 1) == 0 else 1
+#         self.entity = entity
+#         self.collDetection = Collider(self.entity, level)
+#         self.speed = 1
+#         self.entity.vel = Vector2D(self.speed * self.direction, self.entity.vel.get_y())
+
+#     def update(self):
+#         if self.entity.vel.get_x() == 0:
+#             self.direction *= -1
+#         self.entity.vel = Vector2D(self.speed * self.direction, self.entity.vel.get_y())
+#         self.moveEntity()
+
+#     def moveEntity(self):
+#         self.entity.rect.y += self.entity.vel.get_y()
+#         self.collDetection.checkY()
+#         self.entity.rect.x += self.entity.vel.get_x()
+#         self.collDetection.checkX()
+
+# DASHBOARD = Dashboard()
+# LEVEL: Level = Level()
 MENU: Menu = Menu()
