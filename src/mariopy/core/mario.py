@@ -40,6 +40,8 @@ class Mario(EntityBase):
         self.pause = False
         self.pauseObj = PauseMenu(self)
         self.lives = 3
+    
+    
     def update(self) :
         self.updateTraits()
         self.moveMario()
@@ -47,6 +49,9 @@ class Mario(EntityBase):
         self.applyGravity()
         self.checkEntityCollision()
         self.input.checkForInput()
+        if DASHBOARD.time == 0:
+            self.gameOver()
+
 
     def moveMario(self):
         self.rect.x += self.vel.get_x()
@@ -112,6 +117,7 @@ class Mario(EntityBase):
         DASHBOARD.points += 100
 
     def gameOver(self):
+        self.lives -= 1
         srf = pygame.Surface((640, 480))
         srf.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         srf.set_alpha(128)
@@ -142,8 +148,5 @@ class Mario(EntityBase):
     def setPos(self,x,y):
         self.rect.x = x
         self.rect.y = y
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 9bd4050b6aebd6fc3ab254b2918a6da0223be19f
