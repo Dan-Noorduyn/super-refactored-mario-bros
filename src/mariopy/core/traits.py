@@ -179,10 +179,10 @@ class goTrait:
 
     def drawEntity(self):
         if self.heading == 1:
-            SCREEN.blit(self.animation.image, self.entity.getPos())
+            SCREEN.blit(self.animation.get_image(), self.entity.getPos())
         elif self.heading == -1:
             SCREEN.blit(
-                pygame.transform.flip(self.animation.image, True, False), self.entity.getPos()
+                pygame.transform.flip(self.animation.get_image(), True, False), self.entity.getPos()
             )
 
 

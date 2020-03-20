@@ -55,6 +55,12 @@ class Animation:
     def in_air(self):
         self.__image = self.__air_sprite
 
+    def set_image(self, img: pygame.Surface):
+        self.__image = img
+
+    def get_image(self):
+        return self.__image
+
 def _load_background(sh: Spritesheet, data: dict, d: dict) -> None:
     for sprite in data["sprites"]:
         color_key = sprite["colorKey"] if "colorKey" in sprite else None
