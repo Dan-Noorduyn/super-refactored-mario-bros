@@ -319,10 +319,12 @@ class Camera:
         self.entity = entity
         self.x = self.pos.get_x() * 32
         self.y = self.pos.get_y() * 32
+        self.lastPos = self.pos.get_x()
 
     def move(self):
+        self.lastPos = self.pos.get_x()
         xPosFloat = self.entity.getPosIndexAsFloat().get_x()
-        if 10 < xPosFloat < 50:
+        if  10 < xPosFloat < 100 and (-xPosFloat + 10) < self.lastPos :
             self.pos = Vector2D(-xPosFloat + 10, self.pos.get_y())
         self.x = self.pos.get_x() * 32
         self.y = self.pos.get_y() * 32
