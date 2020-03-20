@@ -184,6 +184,15 @@ class MainMenu:
         DASHBOARD.drawText("SETTINGS", 180, 320, 24)
         DASHBOARD.drawText("EXIT", 180, 360, 24)
 
+        DASHBOARD.drawText("HIGH", 20, 140, 15)
+        DASHBOARD.drawText("SCORE:", 20, 160, 15)
+        highscore_file = open("resources/highscore.txt","r")
+        if highscore_file.mode == 'r':
+            contents =highscore_file.read()
+            highscore_file.close()
+            contents.split()
+            DASHBOARD.drawText(contents, 20, 180, 15)
+
     def drawMenuBackground(self, withBanner=True):
         for y in range(0, 13):
             for x in range(0, 20):
