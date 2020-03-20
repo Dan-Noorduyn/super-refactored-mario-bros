@@ -1090,4 +1090,4 @@ class GaussianBlur:
 #         self.collDetection.checkX()
 # DASHBOARD = Dashboard()
 # LEVEL: Level = Level()
-MENU: Menu = Menu()
+# MENU: Menu = Menu()
