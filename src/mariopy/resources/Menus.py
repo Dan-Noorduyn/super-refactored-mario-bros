@@ -38,16 +38,15 @@ class PauseMenu:
             20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
 
-        SCREEN.blit(self.pause_srfc, (0, 0))
-        DASHBOARD.drawText("PAUSED", 120, 160, 68)
-        DASHBOARD.drawText("CONTINUE", 150, 280, 32)
-        DASHBOARD.drawText("BACK TO MENU", 150, 320, 32)
-
     def run(self):
         while not self.start:
             self.update()
 
     def update(self):
+        SCREEN.blit(self.pause_srfc, (0, 0))
+        DASHBOARD.drawText("PAUSED", 120, 160, 68)
+        DASHBOARD.drawText("CONTINUE", 150, 280, 32)
+        DASHBOARD.drawText("BACK TO MENU", 150, 320, 32)
         self.drawDot()
         pygame.display.update()
         self.checkInput()
@@ -250,7 +249,7 @@ class MainMenu:
         j = 0
         offset = 75
         textOffset = 90
-        for i, levelName in enumerate(self.loadlevel_names()):
+        for i, levelName in enumerate(self.level_names):
             if self.curr_selected_level == i+1:
                 color = (255, 255, 255)
             else:
@@ -272,6 +271,7 @@ class MainMenu:
         for f in files:
             res.append(os.path.split(f)[1].split(".")[0])
         self.level_count = len(res)
+        res.sort()
         return res
 
     def checkInput(self):
@@ -316,8 +316,8 @@ class MainMenu:
                         self.in_choosing_level = False
                         DASHBOARD.state = "start"
                         DASHBOARD.time = 420
-                        LEVEL.loadLevel(self.level_names[self.curr_selected_level])
-                        DASHBOARD.levelName = self.level_names[self.curr_selected_level].split("Level")[
+                        LEVEL.loadLevel(self.level_names[self.curr_selected_level-1])
+                        DASHBOARD.levelName = self.level_names[self.curr_selected_level-1].split("Level")[
                             1]
                         self.start = True
                         return

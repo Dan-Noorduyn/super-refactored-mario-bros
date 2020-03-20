@@ -41,10 +41,11 @@ class Dashboard():
             self.drawText(self.timeString(), 550, 37, 15)
 
         # update Time
-        self.ticks += 1
-        if self.ticks == 60:
-            self.ticks = 0
-            self.time -= 1
+        if self.state == "start":
+            self.ticks += 1
+            if self.ticks == 60:
+                self.ticks = 0
+                self.time -= 1
 
     def drawText(self, text, x, y, size):
         for char in text:
