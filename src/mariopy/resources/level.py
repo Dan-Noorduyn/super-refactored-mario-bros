@@ -4,7 +4,7 @@ import pygame
 
 from core.entity_base import Goomba, Koopa, Coin, RandomBox
 from resources.dashboard import DASHBOARD
-from resources.display import SCREEN, SPRITE_COLLECTION
+from resources.display import SCREEN, SPRITE_COLLECTION, Animation
 
 
 class Tile:
@@ -82,7 +82,10 @@ class _Level():
 
     def _draw_sprite(self, sprite, x, y):
         dimensions = (x * 32, y * 32)
-        SCREEN.blit(sprite.sprite, dimensions)
+        if isinstance(sprite.sprite, pygame.Surface):
+            SCREEN.blit(sprite.sprite, dimensions)
+        elif isinstance(sprite.sprite, Animation):
+            SCREEN.blit(sprite.sprite.get_image(), dimensions)
 
     def drawLevel(self, camera):
         try:
@@ -171,7 +174,7 @@ class _Level():
 
     def addKoopa(self, x, y):
         self.entityList.append(
-            Koopa(SPRITE_COLLECTION, x, y, self)
+            Koopa(x, y, self)
         )
 
 LEVEL: _Level = _Level()

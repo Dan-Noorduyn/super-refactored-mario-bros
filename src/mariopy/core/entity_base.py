@@ -1,4 +1,5 @@
 from copy import copy
+from enum import Enum
 
 import pygame
 
@@ -108,7 +109,7 @@ class Coin(EntityBase):
     def update(self, cam):
         if self.alive:
             self.animation.update()
-            SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y))
+            SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x, self.rect.y))
 
 class Goomba(EntityBase):
     def __init__(self, spriteColl, x, y, level):
@@ -131,8 +132,8 @@ class Goomba(EntityBase):
             self.onDead(camera)
 
     def drawGoomba(self, camera):
-        SCREEN.blit(self.animation.image, (self.rect.x + camera.x, self.rect.y))
         self.animation.update()
+        SCREEN.blit(self.animation.get_image(), (self.rect.x + camera.x, self.rect.y))
 
     def onDead(self, camera):
         if self.timer == 0:
@@ -187,10 +188,14 @@ class Item():
             DASHBOARD.drawText("100", self.ItemPos.get_x() + 3 + cam.x, self.ItemPos.get_y(), 8)
 
 
-
+class _Koopa_State(Enum):
+    ALIVE = 1
+    SLEEPING = 2
+    BOUNCING = 3
+    DEAD = 4
 
 class Koopa(EntityBase):
-    def __init__(self, spriteColl, x, y, level):
+    def __init__(self, x, y, level):
         super(Koopa, self).__init__(y - 1, x, 1.25)
         self.animation = Animation(
             [
@@ -216,14 +221,14 @@ class Koopa(EntityBase):
     def drawKoopa(self, camera):
         if self.leftrightTrait.direction == -1:
             SCREEN.blit(
-                self.animation.image, (self.rect.x + camera.x, self.rect.y - 32)
+                self.animation.get_image(), (self.rect.x + camera.x, self.rect.y - 32)
             )
         else:
             SCREEN.blit(
-                pygame.transform.flip(self.animation.image, True, False),
+                pygame.transform.flip(self.animation.get_image(), True, False),
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
-     
+
     def shellBouncing(self, camera):
         self.leftrightTrait.speed = 4
         self.applyGravity()

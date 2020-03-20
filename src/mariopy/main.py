@@ -12,7 +12,7 @@ class _Game_Controller():
 
     def run(self):
         while True:
-            pygame.display.set_caption("Super Refactored Mario Python 🍄")
+            pygame.display.set_caption("Super Refactored Mario Python")
             MENU.run()
 
             mario = Mario(0, 0)
@@ -25,6 +25,7 @@ class _Game_Controller():
                     mario.update()
                 pygame.display.update()
                 self.__clock.tick(MAX_FRAME_RATE)
+            MENU.start = False
 
 
 if __name__ == "__main__":
