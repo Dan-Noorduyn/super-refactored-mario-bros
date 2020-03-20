@@ -29,7 +29,7 @@ class PauseMenu:
         self.game_controller = game_controller
         self.state = 0
         self.start = False
-        self.spritesheet = Spritesheet("./resources/img/title_SCREEN.png")
+        self.spritesheet = Spritesheet("./resources/img/title_screen.png")
         self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
         self.dot = self.spritesheet.image_at(
             0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
@@ -315,7 +315,7 @@ class MainMenu:
                     if self.in_choosing_level:
                         self.in_choosing_level = False
                         DASHBOARD.state = "start"
-                        DASHBOARD.time = 0
+                        DASHBOARD.time = 420
                         LEVEL.loadLevel(self.level_names[self.curr_selected_level])
                         DASHBOARD.levelName = self.level_names[self.curr_selected_level].split("Level")[
                             1]

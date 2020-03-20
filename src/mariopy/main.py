@@ -26,7 +26,7 @@ class _Game_Controller():
                     mario.update()
                 pygame.display.update()
                 self.__clock.tick(MAX_FRAME_RATE)
-            MENU.start = False
+            self.MENU.start = False
 
 
 
