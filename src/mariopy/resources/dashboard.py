@@ -11,18 +11,19 @@ class Dashboard():
         self.coins = 0
         self.ticks = 0
         self.time = 420
+        self.lives = 3
         self.new_level = False
         self.sprite_sheet = Spritesheet("./resources/img/title_screen.png")
         self.mushroom_life = self.sprite_sheet.image_at(
             0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
 
-    def update(self, mario_lives):
+    def update(self):
         self.drawText("MARIO", 20, 20, 15)
         self.drawText(self.pointString(), 20, 37, 15)
 
         self.drawText("LIVES", 150, 20, 15)
-        for lives in range(mario_lives):
+        for lives in range(self.lives):
             if lives == 0:
                 SCREEN.blit(self.mushroom_life, (150, 37))
             if lives == 1:
@@ -44,9 +45,6 @@ class Dashboard():
         if self.ticks == 60:
             self.ticks = 0
             self.time -= 1
-        # times ran out
-        if self.time == 0:
-            self.mario.gameOver()
 
     def drawText(self, text, x, y, size):
         for char in text:

@@ -40,6 +40,7 @@ class Mario(EntityBase):
         self.pause = False
         self.pauseObj = PauseMenu(self)
         self.lives = 3
+
     def update(self) :
         self.updateTraits()
         self.moveMario()
@@ -142,8 +143,3 @@ class Mario(EntityBase):
     def setPos(self,x,y):
         self.rect.x = x
         self.rect.y = y
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 9bd4050b6aebd6fc3ab254b2918a6da0223be19f
