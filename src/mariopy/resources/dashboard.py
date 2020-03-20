@@ -50,7 +50,7 @@ class Dashboard():
     def drawText(self, text, x, y, size):
         for char in text:
             charSprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
-            print(charSprite)
+            # print(charSprite)
             SCREEN.blit(charSprite, (x, y))
             if char == " ":
                 x += size//2
