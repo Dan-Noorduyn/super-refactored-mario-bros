@@ -17,6 +17,7 @@ class Mario(EntityBase):
         super(Mario, self).__init__(x, y, gravity)
         self.camera = Camera(self.rect, self, LEVEL.levelLength)
         self.input = Input(self)
+        self.earnedPoints = 0
         self.inAir = False
         self.inJump = False
         self.animation = Animation(
@@ -72,12 +73,14 @@ class Mario(EntityBase):
     def _onCollisionWithItem(self, item):
         self.levelObj.entityList.remove(item)
         DASHBOARD.points += 100
+        self.earnedPoints += 100
         DASHBOARD.coins += 1
         SOUND_CONTROLLER.play_sfx(COIN_SOUND)
 
     def _onCollisionWithBlock(self, block):
         if not block.triggered:
             DASHBOARD.coins += 1
+            self.earnedPoints += 100
             SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
         block.triggered = True
 
@@ -114,9 +117,12 @@ class Mario(EntityBase):
             ent.timer = 0
             ent.alive = "sleeping"
         DASHBOARD.points += 100
+        self.earnedPoints += 100
 
     def gameOver(self):
         self.lives -= 1
+        DASHBOARD.points -= self.earnedPoints
+        self.earnedPoints = 0
         srf = pygame.Surface((640, 480))
         srf.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         srf.set_alpha(128)
@@ -147,6 +153,8 @@ class Mario(EntityBase):
                 if int(contents) < DASHBOARD.points:
                     highscore_file = open("resources/highscore.txt", "w+")
                     highscore_file.write(str(DASHBOARD.points))
+            DASHBOARD.points = 0
+            
         else:
             DASHBOARD.state = "start"
             DASHBOARD.time = 420
@@ -156,6 +164,7 @@ class Mario(EntityBase):
             DASHBOARD.lives = self.lives
             SOUND_CONTROLLER.play_music(SOUNDTRACK)
             self.camera.pos = Vector2D(self.rect.x, self.rect.y)
+        
 
 
     def getPos(self):
