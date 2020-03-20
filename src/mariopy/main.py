@@ -4,6 +4,7 @@ from core.old_code import DASHBOARD, MENU, Mario
 
 MAX_FRAME_RATE: int = 60
 
+
 class _Game_Controller():
     def __init__(self):
         self.__clock = pygame.time.Clock()
@@ -23,6 +24,7 @@ class _Game_Controller():
                     mario.update()
                 pygame.display.update()
                 self.__clock.tick(MAX_FRAME_RATE)
+
 
 if __name__ == "__main__":
     GAME_CONTROLLER = _Game_Controller()
