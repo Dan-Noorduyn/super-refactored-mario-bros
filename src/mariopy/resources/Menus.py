@@ -190,7 +190,7 @@ class MainMenu:
         if highscore_file.mode == 'r':
             contents =highscore_file.read()
             highscore_file.close()
-            DASHBOARD.drawText(contents, 20, 180, 15)
+            DASHBOARD.drawText(contents.strip(), 20, 180, 15)
 
     def drawMenuBackground(self, withBanner=True):
         for y in range(0, 13):
