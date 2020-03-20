@@ -36,7 +36,7 @@ class Animation:
     def __init__(self, images: list, idle_sprite: pygame.Surface = None,
                  air_sprite: pygame.Surface = None, delta_time: int = 7):
         self.__images: list = images
-        self.__timer: int = 0
+        self.timer: int = 0
         self.__index: int = 0
         self.__image: pygame.Surface = self.__images[self.__index]
         self.__default_img: pygame.Surface = idle_sprite
@@ -44,8 +44,8 @@ class Animation:
         self.__delta_time: pygame.Surface = delta_time
 
     def update(self):
-        self.__timer += 1
-        if self.__timer % self.__delta_time == 0:
+        self.timer += 1
+        if self.timer % self.__delta_time == 0:
             self.__index = (self.__index + 1) % len(self.__images)
         self.__image = self.__images[self.__index]
 

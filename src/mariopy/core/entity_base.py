@@ -119,8 +119,8 @@ class Goomba(EntityBase):
                 SPRITE_COLLECTION.get("goomba-2"),
             ]
         )
-        print(SPRITE_COLLECTION.get("goomba-1"))
-        print(SPRITE_COLLECTION.get("goomba-2"))
+        # print(SPRITE_COLLECTION.get("goomba-1"))
+        # print(SPRITE_COLLECTION.get("goomba-2"))
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
 
@@ -134,7 +134,7 @@ class Goomba(EntityBase):
 
     def drawGoomba(self, camera):
         self.animation.update()
-        print("updating goomba")
+        # print("updating goomba")
         SCREEN.blit(self.animation.get_image(), (self.rect.x + camera.x, self.rect.y))
 
     def onDead(self, camera):
@@ -173,6 +173,7 @@ class Item():
             dashboard.points += 100
             SOUND_CONTROLLER.play_sfx(COIN_SOUND)
         self.coin_animation.update()
+
         if self.coin_animation.timer < 45:
             if self.coin_animation.timer < 15:
                 self.itemVel -= Vector2D(0, 0.5)
@@ -282,7 +283,6 @@ class Koopa(EntityBase):
 
 class RandomBox(EntityBase):
     def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
-        print(x, y)
         super(RandomBox, self).__init__(x, y, gravity)
         
         self.animation = copy(SPRITE_COLLECTION.get("randomBox"))
