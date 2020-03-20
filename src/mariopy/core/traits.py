@@ -16,36 +16,77 @@ class Collider:
     def checkX(self):
         if self.leftLevelBorderReached() or self.rightLevelBorderReached():
             return
-        x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
-
-        r_x, r_y = self.entity.rect.x, self.entity.rect.y
-        w, h = self.entity.rect.w, self.entity.rect.h
-
-        tiles = [
-            self.level[y - 1][x - 1], self.level[y - 1][x], self.level[y - 1][x + 1],
-            self.level[y][x - 1], self.level[y][x], self.level[y][x + 1],
-            self.level[y + 1][x - 1], self.level[y + 1][x], self.level[y + 1][x + 1],
-        ]
-
-        def _get_pos_idx(x, t):
-            return int((x + t) / 32)
-
-        self.entity.onGround = False
-
-        for col in self.level[y - 1 : _get_pos_idx(r_y, h) + 1]:
-            for tile in col[x - 1 : _get_pos_idx(r_x, w) + 1]:
+        try:
+            rows = [
+                self.level[self.entity.getPosIndex().get_x()],
+                self.level[self.entity.getPosIndex().get_y() + 1],
+            ]
+        except Exception:
+            return
+        for row in rows:
+            tiles = row[self.entity.getPosIndex().get_x() : self.entity.getPosIndex().get_x() + 2]
+            for tile in tiles:
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
                         if self.entity.vel.get_x() > 0:
-                            self.entity.rect.x = int(tile.rect.x - w)
-                            self.entity.vel.set_x(0)
+                            self.entity.rect.right = tile.rect.left
+                            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
                         if self.entity.vel.get_x() < 0:
-                            self.entity.rect.x = round(tile.rect.x + w)
-                            self.entity.vel.set_x(0)
+                            self.entity.rect.left = tile.rect.right
+                            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
+
+
+        # def _get_pos_idx(x, t):
+        #     return int((x + t) / 32)
+
+        # self.entity.onGround = False
+
+        # for col in self.level[y - 1 : _get_pos_idx(r_y, h) + 1]:
+        #     for tile in col[x - 1 : _get_pos_idx(r_x, w) + 1]:
+        #         if tile.rect is not None:
+        #             if self.entity.rect.colliderect(tile.rect):
+        #                 if self.entity.vel.get_x() > 0:
+        #                     self.entity.rect.x = int(tile.rect.x - w)
+        #                     self.entity.vel.set_x(0)
+        #                 if self.entity.vel.get_x() < 0:
+        #                     self.entity.rect.x = round(tile.rect.x + w)
+        #                     self.entity.vel.set_x(0)
+        #                 if self.entity.vel.get_y() > 0:
+        #                     self.entity.onGround = True
+        #                     self.entity.rect.y = int(tile.rect.y - h)
+        #                     self.entity.vel.set_y(0)
+        #                     # reset jump on bottom
+        #                     if self.entity.traits is not None:
+        #                         if "jumpTrait" in self.entity.traits:
+        #                             self.entity.traits["jumpTrait"].reset()
+        #                         if "bounceTrait" in self.entity.traits:
+        #                             self.entity.traits["bounceTrait"].reset()
+        #                 if self.entity.vel.get_y() < 0:
+        #                     self.entity.rect.y = round(tile.rect.y + h)
+        #                     self.entity.vel.set_y(0)
+
+    def checkY(self):
+        self.entity.onGround = False
+        try:
+            rows = [
+                self.level[self.entity.getPosIndex().get_x()],
+                self.level[self.entity.getPosIndex().get_y() + 1],
+            ]
+        except Exception:
+            try:
+                self.entity.gameOver()
+            except Exception:
+                self.entity.alive = None
+            return
+        for row in rows:
+            tiles = row[self.entity.getPosIndex().get_x() : self.entity.getPosIndex().get_x() + 2]
+            for tile in tiles:
+                if tile.rect is not None:
+                    if self.entity.rect.colliderect(tile.rect):
                         if self.entity.vel.get_y() > 0:
                             self.entity.onGround = True
-                            self.entity.rect.y = int(tile.rect.y - h)
-                            self.entity.vel.set_y(0)
+                            self.entity.rect.bottom = tile.rect.top
+                            self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
                             # reset jump on bottom
                             if self.entity.traits is not None:
                                 if "jumpTrait" in self.entity.traits:
@@ -53,30 +94,9 @@ class Collider:
                                 if "bounceTrait" in self.entity.traits:
                                     self.entity.traits["bounceTrait"].reset()
                         if self.entity.vel.get_y() < 0:
-                            self.entity.rect.y = round(tile.rect.y + h)
-                            self.entity.vel.set_y(0)
+                            self.entity.rect.top = tile.rect.bottom
+                            self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
 
-    def checkY(self):
-        self.entity.onGround = False
-        x, y = self.entity.getPosIndex().get_x(), self.entity.getPosIndex().get_y()
-        tiles = [self.level[y - 1][x], self.level[y][x], self.level[y + 1][x]]
-
-        for tile in tiles:
-            if tile.rect is not None:
-                if self.entity.rect.colliderect(tile.rect):
-                    if self.entity.vel.get_y() > 0:
-                        self.entity.onGround = True
-                        self.entity.rect.y = round(tile.rect.y - self.entity.rect.h)
-                        self.entity.vel.set_y(0)
-                        # reset jump on bottom
-                        if self.entity.traits is not None:
-                            if "jumpTrait" in self.entity.traits:
-                                self.entity.traits["jumpTrait"].reset()
-                            if "bounceTrait" in self.entity.traits:
-                                self.entity.traits["bounceTrait"].reset()
-                    if self.entity.vel.get_y() < 0:
-                        self.entity.rect.y = tile.rect.bottom
-                        self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
 
     def rightLevelBorderReached(self):
         if self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1:
