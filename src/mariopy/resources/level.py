@@ -1,4 +1,5 @@
 import json
+from sys import stdout
 
 import pygame
 
@@ -30,14 +31,18 @@ class _Level():
             self.levelLength = data["length"]
 
     def loadEntities(self, data):
-        try:
-            [self.addRandomBox(x, y) for x, y in data["level"]["entities"]["randomBox"]]
+        # json.dump(data, stdout, indent=4)
+        # try:
+            for x, y in data["level"]["entities"]["randomBox"]:
+                print(x, y)
+                self.addRandomBox(x, y)
+            # [self.addRandomBox(x, y) for x, y in data["level"]["entities"]["randomBox"]]
             [self.addGoomba(x, y) for x, y in data["level"]["entities"]["Goomba"]]
             [self.addKoopa(x, y) for x, y in data["level"]["entities"]["Koopa"]]
             [self.addCoin(x, y) for x, y in data["level"]["entities"]["coin"]]
-        except:
+        # except:
             #if no entities in Level
-            pass
+            # ...
 
     def loadLayers(self, data):
         layers = []
@@ -45,7 +50,7 @@ class _Level():
             layers.append(
                 (
                     [
-                        Tile(SPRITE_COLLECTION.get("sky"), pygame.Rect(-100, -100, 0, 0))
+                        Tile(SPRITE_COLLECTION.get("sky"), None)
                         for y in range(*data["level"]["layers"]["sky"]["y"])
                     ]
                     + [
@@ -67,7 +72,7 @@ class _Level():
         for x, y, z in data["level"]["objects"]["pipe"]:
             self.addPipeSprite(x, y, z)
         for x, y in data["level"]["objects"]["sky"]:
-            self.level[y][x] = Tile(SPRITE_COLLECTION.get("sky"), pygame.Rect(-100, -100, 0, 0))
+            self.level[y][x] = Tile(SPRITE_COLLECTION.get("sky"), None)
         for x, y in data["level"]["objects"]["ground"]:
             self.level[y][x] = Tile(
                 SPRITE_COLLECTION.get("ground"),
@@ -85,6 +90,7 @@ class _Level():
         if isinstance(sprite.sprite, pygame.Surface):
             SCREEN.blit(sprite.sprite, dimensions)
         elif isinstance(sprite.sprite, Animation):
+            sprite.sprite.update()
             SCREEN.blit(sprite.sprite.get_image(), dimensions)
 
     def drawLevel(self, camera):
@@ -111,7 +117,7 @@ class _Level():
                         SPRITE_COLLECTION.get(
                             "cloud{}_{}".format(yOff + 1, xOff + 1)
                         ),
-                        pygame.Rect(-100, -100, 0, 0),
+                        None,
                     )
         except IndexError:
             return
@@ -142,21 +148,20 @@ class _Level():
 
     def addBushSprite(self, x, y):
         try:
-            self.level[y][x] = Tile(SPRITE_COLLECTION.get("bush_1"), pygame.Rect(-100, -100, 0, 0))
+            self.level[y][x] = Tile(SPRITE_COLLECTION.get("bush_1"), None)
             self.level[y][x + 1] = Tile(
-                SPRITE_COLLECTION.get("bush_2"), pygame.Rect(-100, -100, 0, 0)
+                SPRITE_COLLECTION.get("bush_2"), None
             )
             self.level[y][x + 2] = Tile(
-                SPRITE_COLLECTION.get("bush_3"), pygame.Rect(-100, -100, 0, 0)
+                SPRITE_COLLECTION.get("bush_3"), None
             )
         except IndexError:
             return
 
     def addRandomBox(self, x, y):
-        self.level[y][x] = Tile(None, pygame.Rect(x * 32, y * 32 - 1, 32, 32))
+        self.level[y][x] = Tile(SPRITE_COLLECTION.get("randomBox"), pygame.Rect(x * 32, y * 32 - 1, 32, 32))
         self.entityList.append(
             RandomBox(
-                SCREEN,
                 SPRITE_COLLECTION,
                 x,
                 y,

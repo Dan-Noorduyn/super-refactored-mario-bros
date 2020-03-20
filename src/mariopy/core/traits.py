@@ -162,7 +162,7 @@ class goTrait:
             if not self.entity.inAir:
                 self.animation.update()
             else:
-                self.animation.inAir()
+                self.animation.in_air()
         else:
             self.animation.update()
             if self.entity.vel.get_x() >= 0:
@@ -172,7 +172,7 @@ class goTrait:
             if int(self.entity.vel.get_x()) == 0:
                 self.entity.vel = Vector2D(0, self.entity.vel.get_y())
                 if self.entity.inAir:
-                    self.animation.inAir()
+                    self.animation.in_air()
                 else:
                     self.animation.idle()
         self.drawEntity()

@@ -107,19 +107,20 @@ class Coin(EntityBase):
         self.type = "Item"
 
     def update(self, cam):
-        if self.alive:
-            self.animation.update()
-            SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x, self.rect.y))
+        self.animation.update()
+        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x, self.rect.y))
 
 class Goomba(EntityBase):
     def __init__(self, spriteColl, x, y, level):
-        super(Goomba, self).__init__(y, x - 1, 1.25)
+        super(Goomba, self).__init__(x, y - 1, 1.25)
         self.animation = Animation(
             [
                 SPRITE_COLLECTION.get("goomba-1"),
                 SPRITE_COLLECTION.get("goomba-2"),
             ]
-        )   
+        )
+        print(SPRITE_COLLECTION.get("goomba-1"))
+        print(SPRITE_COLLECTION.get("goomba-2"))
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
 
@@ -133,6 +134,7 @@ class Goomba(EntityBase):
 
     def drawGoomba(self, camera):
         self.animation.update()
+        print("updating goomba")
         SCREEN.blit(self.animation.get_image(), (self.rect.x + camera.x, self.rect.y))
 
     def onDead(self, camera):
@@ -147,7 +149,7 @@ class Goomba(EntityBase):
 
     def drawFlatGoomba(self, camera):
         SCREEN.blit(
-            SPRITE_COLLECTION.get("goomba-flat").image,
+            SPRITE_COLLECTION.get("goomba-flat"),
             (self.rect.x + camera.x, self.rect.y),
         )
 
@@ -160,10 +162,9 @@ class Goomba(EntityBase):
 
 class Item():
     def __init__(self, collection, x, y):
-        super(Item, self).__init__(8, SCREEN)
         self.ItemPos = Vector2D(x, y)
         self.itemVel = Vector2D(0, 0)
-        self.coin_animation = copy(collection.get("coin-item").animation)
+        self.coin_animation = copy(collection.get("coin-item"))
         self.sound_played = False
 
     def spawnCoin(self, cam, dashboard):
@@ -232,7 +233,7 @@ class Koopa(EntityBase):
     def shellBouncing(self, camera):
         self.leftrightTrait.speed = 4
         self.applyGravity()
-        self.animation.image = SPRITE_COLLECTION.get("koopa-hiding").image
+        self.animation.set_image(SPRITE_COLLECTION.get("koopa-hiding"))
         self.drawKoopa(camera)
         self.leftrightTrait.update()
 
@@ -245,7 +246,7 @@ class Koopa(EntityBase):
             self.vel -= Vector2D(0, 0.5)
             self.rect.y += self.vel.get_y()
             SCREEN.blit(
-                SPRITE_COLLECTION.get("koopa-hiding").image,
+                SPRITE_COLLECTION.get("koopa-hiding"),
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
         else:
@@ -254,7 +255,7 @@ class Koopa(EntityBase):
             self.textPos += Vector2D(0, -0.5)
             DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
             SCREEN.blit(
-                SPRITE_COLLECTION.get("koopa-hiding").image,
+                SPRITE_COLLECTION.get("koopa-hiding"),
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
             if self.timer > 500:
@@ -265,7 +266,7 @@ class Koopa(EntityBase):
     def sleepingInShell(self, camera):
         if self.timer < self.timeAfterDeath:
             SCREEN.blit(
-                SPRITE_COLLECTION.get("koopa-hiding").image,
+                SPRITE_COLLECTION.get("koopa-hiding"),
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
         else:
@@ -281,9 +282,10 @@ class Koopa(EntityBase):
 
 class RandomBox(EntityBase):
     def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
+        print(x, y)
         super(RandomBox, self).__init__(x, y, gravity)
         
-        self.animation = copy(SPRITE_COLLECTION.get("randomBox").animation)
+        self.animation = copy(SPRITE_COLLECTION.get("randomBox"))
         self.type = "Block"
         self.triggered = False
         self.time = 0
@@ -295,7 +297,7 @@ class RandomBox(EntityBase):
         if self.alive and not self.triggered:
             self.animation.update()
         else:
-            self.animation.image = SPRITE_COLLECTION.get("empty").image
+            self.animation.set_image(SPRITE_COLLECTION.get("empty"))
             self.item.spawnCoin(cam, DASHBOARD)
             if self.time < self.maxTime:
                 self.time += 1
@@ -305,10 +307,10 @@ class RandomBox(EntityBase):
                     self.time += 1
                     self.rect.y += self.vel
         SCREEN.blit(
-            SPRITE_COLLECTION.get("sky").image,
+            SPRITE_COLLECTION.get("sky"),
             (self.rect.x + cam.x, self.rect.y + 2),
         )
-        SCREEN.blit(self.animation.image, (self.rect.x + cam.x, self.rect.y - 1))
+        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x, self.rect.y - 1))
 
 class Camera:
     def __init__(self, pos, entity):
