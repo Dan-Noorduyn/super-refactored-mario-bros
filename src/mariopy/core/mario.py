@@ -10,7 +10,7 @@ from core.traits import *
 from utils.physics import Vector2D
 from resources.display import SCREEN, Animation, SPRITE_COLLECTION
 from resources.dashboard import DASHBOARD
-from core.old_code import Pause
+from resources.Menus import PauseMenu
 
 class Mario(EntityBase):
     def __init__(self, x, y, gravity = 0.75):
@@ -38,8 +38,8 @@ class Mario(EntityBase):
         self.EntityCollider = EntityCollider(self)
         self.restart = False
         self.pause = False
-        self.pauseObj = Pause(self)
-    
+        self.pauseObj = PauseMenu(self)
+
     def update(self) :
         self.updateTraits()
         self.moveMario()
@@ -141,4 +141,3 @@ class Mario(EntityBase):
     def setPos(self,x,y):
         self.rect.x = x
         self.rect.y = y
-

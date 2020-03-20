@@ -1,28 +1,28 @@
 import pygame
 
-from .display import FONT_SPRITES, SCREEN
+from .display import FONT_SPRITES, SCREEN, Spritesheet
 
 
 class Dashboard():
-    def __init__(self, mario):
+    def __init__(self):
         self.state = "menu"
         self.level_name = ""
         self.points = 0
         self.coins = 0
         self.ticks = 0
         self.time = 420
-        self.mario = mario
         self.new_level = False
-        self.mushroom_life = self.spritesheet.image_at(
+        self.sprite_sheet = Spritesheet("./resources/img/title_screen.png")
+        self.mushroom_life = self.sprite_sheet.image_at(
             0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True
         )
 
-    def update(self):
+    def update(self, mario_lives):
         self.drawText("MARIO", 20, 20, 15)
         self.drawText(self.pointString(), 20, 37, 15)
 
         self.drawText("LIVES", 150, 20, 15)
-        for lives in range(self.mario.lives):
+        for lives in range(mario_lives):
             if lives == 0:
                 SCREEN.blit(self.mushroom_life, (150, 37))
             if lives == 1:

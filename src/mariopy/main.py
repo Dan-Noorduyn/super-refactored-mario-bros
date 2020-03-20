@@ -1,6 +1,7 @@
 import pygame
 from resources.level import LEVEL
-from core.old_code import DASHBOARD, MENU
+from resources.Menus import MainMenu, PauseMenu
+from resources.dashboard import DASHBOARD
 from core.mario import *
 
 MAX_FRAME_RATE: int = 60
@@ -9,11 +10,11 @@ MAX_FRAME_RATE: int = 60
 class _Game_Controller():
     def __init__(self):
         self.__clock = pygame.time.Clock()
-
+        self.MENU = MainMenu()
     def run(self):
         while True:
             pygame.display.set_caption("Super Refactored Mario Python 🍄")
-            MENU.run()
+            self.MENU.run()
 
             mario = Mario(0, 0)
             while not mario.restart:
@@ -21,7 +22,7 @@ class _Game_Controller():
                     mario.pauseObj.update()
                 else:
                     LEVEL.drawLevel(mario.camera)
-                    DASHBOARD.update()
+                    DASHBOARD.update(mario.lives)
                     mario.update()
                 pygame.display.update()
                 self.__clock.tick(MAX_FRAME_RATE)
