@@ -121,6 +121,7 @@ class Mario(EntityBase):
 
     def gameOver(self):
         self.lives -= 1
+        DASHBOARD.coins = 0
         DASHBOARD.points -= self.earnedPoints
         self.earnedPoints = 0
         srf = pygame.Surface((640, 480))
@@ -154,6 +155,7 @@ class Mario(EntityBase):
                     highscore_file = open("resources/highscore.txt", "w+")
                     highscore_file.write(str(DASHBOARD.points))
             DASHBOARD.points = 0
+            
             
         else:
             DASHBOARD.state = "start"
