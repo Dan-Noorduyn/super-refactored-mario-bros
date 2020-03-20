@@ -314,17 +314,18 @@ class RandomBox(EntityBase):
         SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x, self.rect.y - 1))
 
 class Camera:
-    def __init__(self, pos, entity):
+    def __init__(self, pos, entity, level_length):
         self.pos = Vector2D(pos.x, pos.y)
         self.entity = entity
         self.x = self.pos.get_x() * 32
         self.y = self.pos.get_y() * 32
         self.lastPos = self.pos.get_x()
+        self.level_length = level_length
 
     def move(self):
         self.lastPos = self.pos.get_x()
         xPosFloat = self.entity.getPosIndexAsFloat().get_x()
-        if  10 < xPosFloat < 100 and (-xPosFloat + 10) < self.lastPos :
+        if  10 < xPosFloat < self.level_length and (-xPosFloat + 10) < self.lastPos :
             self.pos = Vector2D(-xPosFloat + 10, self.pos.get_y())
         self.x = self.pos.get_x() * 32
         self.y = self.pos.get_y() * 32

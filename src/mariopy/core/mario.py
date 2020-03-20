@@ -15,7 +15,7 @@ from resources.Menus import PauseMenu
 class Mario(EntityBase):
     def __init__(self, x, y, gravity = 0.75):
         super(Mario, self).__init__(x, y, gravity)
-        self.camera = Camera(self.rect, self)
+        self.camera = Camera(self.rect, self, LEVEL.levelLength)
         self.input = Input(self)
         self.inAir = False
         self.inJump = False
@@ -52,8 +52,9 @@ class Mario(EntityBase):
 
 
     def moveMario(self):
-        self.rect.x += self.vel.get_x()
-        self.collision.checkX()
+        if(-(self.rect.x + self.vel.get_x()) < self.camera.x):
+            self.rect.x += self.vel.get_x()
+            self.collision.checkX()
         self.rect.y += self.vel.get_y()
         self.collision.checkY()
 
@@ -143,8 +144,7 @@ class Mario(EntityBase):
             if highscore_file.mode == 'r':
                 contents =highscore_file.read()
                 highscore_file.close()
-                contents.split()
-                if int(contents[0]) < DASHBOARD.points:
+                if int(contents) < DASHBOARD.points:
                     highscore_file = open("resources/highscore.txt", "w+")
                     highscore_file.write(str(DASHBOARD.points))
         else:
