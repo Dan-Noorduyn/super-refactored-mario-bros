@@ -16,24 +16,32 @@ class Collider:
     def checkX(self):
         if self.leftLevelBorderReached() or self.rightLevelBorderReached():
             return
-        try:
-            rows = [
-                self.level[self.entity.getPosIndex().get_x()],
-                self.level[self.entity.getPosIndex().get_y() + 1],
-            ]
-        except Exception:
-            return
+        # try:
+        rows = [
+            self.level[self.entity.getPosIndex().get_y()],
+        ]
+        # except Exception:
+        #     return
         for row in rows:
             tiles = row[self.entity.getPosIndex().get_x() : self.entity.getPosIndex().get_x() + 2]
             for tile in tiles:
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
-                        if self.entity.vel.get_x() > 0:
+                        if self.entity.rect.x < tile.rect.x:
                             self.entity.rect.right = tile.rect.left
-                            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
-                        if self.entity.vel.get_x() < 0:
+                            self.entity.vel.set_x(0)
+                        elif self.entity.rect.x > tile.rect.x:
                             self.entity.rect.left = tile.rect.right
-                            self.entity.vel = Vector2D(0, self.entity.vel.get_y())
+                            self.entity.vel.set_x(0)
+
+
+
+                        # if self.entity.rect.x < tile.rect.x + tile.rect.w:
+                        #     self.entity.rect.right = tile.rect.left
+                        #     self.entity.vel.set_x(0)
+                        # elif self.entity.rect.x > tile.rect.x:
+                        #     self.entity.rect.left = tile.rect.right
+                        #     self.entity.vel.set_x(0)
 
 
         # def _get_pos_idx(x, t):
@@ -69,7 +77,8 @@ class Collider:
         self.entity.onGround = False
         try:
             rows = [
-                self.level[self.entity.getPosIndex().get_y() + 1],
+                self.level[self.entity.getPosIndex().get_y() - 1],
+                self.level[self.entity.getPosIndex().get_y() + 1]
             ]
         except Exception:
             try:
@@ -82,7 +91,7 @@ class Collider:
             for tile in tiles:
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
-                        if self.entity.vel.get_y() > 0:
+                        if self.entity.rect.y < tile.rect.y:
                             self.entity.onGround = True
                             self.entity.rect.bottom = tile.rect.top
                             self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
@@ -92,9 +101,9 @@ class Collider:
                                     self.entity.traits["jumpTrait"].reset()
                                 if "bounceTrait" in self.entity.traits:
                                     self.entity.traits["bounceTrait"].reset()
-                        if self.entity.vel.get_y() < 0:
+                        if self.entity.rect.y > tile.rect.y:
                             self.entity.rect.top = tile.rect.bottom
-                            self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
+                            self.entity.vel.set_x(0)
 
 
     def rightLevelBorderReached(self):
