@@ -145,7 +145,6 @@ class Mario(EntityBase):
             self.input.checkForInput()
         if self.lives == 0:
             self.restart = True
-            DASHBOARD.points = 0
             highscore_file = open("resources/highscore.txt","r")
             if highscore_file.mode == 'r':
                 contents =highscore_file.read()
@@ -154,6 +153,8 @@ class Mario(EntityBase):
                 if int(contents[0]) < DASHBOARD.points:
                     highscore_file = open("resources/highscore.txt", "w+")
                     highscore_file.write(str(DASHBOARD.points))
+            DASHBOARD.points = 0
+            
         else:
             DASHBOARD.state = "start"
             DASHBOARD.time = 420
