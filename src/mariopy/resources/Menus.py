@@ -116,6 +116,7 @@ class MainMenu:
         self.loadSettings("./settings.json")
 
     def run(self):
+        DASHBOARD.state = "menu"
         while not self.start:
             self.update()
 
@@ -319,6 +320,7 @@ class MainMenu:
                         LEVEL.loadLevel(self.level_names[self.curr_selected_level-1])
                         DASHBOARD.levelName = self.level_names[self.curr_selected_level-1].split("Level")[
                             1]
+                        print(DASHBOARD.levelName)
                         self.start = True
                         return
                     if not self.in_settings:
