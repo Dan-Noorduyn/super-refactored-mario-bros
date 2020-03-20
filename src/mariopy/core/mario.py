@@ -116,7 +116,6 @@ class Mario(EntityBase):
 
     def gameOver(self):
         self.lives -= 1
-        print(self.lives)
         srf = pygame.Surface((640, 480))
         srf.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         srf.set_alpha(128)
@@ -147,5 +146,3 @@ class Mario(EntityBase):
     def setPos(self,x,y):
         self.rect.x = x
         self.rect.y = y
-
-
