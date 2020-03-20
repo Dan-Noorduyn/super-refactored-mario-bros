@@ -3,11 +3,11 @@ import sys
 import json
 import os
 
-from display import SCREEN, SPRITE_COLLECTION
-from dashboard import DASHBOARD, Spritesheet
+from .level import LEVEL
+from .display import SCREEN, SPRITE_COLLECTION, Spritesheet
+from .dashboard import DASHBOARD
 from scipy.ndimage.filters import gaussian_filter
-from sound import SOUNDTRACK, SOUND_CONTROLLER
-from level import LEVEL
+from .sound import SOUNDTRACK, SOUND_CONTROLLER
 
 
 class GaussianBlur:
@@ -87,7 +87,7 @@ class PauseMenu:
         self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
 
 
-class Menu:
+class MainMenu:
     def __init__(self):
         self.start = False
         self.in_settings = False
@@ -98,7 +98,7 @@ class Menu:
         self.level_names = []
         self.in_choosing_level = False
         self.level_count = 0
-        self.spritesheet = Spritesheet("./resources/img/title_SCREEN.png")
+        self.spritesheet = Spritesheet("./resources/img/title_screen.png")
         self.menu_banner = self.spritesheet.image_at(
             0,
             60,
