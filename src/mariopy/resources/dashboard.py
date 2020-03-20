@@ -34,7 +34,7 @@ class Dashboard():
         self.drawText("@x{}".format(self.coinString()), 310, 37, 15)
 
         self.drawText("WORLD", 420, 20, 15)
-        self.drawText(str(self.level_name), 410, 37, 15)
+        self.drawText(str(self.level_name), 420, 37, 15)
 
         self.drawText("TIME", 550, 20, 15)
         if self.state != "menu":
@@ -50,6 +50,7 @@ class Dashboard():
     def drawText(self, text, x, y, size):
         for char in text:
             charSprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
+            print(charSprite)
             SCREEN.blit(charSprite, (x, y))
             if char == " ":
                 x += size//2

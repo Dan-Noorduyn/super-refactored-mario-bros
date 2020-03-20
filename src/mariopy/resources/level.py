@@ -34,7 +34,7 @@ class _Level():
         # json.dump(data, stdout, indent=4)
         # try:
             for x, y in data["level"]["entities"]["randomBox"]:
-                print(x, y)
+                #print(x, y)
                 self.addRandomBox(x, y)
             # [self.addRandomBox(x, y) for x, y in data["level"]["entities"]["randomBox"]]
             [self.addGoomba(x, y) for x, y in data["level"]["entities"]["Goomba"]]

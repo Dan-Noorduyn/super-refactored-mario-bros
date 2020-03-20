@@ -12,7 +12,7 @@ class Spritesheet():
                 self.sheet = self.sheet.convert()
                 self.sheet.set_colorkey((255, 0, 220))
         except pygame.error:
-            print("Unable to load spritesheet image:", filename)
+            #print("Unable to load spritesheet image:", filename)
             raise SystemExit
 
     def image_at(self, x, y, scalingfactor, colorkey=None, ignoreTileSize=False,
