@@ -8,10 +8,12 @@ from core.input import *
 from utils.physics import Vector2D
 from resources.display import SCREEN, Animation, SPRITE_COLLECTION
 from resources.dashboard import DASHBOARD
+from resources.sound import MUSHROOM_APPEARS
+
 
 class Entity():
 
-    ## @brief Intitializes an entity with a position.
+    # @brief Intitializes an entity with a position.
     # @param x Initial x position of the entity.
     # @param y Initial y position of the entity.
     # @exception TypeError Arguments are not of type float.
@@ -26,12 +28,12 @@ class Entity():
         self.__vel: Vector2D = Vector2D(0, 0)
         self.__acc: Vector2D = Vector2D(0, 0)
 
-    ## @brief Gets the position of the entity.
+    # @brief Gets the position of the entity.
     # @returns The position of the entity.
     def get_pos(self) -> Vector2D:
         return Vector2D(self.__pos.get_x(), self.__pos.get_y())
 
-    ## @brief
+    # @brief
     def update_pos(self, v: Vector2D) -> None:
         self.__pos += v
 
@@ -60,14 +62,15 @@ class Entity():
         self.__vel += Vector2D(self.__acc.get_x(), self.__acc.get_y())
         self.__pos += Vector2D(self.__vel.get_y(), self.__vel.get_y())
 
+
 class EntityBase(pygame.sprite.Sprite):
     def __init__(self, x, y, gravity):
         pygame.sprite.Sprite.__init__(self)
         self.vel = Vector2D(0, 0)
         ##self.image = pygame.Surface([x, y])
-        ##print(self.image)
+        # print(self.image)
         ##self.rect = pygame.Rect(self.image.get_rect())
-        ##print(self.rect)
+        # print(self.rect)
         self.rect = pygame.Rect(x * 32, y * 32, 32, 32)
         self.gravity = gravity
         self.traits = None
@@ -99,7 +102,6 @@ class EntityBase(pygame.sprite.Sprite):
         return Vector2D(self.rect.x / 32.0, self.rect.y / 32.0)
 
 
-
 class Coin(EntityBase):
     def __init__(self, spriteCollection, x, y, gravity=0):
         super(Coin, self).__init__(x, y, gravity)
@@ -108,7 +110,9 @@ class Coin(EntityBase):
 
     def update(self, cam):
         self.animation.update()
-        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x, self.rect.y))
+        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x,
+                                                 self.rect.y))
+
 
 class Goomba(EntityBase):
     def __init__(self, spriteColl, x, y, level):
@@ -119,8 +123,8 @@ class Goomba(EntityBase):
                 SPRITE_COLLECTION.get("goomba-2"),
             ]
         )
-        #print(SPRITE_COLLECTION.get("goomba-1"))
-        #print(SPRITE_COLLECTION.get("goomba-2"))
+        # print(SPRITE_COLLECTION.get("goomba-1"))
+        # print(SPRITE_COLLECTION.get("goomba-2"))
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
 
@@ -135,7 +139,8 @@ class Goomba(EntityBase):
     def drawGoomba(self, camera):
         self.animation.update()
         #print("updating goomba")
-        SCREEN.blit(self.animation.get_image(), (self.rect.x + camera.x, self.rect.y))
+        SCREEN.blit(self.animation.get_image(), (self.rect.x + camera.x,
+                                                 self.rect.y))
 
     def onDead(self, camera):
         if self.timer == 0:
@@ -158,7 +163,9 @@ class Goomba(EntityBase):
 
     def movePointsTextUpAndDraw(self, camera):
         self.textPos += Vector2D(-0.5, 0)
-        DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+        DASHBOARD.drawText("100", self.textPos.get_x() + camera.x,
+                           self.textPos.get_y(), 8)
+
 
 class Item():
     def __init__(self, collection, x, y):
@@ -182,12 +189,14 @@ class Item():
                 self.itemVel += Vector2D(0, 0.5)
                 self.ItemPos += Vector2D(0, self.itemVel.get_y())
             SCREEN.blit(
-                self.coin_animation.get_image(), (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
+                self.coin_animation.get_image(), (self.ItemPos.get_x() + cam.x,
+                                                  self.ItemPos.get_y())
             )
         elif self.coin_animation.timer < 80:
             self.itemVel = Vector2D(0, -0.75)
             self.ItemPos += Vector2D(0, self.itemVel.get_y())
-            DASHBOARD.drawText("100", self.ItemPos.get_x() + 3 + cam.x, self.ItemPos.get_y(), 8)
+            DASHBOARD.drawText("100", self.ItemPos.get_x() + 3 + cam.x,
+                               self.ItemPos.get_y(), 8)
 
 
 class Koopa(EntityBase):
@@ -217,7 +226,8 @@ class Koopa(EntityBase):
     def drawKoopa(self, camera):
         if self.leftrightTrait.direction == -1:
             SCREEN.blit(
-                self.animation.get_image(), (self.rect.x + camera.x, self.rect.y - 32)
+                self.animation.get_image(), (self.rect.x + camera.x,
+                                             self.rect.y - 32)
             )
         else:
             SCREEN.blit(
@@ -237,7 +247,8 @@ class Koopa(EntityBase):
             self.textPos = Vector2D(self.rect.x + 3, self.rect.y - 32)
         if self.timer < self.timeAfterDeath:
             self.textPos += Vector2D(0, -0.5)
-            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x,
+                               self.textPos.get_y(), 8)
             self.vel -= Vector2D(0, 0.5)
             self.rect.y += self.vel.get_y()
             SCREEN.blit(
@@ -248,7 +259,8 @@ class Koopa(EntityBase):
             self.vel += Vector2D(0, 0.3)
             self.rect.y += self.vel.get_y()
             self.textPos += Vector2D(0, -0.5)
-            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x,
+                               self.textPos.get_y(), 8)
             SCREEN.blit(
                 SPRITE_COLLECTION.get("koopa-hiding"),
                 (self.rect.x + camera.x, self.rect.y - 32),
@@ -275,9 +287,9 @@ class Koopa(EntityBase):
         self.animation.update()
         self.leftrightTrait.update()
 
+
 class RandomBox(EntityBase):
     def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
-        #print(x, y)
         super(RandomBox, self).__init__(x, y, gravity)
 
         self.animation = copy(SPRITE_COLLECTION.get("randomBox"))
@@ -305,7 +317,76 @@ class RandomBox(EntityBase):
             SPRITE_COLLECTION.get("sky"),
             (self.rect.x + cam.x, self.rect.y + 2),
         )
-        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x, self.rect.y - 1))
+        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x,
+                                                 self.rect.y - 1))
+
+
+class MushroomItem(EntityBase):
+    def __init__(self, collection, x, y, level):
+        super(MushroomItem, self).__init__(x, y, 1.25)
+        self.pos = Vector2D(x*32, y*32)
+        self.type = "powerup"
+        self.mushroom_animation = copy(collection.get("mushroom"))
+        self.sound_played = False
+        self.alive = False
+        self.move = None
+
+    def spawnMushroom(self, cam):
+        if not self.sound_played:
+            self.sound_played = True
+            SOUND_CONTROLLER.play_sfx(MUSHROOM_APPEARS)
+
+        if self.timer < 33:
+            self.pos -= Vector2D(0, 1)
+
+            SCREEN.blit(
+                self.mushroom_animation.get_image(), (self.pos.get_x() +
+                                                      cam.x,
+                                                      self.pos.get_y())
+            )
+
+        self.alive = True
+        self.timer += 1
+
+    def update(self, cam):
+        if self.alive:
+            self.move = LeftRightWalkTrait(self, level)
+
+
+class PowerUpBox(EntityBase):
+    def __init__(self, spriteCollection, x, y, gravity=0):
+        super(PowerUpBox, self).__init__(x, y, gravity)
+
+        self.animation = copy(SPRITE_COLLECTION.get("PowerUpBox"))
+        self.type = "PowerBlock"
+        self.triggered = False
+        self.time = 0
+        self.maxTime = 10
+        self.x = x
+        self.y = y
+        self.vel = 1
+        self.item = None
+
+    def update(self, cam):
+        if self.alive and not self.triggered:
+            self.animation.update()
+        else:
+            self.animation.set_image(SPRITE_COLLECTION.get("empty"))
+            self.item.spawnMushroom(cam)
+            if self.time < self.maxTime:
+                self.time += 1
+                self.rect.y -= self.vel
+            else:
+                if self.time < self.maxTime * 2:
+                    self.time += 1
+                    self.rect.y += self.vel
+        SCREEN.blit(
+            SPRITE_COLLECTION.get("sky"),
+            (self.rect.x + cam.x, self.rect.y + 2),
+        )
+        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x,
+                                                 self.rect.y - 1))
+
 
 class Camera:
     def __init__(self, pos, entity, level_length):
@@ -319,7 +400,7 @@ class Camera:
     def move(self):
         self.lastPos = self.pos.get_x()
         xPosFloat = self.entity.getPosIndexAsFloat().get_x()
-        if  10 < xPosFloat < (self.level_length - 10)  and (-xPosFloat + 10) < self.lastPos :
+        if 10 < xPosFloat < (self.level_length - 10) and (-xPosFloat + 10) < self.lastPos:
             self.pos = Vector2D(-xPosFloat + 10, self.pos.get_y())
         self.x = self.pos.get_x() * 32
         self.y = self.pos.get_y() * 32

@@ -4,6 +4,7 @@ import pygame
 from core.input import *
 from resources.level import LEVEL
 from core.entity_base import *
+from resources.sound import SOUND_CONTROLLER, MUSHROOM_SOUND, BUMP_SOUND
 
 
 from core.traits import *
@@ -12,8 +13,9 @@ from resources.display import SCREEN, Animation, SPRITE_COLLECTION
 from resources.dashboard import DASHBOARD
 from resources.Menus import PauseMenu
 
+
 class Mario(EntityBase):
-    def __init__(self, x, y, gravity = 0.75):
+    def __init__(self, x, y, gravity=0.75):
         super(Mario, self).__init__(x, y, gravity)
         self.camera = Camera(self.rect, self, LEVEL.levelLength)
         self.input = Input(self)
@@ -40,6 +42,8 @@ class Mario(EntityBase):
         self.pause = False
         self.pauseObj = PauseMenu(self)
         self.lives = 3
+        self.big_size = False
+        self.timer = 121
         self.next = False
 
     def update(self):
@@ -75,10 +79,38 @@ class Mario(EntityBase):
             if isColliding:
                 if ent.type == "Item":
                     self._onCollisionWithItem(ent)
+                elif ent.type == "powerup":
+                    self._onCollisionWithMushroom(ent)
                 elif ent.type == "Block":
                     self._onCollisionWithBlock(ent)
-                elif ent.type == "Mob":
+                elif ent.type == "PowerBlock":
+                    self._onCollisionWithPowerBlock(ent)
+                elif ent.type == "Mob" and self.timer > 120:
                     self._onCollisionWithMob(ent, isColliding, isTop)
+
+    def _onCollisionWithPowerBlock(self, box):
+        if not box.triggered:
+            LEVEL.addMushroom(box.x, box.y)
+            box.item = (LEVEL.entityList[-1])
+            SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
+        box.triggered = True
+
+    def _onCollisionWithMushroom(self, item):
+        LEVEL.entityList.remove(item)
+        DASHBOARD.points += 100
+        self.earnedPoints += 100
+        self.big_size = True
+        self.animation = Animation(
+            [
+                SPRITE_COLLECTION.get("big_mario_run1"),
+                SPRITE_COLLECTION.get("big_mario_run2"),
+                SPRITE_COLLECTION.get("big_mario_run3"),
+            ],
+            SPRITE_COLLECTION.get("big_mario_idle"),
+            SPRITE_COLLECTION.get("big_mario_jump"),
+        )
+        item.alive = None
+        SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
 
     def _onCollisionWithItem(self, item):
         LEVEL.entityList.remove(item)
@@ -115,7 +147,20 @@ class Mario(EntityBase):
                 mob.leftrightTrait.direction = 1
             mob.alive = "shellBouncing"
         elif isColliding and mob.alive:
-            self.gameOver()
+            if self.big_size is True:
+                self.big_size = False
+                self.timer = 0
+                self.animation = Animation(
+                    [
+                        SPRITE_COLLECTION.get("mario_run1"),
+                        SPRITE_COLLECTION.get("mario_run2"),
+                        SPRITE_COLLECTION.get("mario_run3"),
+                    ],
+                    SPRITE_COLLECTION.get("mario_idle"),
+                    SPRITE_COLLECTION.get("mario_jump"),
+                )
+            else:
+                self.gameOver()
 
     def bounce(self):
         self.traits["bounceTrait"].jump = True
@@ -166,9 +211,9 @@ class Mario(EntityBase):
                 pygame.display.update()
                 self.input.checkForInput()
             self.restart = True
-            highscore_file = open("resources/highscore.txt","r")
+            highscore_file = open("resources/highscore.txt", "r")
             if highscore_file.mode == 'r':
-                contents =highscore_file.read()
+                contents = highscore_file.read()
                 highscore_file.close()
                 if int(contents) < DASHBOARD.points:
                     highscore_file = open("resources/highscore.txt", "w+")
@@ -187,6 +232,6 @@ class Mario(EntityBase):
     def getPos(self):
         return self.camera.x + self.rect.x, self.rect.y
 
-    def setPos(self,x,y):
+    def setPos(self, x, y):
         self.rect.x = x
         self.rect.y = y

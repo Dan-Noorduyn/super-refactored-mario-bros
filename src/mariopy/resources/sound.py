@@ -1,5 +1,6 @@
 from pygame import mixer
 
+
 class _Sound_Controller():
     def __init__(self):
         self.__music_ch: mixer.Channel = mixer.Channel(0)
@@ -42,12 +43,13 @@ class _Sound_Controller():
 
     def unmute_music(self) -> None:
         self.__music_muted = False
-    
+
     def music_muted(self) -> bool:
         return self.__music_muted
 
     def playing_music(self) -> bool:
         return self.__music_ch.get_busy()
+
 
 mixer.pre_init(44100, -16, 2, 4096)
 mixer.init()

@@ -4,57 +4,49 @@
     "size":[16,16],
     "sprites":[
         {
-            "name":"mario_idle",
+            "name":"big_mario_idle",
             "x":276,
-            "y":44,
+            "y":10,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
-            "name":"mario_run1",
+            "name":"big_mario_run1",
             "x":290,
-            "y":44,
+            "y":10,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
-            "name":"mario_run2",
+            "name":"big_mario_run2",
             "x":304,
-            "y":44,
+            "y":10,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
-            "name":"mario_run3",
+            "name":"big_mario_run3",
             "x":321,
-            "y":44,
+            "y":10,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
-            "name":"mario_break",
+            "name":"big_mario_break",
             "x":337,
-            "y":44,
+            "y":10,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
-            "name":"mario_jump",
+            "name":"big_mario_jump",
             "x":355,
-            "y":44,
-            "scalefactor":2,
-            "colorKey":-1,
-            "collision":false
-        },
-        {
-            "name":"mario_dead",
-            "x":355,
-            "y":44,
+            "y":10,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false

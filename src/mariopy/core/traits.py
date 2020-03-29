@@ -36,45 +36,6 @@ class Collider:
                             self.entity.rect.left = tile.rect.right
                             self.entity.vel.set_x(0)
 
-
-
-                        # if self.entity.rect.x < tile.rect.x + tile.rect.w:
-                        #     self.entity.rect.right = tile.rect.left
-                        #     self.entity.vel.set_x(0)
-                        # elif self.entity.rect.x > tile.rect.x:
-                        #     self.entity.rect.left = tile.rect.right
-                        #     self.entity.vel.set_x(0)
-
-
-        # def _get_pos_idx(x, t):
-        #     return int((x + t) / 32)
-
-        # self.entity.onGround = False
-
-        # for col in self.level[y - 1 : _get_pos_idx(r_y, h) + 1]:
-        #     for tile in col[x - 1 : _get_pos_idx(r_x, w) + 1]:
-        #         if tile.rect is not None:
-        #             if self.entity.rect.colliderect(tile.rect):
-        #                 if self.entity.vel.get_x() > 0:
-        #                     self.entity.rect.x = int(tile.rect.x - w)
-        #                     self.entity.vel.set_x(0)
-        #                 if self.entity.vel.get_x() < 0:
-        #                     self.entity.rect.x = round(tile.rect.x + w)
-        #                     self.entity.vel.set_x(0)
-        #                 if self.entity.vel.get_y() > 0:
-        #                     self.entity.onGround = True
-        #                     self.entity.rect.y = int(tile.rect.y - h)
-        #                     self.entity.vel.set_y(0)
-        #                     # reset jump on bottom
-        #                     if self.entity.traits is not None:
-        #                         if "jumpTrait" in self.entity.traits:
-        #                             self.entity.traits["jumpTrait"].reset()
-        #                         if "bounceTrait" in self.entity.traits:
-        #                             self.entity.traits["bounceTrait"].reset()
-        #                 if self.entity.vel.get_y() < 0:
-        #                     self.entity.rect.y = round(tile.rect.y + h)
-        #                     self.entity.vel.set_y(0)
-
     def checkY(self):
         self.entity.onGround = False
         try:
