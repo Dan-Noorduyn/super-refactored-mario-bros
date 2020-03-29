@@ -57,7 +57,6 @@ class Mario(EntityBase):
         if DASHBOARD.time == 0:
             self.gameOver()
 
-
     def drawMario(self):
         if self.traits["goTrait"].heading == 1:
             SCREEN.blit(self.animation.get_image(), self.getPos())
@@ -105,10 +104,6 @@ class Mario(EntityBase):
         box.triggered = True
 
     def _onCollisionWithMushroom(self, item):
-<<<<<<< HEAD
-=======
-        LEVEL.entityList.remove(item)
->>>>>>> fe893a2d4e279aad37015f098baf622727d0d5a8
         DASHBOARD.points += 100
         self.earnedPoints += 100
         if not self.big_size:

@@ -7,6 +7,7 @@ class Dashboard():
     def __init__(self):
         self.state = "menu"
         self.level_name = ""
+        self.earnedPoints = 0
         self.points = 0
         self.coins = 0
         self.ticks = 0
