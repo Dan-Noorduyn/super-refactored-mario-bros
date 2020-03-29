@@ -190,12 +190,6 @@ class Item():
             DASHBOARD.drawText("100", self.ItemPos.get_x() + 3 + cam.x, self.ItemPos.get_y(), 8)
 
 
-class _Koopa_State(Enum):
-    ALIVE = 1
-    SLEEPING = 2
-    BOUNCING = 3
-    DEAD = 4
-
 class Koopa(EntityBase):
     def __init__(self, x, y, level):
         super(Koopa, self).__init__(y - 1, x, 1.25)

@@ -20,11 +20,11 @@ class _Level():
     def __init__(self):
         self.levelLength: int = 0
         self.entityList: list = []
-        self.level = None
+        self.level: list = []
 
     def loadLevel(self, levelname):
-        self.entityList: list = []
-        self.level = None
+        self.entityList.clear()
+        self.level.clear()
         with open("./resources/levels/{}.json".format(levelname)) as jsonData:
             data: dict = json.load(jsonData)
             self.loadLayers(data)
@@ -35,7 +35,7 @@ class _Level():
     def loadEntities(self, data):
         if "entities" not in data["level"]:
             return
-
+        
         for x, y in data["level"]["entities"]["randomBox"]:
             self.addRandomBox(x, y)
         for x, y in data["level"]["entities"]["Goomba"]:
@@ -63,7 +63,7 @@ class _Level():
                     ]
                 )
             )
-        self.level = list(map(list, zip(*layers)))
+        self.level[:] = map(list, zip(*layers))
 
     def loadObjects(self, data):
         for x, y in data["level"]["objects"]["bush"]:

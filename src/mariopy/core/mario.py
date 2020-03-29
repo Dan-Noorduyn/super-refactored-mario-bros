@@ -34,23 +34,33 @@ class Mario(EntityBase):
             "goTrait": goTrait(self.animation, self.camera, self),
             "bounceTrait": bounceTrait(self),
         }
-        self.levelObj = LEVEL
-        self.collision = Collider(self, self.levelObj)
+        self.collision = Collider(self, LEVEL)
         self.EntityCollider = EntityCollider(self)
         self.restart = False
         self.pause = False
         self.pauseObj = PauseMenu(self)
         self.lives = 3
-    def update(self) :
+        self.next = False
+
+    def update(self):
+        self.input.checkForInput()
         self.updateTraits()
         self.moveMario()
         self.camera.move()
         self.applyGravity()
+        self.drawMario()
         self.checkEntityCollision()
-        self.input.checkForInput()
         if DASHBOARD.time == 0:
             self.gameOver()
 
+
+    def drawMario(self):
+        if self.traits["goTrait"].heading == 1:
+            SCREEN.blit(self.animation.get_image(), self.getPos())
+        elif self.traits["goTrait"].heading == -1:
+            SCREEN.blit(
+                pygame.transform.flip(self.animation.get_image(), True, False), self.getPos()
+            )
 
     def moveMario(self):
         if(-(self.rect.x + self.vel.get_x()) < self.camera.x):
@@ -60,7 +70,7 @@ class Mario(EntityBase):
         self.collision.checkY()
 
     def checkEntityCollision(self):
-        for ent in self.levelObj.entityList:
+        for ent in LEVEL.entityList:
             isColliding, isTop = self.EntityCollider.check(ent)
             if isColliding:
                 if ent.type == "Item":
@@ -71,7 +81,7 @@ class Mario(EntityBase):
                     self._onCollisionWithMob(ent, isColliding, isTop)
 
     def _onCollisionWithItem(self, item):
-        self.levelObj.entityList.remove(item)
+        LEVEL.entityList.remove(item)
         DASHBOARD.points += 100
         self.earnedPoints += 100
         DASHBOARD.coins += 1
@@ -119,6 +129,11 @@ class Mario(EntityBase):
         DASHBOARD.points += 100
         self.earnedPoints += 100
 
+    def next_level(self):
+        self.rect.x = 0
+        self.rect.y = 0
+        self.camera.pos = Vector2D(self.rect.x, self.rect.y)
+
     def gameOver(self):
         self.lives -= 1
         DASHBOARD.coins = 0
@@ -146,6 +161,10 @@ class Mario(EntityBase):
             pygame.display.update()
             self.input.checkForInput()
         if self.lives == 0:
+            SOUND_CONTROLLER.play_music(GAME_OVER)
+            while SOUND_CONTROLLER.playing_music():
+                pygame.display.update()
+                self.input.checkForInput()
             self.restart = True
             highscore_file = open("resources/highscore.txt","r")
             if highscore_file.mode == 'r':
@@ -155,19 +174,15 @@ class Mario(EntityBase):
                     highscore_file = open("resources/highscore.txt", "w+")
                     highscore_file.write(str(DASHBOARD.points))
             DASHBOARD.points = 0
-            
-            
         else:
             DASHBOARD.state = "start"
             DASHBOARD.time = 420
-            LEVEL.loadLevel("Level"+DASHBOARD.level_name)
+            LEVEL.loadLevel("Level" + DASHBOARD.level_name)
             self.rect.x = 0
             self.rect.y = 0
             DASHBOARD.lives = self.lives
             SOUND_CONTROLLER.play_music(SOUNDTRACK)
             self.camera.pos = Vector2D(self.rect.x, self.rect.y)
-        
-
 
     def getPos(self):
         return self.camera.x + self.rect.x, self.rect.y
