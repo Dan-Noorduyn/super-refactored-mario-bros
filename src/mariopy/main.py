@@ -13,6 +13,9 @@ class _Game_Controller():
         self.__clock = pygame.time.Clock()
         self.menu = MainMenu()
 
+    def _finish_game(self, mario):
+        ...
+
     def run(self):
         try:
             while True:

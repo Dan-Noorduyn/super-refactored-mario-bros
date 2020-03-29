@@ -99,7 +99,6 @@ class Mario(EntityBase):
         DASHBOARD.earnedPoints += 100
         if not self.big_size:
             self.big_size = True
-            self.animation = None
             self.animation = Animation(
                 [
                     SPRITE_COLLECTION.get("big_mario_run1"),
@@ -109,6 +108,7 @@ class Mario(EntityBase):
                 SPRITE_COLLECTION.get("big_mario_idle"),
                 SPRITE_COLLECTION.get("big_mario_jump"),
             )
+            self.traits["goTrait"].animation = self.animation
             self.update()
             self.drawMario()
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
@@ -152,7 +152,6 @@ class Mario(EntityBase):
             if self.big_size is True:
                 self.big_size = False
                 self.timer = 0
-                self.animation = None
                 self.animation = Animation(
                     [
                         SPRITE_COLLECTION.get("mario_run1"),
@@ -162,6 +161,7 @@ class Mario(EntityBase):
                     SPRITE_COLLECTION.get("mario_idle"),
                     SPRITE_COLLECTION.get("mario_jump"),
                 )
+                self.traits["goTrait"].animation = self.animation
                 self.update()
                 self.drawMario()
             else:
