@@ -47,6 +47,7 @@ class Mario(EntityBase):
         self.next = False
 
     def update(self):
+        self.timer += 1
         self.updateTraits()
         self.moveMario()
         self.camera.move()
@@ -84,7 +85,7 @@ class Mario(EntityBase):
                     self._onCollisionWithBlock(ent)
                 elif ent.type == "PowerBlock":
                     self._onCollisionWithPowerBlock(ent)
-                elif ent.type == "Mob" and self.timer > 1:
+                elif ent.type == "Mob" and self.timer > 30:
                     self._onCollisionWithMob(ent, isColliding, isTop)
 
     def _onCollisionWithPowerBlock(self, box):
