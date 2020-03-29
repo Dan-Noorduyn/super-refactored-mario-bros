@@ -48,13 +48,13 @@ class Mario(EntityBase):
 
     def update(self):
         self.timer += 1
-        self.input.checkForInput()
         self.updateTraits()
         self.moveMario()
         self.camera.move()
         self.applyGravity()
         self.drawMario()
         self.checkEntityCollision()
+        self.input.checkForInput()
         if DASHBOARD.time == 0:
             self.gameOver()
 
