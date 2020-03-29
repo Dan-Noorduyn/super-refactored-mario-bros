@@ -1,52 +1,52 @@
 {
     "spriteSheetURL": "./resources/img/characters.gif",
     "type":"character",
-    "size":[16,16],
+    "size":[16,32],
     "sprites":[
         {
             "name":"big_mario_idle",
-            "x":276,
-            "y":10,
+            "x":258,
+            "y":0,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"big_mario_run1",
-            "x":290,
-            "y":10,
+            "x":296,
+            "y":0,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"big_mario_run2",
-            "x":304,
-            "y":10,
+            "x":313,
+            "y":0,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"big_mario_run3",
-            "x":321,
-            "y":10,
+            "x":331,
+            "y":0,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"big_mario_break",
-            "x":337,
-            "y":10,
+            "x":405,
+            "y":0,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false
         },
         {
             "name":"big_mario_jump",
-            "x":355,
-            "y":10,
+            "x":368,
+            "y":0,
             "scalefactor":2,
             "colorKey":-1,
             "collision":false

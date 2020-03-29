@@ -67,9 +67,9 @@ class EntityBase(pygame.sprite.Sprite):
     def __init__(self, x, y, gravity):
         pygame.sprite.Sprite.__init__(self)
         self.vel = Vector2D(0, 0)
-        ##self.image = pygame.Surface([x, y])
+        # self.image = pygame.Surface([x, y])
         # print(self.image)
-        ##self.rect = pygame.Rect(self.image.get_rect())
+        # self.rect = pygame.Rect(self.image.get_rect())
         # print(self.rect)
         self.rect = pygame.Rect(x * 32, y * 32, 32, 32)
         self.gravity = gravity
@@ -138,7 +138,7 @@ class Goomba(EntityBase):
 
     def drawGoomba(self, camera):
         self.animation.update()
-        #print("updating goomba")
+        # print("updating goomba")
         SCREEN.blit(self.animation.get_image(), (self.rect.x + camera.x,
                                                  self.rect.y))
 
@@ -329,35 +329,36 @@ class RandomBox(EntityBase):
 
 
 class MushroomItem(EntityBase):
-    def __init__(self, collection, x, y, level):
-        super(MushroomItem, self).__init__(x, y, 1.25)
-        self.pos = Vector2D(x*32, y*32)
+    def __init__(self, x, y, level):
+        super(MushroomItem, self).__init__(x, y-1, 1.25)
         self.type = "powerup"
-        self.mushroom_animation = copy(collection.get("mushroom"))
+        self.animation = copy(SPRITE_COLLECTION.get("mushroom"))
         self.sound_played = False
         self.alive = False
-        self.move = None
+        self.timer = 0
+        self.level = level
+        self.leftrightTrait = None
 
     def spawnMushroom(self, cam):
         if not self.sound_played:
             self.sound_played = True
             SOUND_CONTROLLER.play_sfx(MUSHROOM_APPEARS)
-
-        if self.timer < 33:
-            self.pos -= Vector2D(0, 1)
-
-            SCREEN.blit(
-                self.mushroom_animation.get_image(), (self.pos.get_x() +
-                                                      cam.x,
-                                                      self.pos.get_y())
-            )
-
+        self.drawMushroom(cam)
         self.alive = True
-        self.timer += 1
+        self.leftrightTrait = LeftRightWalkTrait(self, self.level)
 
     def update(self, cam):
         if self.alive:
-            self.move = LeftRightWalkTrait(self, level)
+            self.applyGravity()
+            self.drawMushroom(cam)
+            self.leftrightTrait.update()
+
+    def drawMushroom(self, cam):
+        SCREEN.blit(
+            self.animation.get_image(), (self.rect.x +
+                                         cam.x,
+                                         self.rect.y)
+        )
 
 
 class PowerUpBox(EntityBase):
@@ -373,13 +374,17 @@ class PowerUpBox(EntityBase):
         self.y = y
         self.vel = 1
         self.item = None
+        self.spawn = False
 
     def update(self, cam):
         if self.alive and not self.triggered:
             self.animation.update()
+        elif self.triggered and not self.spawn:
+            self.item.spawnMushroom(cam)
+            self.spawn = True
         else:
             self.animation.set_image(SPRITE_COLLECTION.get("empty"))
-            self.item.spawnMushroom(cam)
+
             if self.time < self.maxTime:
                 self.time += 1
                 self.rect.y -= self.vel

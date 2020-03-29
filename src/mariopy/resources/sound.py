@@ -72,5 +72,7 @@ __all__ = [
     "BUMP_SOUND",
     "STOMP_SOUND",
     "JUMP_SOUND",
-    "DEATH_SOUND"
+    "DEATH_SOUND",
+    "MUSHROOM_SOUND",
+    "MUSHROOM_APPEARS"
 ]

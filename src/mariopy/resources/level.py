@@ -187,7 +187,7 @@ class _Level():
         )
 
     def addMushroom(self, x, y):
-        self.entityList.append(MushroomItem(SPRITE_COLLECTION, x, y, self))
+        self.entityList.append(MushroomItem(x, y, self))
 
     def addCoin(self, x, y):
         self.entityList.append(Coin(SPRITE_COLLECTION, x, y))

@@ -4,7 +4,7 @@ import pygame
 from core.input import *
 from resources.level import LEVEL
 from core.entity_base import *
-from resources.sound import SOUND_CONTROLLER, MUSHROOM_SOUND, BUMP_SOUND
+from resources.sound import *
 
 
 from core.traits import *
@@ -51,6 +51,7 @@ class Mario(EntityBase):
         self.moveMario()
         self.camera.move()
         self.applyGravity()
+        self.drawMario()
         self.checkEntityCollision()
         self.input.checkForInput()
         if DASHBOARD.time == 0:
@@ -62,6 +63,15 @@ class Mario(EntityBase):
             self.collision.checkX()
         self.rect.y += self.vel.get_y()
         self.collision.checkY()
+
+    def drawMario(self):
+        if self.traits["goTrait"].heading == 1:
+            SCREEN.blit(self.animation.get_image(), self.getPos())
+        elif self.traits["goTrait"].heading == -1:
+            SCREEN.blit(
+                pygame.transform.flip(
+                    self.animation.get_image(), True, False), self.getPos()
+            )
 
     def checkEntityCollision(self):
         for ent in self.levelObj.entityList:
@@ -75,7 +85,7 @@ class Mario(EntityBase):
                     self._onCollisionWithBlock(ent)
                 elif ent.type == "PowerBlock":
                     self._onCollisionWithPowerBlock(ent)
-                elif ent.type == "Mob" and self.timer > 120:
+                elif ent.type == "Mob" and self.timer > 1:
                     self._onCollisionWithMob(ent, isColliding, isTop)
 
     def _onCollisionWithPowerBlock(self, box):
@@ -86,21 +96,24 @@ class Mario(EntityBase):
         box.triggered = True
 
     def _onCollisionWithMushroom(self, item):
-        self.levelObj.entityList.remove(item)
         DASHBOARD.points += 100
         self.earnedPoints += 100
-        self.big_size = True
-        self.animation = Animation(
-            [
-                SPRITE_COLLECTION.get("big_mario_run1"),
-                SPRITE_COLLECTION.get("big_mario_run2"),
-                SPRITE_COLLECTION.get("big_mario_run3"),
-            ],
-            SPRITE_COLLECTION.get("big_mario_idle"),
-            SPRITE_COLLECTION.get("big_mario_jump"),
-        )
+        if not self.big_size:
+            self.big_size = True
+            self.animation = None
+            self.animation = Animation(
+                [
+                    SPRITE_COLLECTION.get("big_mario_run1"),
+                    SPRITE_COLLECTION.get("big_mario_run2"),
+                    SPRITE_COLLECTION.get("big_mario_run3"),
+                ],
+                SPRITE_COLLECTION.get("big_mario_idle"),
+                SPRITE_COLLECTION.get("big_mario_jump"),
+            )
+            self.animation.update()
+            self.drawMario()
+            SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
         item.alive = None
-        SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
 
     def _onCollisionWithItem(self, item):
         self.levelObj.entityList.remove(item)
@@ -140,6 +153,7 @@ class Mario(EntityBase):
             if self.big_size is True:
                 self.big_size = False
                 self.timer = 0
+                self.animation = None
                 self.animation = Animation(
                     [
                         SPRITE_COLLECTION.get("mario_run1"),
@@ -149,6 +163,8 @@ class Mario(EntityBase):
                     SPRITE_COLLECTION.get("mario_idle"),
                     SPRITE_COLLECTION.get("mario_jump"),
                 )
+                self.animation.update()
+                self.drawMario()
             else:
                 self.gameOver()
 

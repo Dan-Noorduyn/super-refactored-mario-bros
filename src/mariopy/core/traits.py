@@ -6,6 +6,7 @@ from utils.physics import Vector2D
 from resources.display import SCREEN
 from resources.sound import *
 
+
 class Collider:
     def __init__(self, entity, level):
         self.entity = entity
@@ -25,7 +26,7 @@ class Collider:
         # except Exception:
         #     return
         for row in rows:
-            tiles = row[self.entity.getPosIndex().get_x() : self.entity.getPosIndex().get_x() + 2]
+            tiles = row[self.entity.getPosIndex().get_x(): self.entity.getPosIndex().get_x() + 2]
             for tile in tiles:
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
@@ -51,7 +52,7 @@ class Collider:
                 self.entity.alive = None
             return
         for row in rows:
-            tiles = row[self.entity.getPosIndex().get_x() : self.entity.getPosIndex().get_x() + 2]
+            tiles = row[self.entity.getPosIndex().get_x(): self.entity.getPosIndex().get_x() + 2]
             for tile in tiles:
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
@@ -69,7 +70,6 @@ class Collider:
                             self.entity.rect.top = tile.rect.bottom
                             self.entity.vel.set_y(0)
 
-
     def rightLevelBorderReached(self):
         if self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1:
             self.entity.rect.x = (self.levelObj.levelLength - 1) * 32
@@ -81,6 +81,7 @@ class Collider:
             self.entity.rect.x = 0
             self.entity.vel.set_x(0)
             return True
+
 
 class bounceTrait:
     def __init__(self, entity):
@@ -97,7 +98,6 @@ class bounceTrait:
 
     def reset(self):
         self.entity.inAir = False
-
 
 
 class goTrait:
@@ -160,29 +160,31 @@ class goTrait:
 
 class jumpTrait:
     def __init__(self, entity):
-        self.vertical_speed = -12 #jump speed
-        self.jumpHeight = 120 #jump height in pixels
+        self.vertical_speed = -12  # jump speed
+        self.jumpHeight = 120  # jump height in pixels
         self.entity = entity
-        self.initalHeight = 384 #stores the position of mario at jump
-        self.deaccelerationHeight = self.jumpHeight - ((self.vertical_speed*self.vertical_speed)/(2*self.entity.gravity))
+        self.initalHeight = 384  # stores the position of mario at jump
+        self.deaccelerationHeight = self.jumpHeight - \
+            ((self.vertical_speed*self.vertical_speed)/(2*self.entity.gravity))
 
-    def jump(self,jumping):
+    def jump(self, jumping):
         if jumping:
-            if not self.entity.inAir and not self.entity.inJump: #only jump when mario is on ground and not in a jump. redundant check
+            if not self.entity.inAir and not self.entity.inJump:  # only jump when mario is on ground and not in a jump. redundant check
                 SOUND_CONTROLLER.play_sfx(JUMP_SOUND)
                 self.entity.vel = Vector2D(self.entity.vel.get_x(), self.vertical_speed)
                 self.entity.inAir = True
                 self.initalHeight = self.entity.rect.y
                 self.entity.inJump = True
-                self.entity.obeygravity = False #dont obey gravity in jump so as to reach jump height no matter what the speed
+                self.entity.obeygravity = False  # dont obey gravity in jump so as to reach jump height no matter what the speed
 
-        if self.entity.inJump: #check vertical distance travelled while mario is in a jump
+        if self.entity.inJump:  # check vertical distance travelled while mario is in a jump
             if (self.initalHeight-self.entity.rect.y) >= self.deaccelerationHeight or self.entity.vel.get_y() == 0:
                 self.entity.inJump = False
-                self.entity.obeygravity = True #mario obeys gravity again and continues normal play
+                self.entity.obeygravity = True  # mario obeys gravity again and continues normal play
 
     def reset(self):
         self.entity.inAir = False
+
 
 class LeftRightWalkTrait:
     def __init__(self, entity, level):
@@ -208,7 +210,7 @@ class LeftRightWalkTrait:
 class EntityCollider:
     def __init__(self, entity):
         self.entity = entity
-        ##initially own class
+        # initially own class
         self.isColliding = False
         self.isTop = False
 
@@ -217,7 +219,7 @@ class EntityCollider:
             return self.determineSide(target.rect, self.entity.rect)
         self.isColliding, self.isTop = False, False
         return self.isColliding, self.isTop
-        ##return CollisionState(False, False)
+        # return CollisionState(False, False)
 
     def determineSide(self, rect1, rect2):
         if (
@@ -230,12 +232,12 @@ class EntityCollider:
             ) or rect2.collidepoint((rect1.midright[0] / 2, rect1.midright[1] / 2)):
                 self.isColliding, self.isTop = True, False
                 return self.isColliding, self.isTop
-                #return CollisionState(True, False)
+                # return CollisionState(True, False)
             else:
                 if self.entity.vel.get_y() > 0:
                     self.isColliding, self.isTop = True, True
                     return self.isColliding, self.isTop
-                    #return CollisionState(True, True)
+                    # return CollisionState(True, True)
         self.isColliding, self.isTop = True, False
         return self.isColliding, self.isTop
-        #return CollisionState(True, False)
+        # return CollisionState(True, False)

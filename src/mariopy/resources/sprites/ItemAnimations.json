@@ -39,7 +39,7 @@
                 }
             ],
             "deltaTime":10,
-            "colorKey": null
+            "colorKey": -1
         }
     ]
 }
