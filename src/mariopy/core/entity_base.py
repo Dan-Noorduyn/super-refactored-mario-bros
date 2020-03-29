@@ -8,6 +8,8 @@ from core.input import *
 from utils.physics import Vector2D
 from resources.display import SCREEN, Animation, SPRITE_COLLECTION
 from resources.dashboard import DASHBOARD
+from core.traits import *
+
 
 class Entity():
 
@@ -119,14 +121,17 @@ class Goomba(EntityBase):
                 SPRITE_COLLECTION.get("goomba-2"),
             ]
         )
-        #print(SPRITE_COLLECTION.get("goomba-1"))
-        #print(SPRITE_COLLECTION.get("goomba-2"))
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
+        self.traits = {
+            "bounceTrait": bounceTrait(self),
+        }
+        self.inAir = False
 
     def update(self, camera):
+        self.updateTraits()
+        self.applyGravity()
         if self.alive:
-            self.applyGravity()
             self.drawGoomba(camera)
             self.leftrightTrait.update()
         else:
@@ -140,12 +145,21 @@ class Goomba(EntityBase):
     def onDead(self, camera):
         if self.timer == 0:
             self.setPointsTextStartPosition(self.rect.x + 3, self.rect.y)
-        if self.timer < self.timeAfterDeath:
+        if self.timer < self.timeAfterDeath and not self.inAir:
             self.movePointsTextUpAndDraw(camera)
             self.drawFlatGoomba(camera)
-        else:
+        elif self.inAir:
+            self.drawGoomba(camera)
+            self.movePointsTextUpAndDraw(camera)
+            self.vel -= Vector2D(0, 0.5)
+            self.rect.y += self.vel.get_y()
+        
+        if self.timer >= self.timeAfterDeath:
             self.alive = None
         self.timer += 0.1
+
+    def bounce(self):
+        self.traits["bounceTrait"].jump = True
 
     def drawFlatGoomba(self, camera):
         SCREEN.blit(
@@ -198,17 +212,25 @@ class _Koopa_State(Enum):
 
 class Koopa(EntityBase):
     def __init__(self, x, y, level):
-        super(Koopa, self).__init__(y - 1, x, 1.25)
+        super(Koopa, self).__init__(x, y - 1, 1.25)
         self.animation = Animation(
             [
                 SPRITE_COLLECTION.get("koopa-1"),
                 SPRITE_COLLECTION.get("koopa-2"),
             ]
         )
+        self.traits = {
+            "bounceTrait": bounceTrait(self),
+        }
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.timer = 0
         self.timeAfterDeath = 35
         self.type = "Mob"
+        self.levelObj = level
+        self.EntityCollider = EntityCollider(self)
+        self.inAir = False
+
+    ## If shell sleeping. kill it. If alive == true, kill it.
 
     def update(self, camera):
         if self.alive == True:
@@ -237,24 +259,61 @@ class Koopa(EntityBase):
         self.animation.set_image(SPRITE_COLLECTION.get("koopa-hiding"))
         self.drawKoopa(camera)
         self.leftrightTrait.update()
+        self.checkEntityCollision()
+
+    def checkEntityCollision(self):
+        for ent in self.levelObj.entityList:
+            if ent.type == "Mob" and ent != self:
+                isColliding, isTop = self.EntityCollider.check(ent)
+                if isColliding:
+                    self._onCollisionWithMob(ent, isColliding)
+
+
+    def _onCollisionWithMob(self, ent, isColliding):
+        if isColliding and ent.alive:
+            ent.bounce()
+            ent.setPointsTextStartPosition(ent.rect.x + 3, ent.rect.y)
+            ent.alive = False
+            DASHBOARD.points += 100
+            DASHBOARD.earnedPoints += 100
+            ent.leftrightTrait.update()
+        elif isColliding and ent.alive == "sleeping":
+            ent.bounce()
+            ent.setPointsTextStartPosition(ent.rect.x + 3, ent.rect.y)
+            ent.alive = False
+            DASHBOARD.points += 100
+            DASHBOARD.earnedPoints += 100
+            ent.leftrightTrait.update()
+        elif isColliding and ent.alive == "shellBouncing":
+            ent.bounce()
+            self.bounce()
+            ent.setPointsTextStartPosition(ent.rect.x + 3, ent.rect.y)
+            self.setPointsTextStartPosition(self.rect.x + 3, self.rect.y)
+            ent.alive = False
+            self.alive = False
+            DASHBOARD.points += 100
+            DASHBOARD.earnedPoints += 100
+            ent.leftrightTrait.update()
+            self.leftrightTrait.update()
+
+            
 
     def die(self, camera):
         if self.timer == 0:
-            self.textPos = Vector2D(self.rect.x + 3, self.rect.y - 32)
+            self.setPointsTextStartPosition(self.rect.x + 3, self.rect.y)
         if self.timer < self.timeAfterDeath:
-            self.textPos += Vector2D(0, -0.5)
+            self.textPos -= Vector2D(0, -0.5)
             DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
-            self.vel -= Vector2D(0, 0.5)
-            self.rect.y += self.vel.get_y()
+            self.vel += Vector2D(0, 0.5)
+            self.rect.y -= self.vel.get_y()
             SCREEN.blit(
                 SPRITE_COLLECTION.get("koopa-hiding"),
                 (self.rect.x + camera.x, self.rect.y - 32),
             )
         else:
-            self.vel += Vector2D(0, 0.3)
+            self.vel += Vector2D(0, 0.5)
             self.rect.y += self.vel.get_y()
-            self.textPos += Vector2D(0, -0.5)
-            DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+            self.movePointsTextUpAndDraw(camera)
             SCREEN.blit(
                 SPRITE_COLLECTION.get("koopa-hiding"),
                 (self.rect.x + camera.x, self.rect.y - 32),
@@ -263,6 +322,9 @@ class Koopa(EntityBase):
                 # delete entity
                 self.alive = None
         self.timer += 6
+
+    def bounce(self):
+        self.traits["bounceTrait"].jump = True
 
     def sleepingInShell(self, camera):
         if self.timer < self.timeAfterDeath:
@@ -280,6 +342,14 @@ class Koopa(EntityBase):
         self.drawKoopa(camera)
         self.animation.update()
         self.leftrightTrait.update()
+
+    def setPointsTextStartPosition(self, x, y):
+        self.textPos = Vector2D(x, y)
+
+    def movePointsTextUpAndDraw(self, camera):
+        self.textPos += Vector2D(-0.5, 0)
+        DASHBOARD.drawText("100", self.textPos.get_x() + camera.x, self.textPos.get_y(), 8)
+
 
 class RandomBox(EntityBase):
     def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
