@@ -72,8 +72,6 @@ class Collider:
 
     def rightLevelBorderReached(self):
         if self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1:
-            self.entity.rect.x = (self.levelObj.levelLength - 1) * 32
-            self.entity.vel.set_x(0)
             return True
 
     def leftLevelBorderReached(self):
@@ -147,15 +145,6 @@ class goTrait:
                     self.animation.in_air()
                 else:
                     self.animation.idle()
-        self.drawEntity()
-
-    def drawEntity(self):
-        if self.heading == 1:
-            SCREEN.blit(self.animation.get_image(), self.entity.getPos())
-        elif self.heading == -1:
-            SCREEN.blit(
-                pygame.transform.flip(self.animation.get_image(), True, False), self.entity.getPos()
-            )
 
 
 class jumpTrait:
