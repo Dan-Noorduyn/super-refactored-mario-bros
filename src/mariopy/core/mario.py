@@ -42,17 +42,18 @@ class Mario(EntityBase):
         self.pauseObj = PauseMenu(self)
         self.lives = 3
         self.big_size = False
-        self.timer = 121
+        self.timer = 0
         self.next = False
 
     def update(self):
-        self.input.checkForInput()
+        self.timer += 1
         self.updateTraits()
         self.moveMario()
         self.camera.move()
         self.applyGravity()
         self.drawMario()
         self.checkEntityCollision()
+        self.input.checkForInput()
         if DASHBOARD.time == 0:
             self.gameOver()
 
@@ -71,15 +72,6 @@ class Mario(EntityBase):
         self.rect.y += self.vel.get_y()
         self.collision.checkY()
 
-    def drawMario(self):
-        if self.traits["goTrait"].heading == 1:
-            SCREEN.blit(self.animation.get_image(), self.getPos())
-        elif self.traits["goTrait"].heading == -1:
-            SCREEN.blit(
-                pygame.transform.flip(
-                    self.animation.get_image(), True, False), self.getPos()
-            )
-
     def checkEntityCollision(self):
         for ent in LEVEL.entityList:
             isColliding, isTop = self.EntityCollider.check(ent)
@@ -92,7 +84,7 @@ class Mario(EntityBase):
                     self._onCollisionWithBlock(ent)
                 elif ent.type == "PowerBlock":
                     self._onCollisionWithPowerBlock(ent)
-                elif ent.type == "Mob" and self.timer > 1:
+                elif ent.type == "Mob" and self.timer > 30:
                     self._onCollisionWithMob(ent, isColliding, isTop)
 
     def _onCollisionWithPowerBlock(self, box):
