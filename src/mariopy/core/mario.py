@@ -108,6 +108,9 @@ class Mario(EntityBase):
                 SPRITE_COLLECTION.get("big_mario_idle"),
                 SPRITE_COLLECTION.get("big_mario_jump"),
             )
+            img = self.animation.get_image()
+            self.rect.w = img.get_width()
+            self.rect.h = img.get_height()
             self.traits["goTrait"].animation = self.animation
 
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
@@ -161,6 +164,11 @@ class Mario(EntityBase):
                     SPRITE_COLLECTION.get("mario_jump"),
                 )
                 self.traits["goTrait"].animation = self.animation
+                img = self.animation.get_image()
+                self.rect.w = img.get_width()
+                self.rect.h = img.get_height()
+                self.update()
+                self.drawMario()
             else:
                 self.gameOver()
 
