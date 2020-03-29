@@ -109,8 +109,7 @@ class Mario(EntityBase):
                 SPRITE_COLLECTION.get("big_mario_jump"),
             )
             self.traits["goTrait"].animation = self.animation
-            self.update()
-            self.drawMario()
+
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
         item.alive = None
 
@@ -162,8 +161,6 @@ class Mario(EntityBase):
                     SPRITE_COLLECTION.get("mario_jump"),
                 )
                 self.traits["goTrait"].animation = self.animation
-                self.update()
-                self.drawMario()
             else:
                 self.gameOver()
 
