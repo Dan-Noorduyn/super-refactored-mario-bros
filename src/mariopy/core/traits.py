@@ -18,15 +18,19 @@ class Collider:
         if self.leftLevelBorderReached() or self.rightLevelBorderReached():
             return
         # try:
-        rows = [
-            self.level[self.entity.getPosIndex().get_y() - 1],
-            self.level[self.entity.getPosIndex().get_y()],
-            self.level[self.entity.getPosIndex().get_y() + 1]
-        ]
+        rows = []
+        for i in range(self.entity.getPosIndex().get_y() - 1, len(self.level)):
+            rows.append(self.level[i])
+        # rows = [
+        #     self.level[self.entity.getPosIndex().get_y() - 1],
+        #     self.level[self.entity.getPosIndex().get_y()],
+        #     self.level[self.entity.getPosIndex().get_y() + 1],
+        #     self.level[self.entity.getPosIndex().get_y() + 2]
+        # ]
         # except Exception:
         #     return
         for row in rows:
-            tiles = row[self.entity.getPosIndex().get_x(): self.entity.getPosIndex().get_x() + 2]
+            tiles = row[self.entity.getPosIndex().get_x():]
             for tile in tiles:
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
@@ -40,11 +44,14 @@ class Collider:
     def checkY(self):
         self.entity.onGround = False
         try:
-            rows = [
-                self.level[self.entity.getPosIndex().get_y() - 1],
-                self.level[self.entity.getPosIndex().get_y()],
-                self.level[self.entity.getPosIndex().get_y() + 1]
-            ]
+            rows = []
+            for i in range(self.entity.getPosIndex().get_y() - 1, len(self.level)):
+                rows.append(self.level[i])
+            # rows = [
+            #     self.level[self.entity.getPosIndex().get_y() - 1],
+            #     self.level[self.entity.getPosIndex().get_y()],
+            #     self.level[self.entity.getPosIndex().get_y() + 1]
+            # ]
         except Exception:
             try:
                 self.entity.gameOver()

@@ -84,7 +84,7 @@ class Mario(EntityBase):
                     self._onCollisionWithBlock(ent)
                 elif ent.type == "PowerBlock":
                     self._onCollisionWithPowerBlock(ent)
-                elif ent.type == "Mob" and self.timer > 30:
+                elif ent.type == "Mob" and self.timer > 60:
                     self._onCollisionWithMob(ent, isColliding, isTop)
 
     def _onCollisionWithPowerBlock(self, box):
@@ -108,6 +108,9 @@ class Mario(EntityBase):
                 SPRITE_COLLECTION.get("big_mario_idle"),
                 SPRITE_COLLECTION.get("big_mario_jump"),
             )
+            img = self.animation.get_image()
+            self.rect.w = img.get_width()
+            self.rect.h = img.get_height()
             self.traits["goTrait"].animation = self.animation
             self.update()
             self.drawMario()
@@ -162,6 +165,9 @@ class Mario(EntityBase):
                     SPRITE_COLLECTION.get("mario_jump"),
                 )
                 self.traits["goTrait"].animation = self.animation
+                img = self.animation.get_image()
+                self.rect.w = img.get_width()
+                self.rect.h = img.get_height()
                 self.update()
                 self.drawMario()
             else:
