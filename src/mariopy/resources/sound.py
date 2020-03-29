@@ -1,5 +1,6 @@
 from pygame import mixer
 
+
 class _Sound_Controller():
     def __init__(self):
         self.__music_ch: mixer.Channel = mixer.Channel(0)
@@ -42,24 +43,27 @@ class _Sound_Controller():
 
     def unmute_music(self) -> None:
         self.__music_muted = False
-    
+
     def music_muted(self) -> bool:
         return self.__music_muted
 
     def playing_music(self) -> bool:
         return self.__music_ch.get_busy()
 
+
 mixer.pre_init(44100, -16, 2, 4096)
 mixer.init()
 SOUND_CONTROLLER = _Sound_Controller()
 
 # DEFAULT SOUNDS
-SOUNDTRACK  = mixer.Sound("./resources/sfx/main_theme.ogg")
-COIN_SOUND  = mixer.Sound("./resources/sfx/coin.ogg")
-BUMP_SOUND  = mixer.Sound("./resources/sfx/bump.ogg")
+SOUNDTRACK = mixer.Sound("./resources/sfx/main_theme.ogg")
+COIN_SOUND = mixer.Sound("./resources/sfx/coin.ogg")
+BUMP_SOUND = mixer.Sound("./resources/sfx/bump.ogg")
 STOMP_SOUND = mixer.Sound("./resources/sfx/stomp.ogg")
-JUMP_SOUND  = mixer.Sound("./resources/sfx/small_jump.ogg")
+JUMP_SOUND = mixer.Sound("./resources/sfx/small_jump.ogg")
 DEATH_SOUND = mixer.Sound("./resources/sfx/death.wav")
+MUSHROOM_SOUND = mixer.Sound("./resources/sfx/powerup.ogg")
+MUSHROOM_APPEARS = mixer.Sound("./resources/sfx/powerup_appears.ogg")
 
 __all__ = [
     "SOUND_CONTROLLER",

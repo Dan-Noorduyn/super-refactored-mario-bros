@@ -6,29 +6,40 @@
             "name":"coin-item",
             "images":[
                 {
-                    "x":0, 
+                    "x":0,
                     "y":7,
                     "scale":2
                 },
                 {
-                    "x":1, 
+                    "x":1,
                     "y":7,
                     "scale":2
                 },
                 {
-                    "x":2, 
+                    "x":2,
                     "y":7,
                     "scale":2
                 },
                 {
-                    "x":3, 
+                    "x":3,
                     "y":7,
                     "scale":2
                 }
             ],
             "deltaTime":10,
             "colorKey": -1
+        },
+        {
+            "name":"mushroom",
+            "images":[
+                {
+                    "x":0,
+                    "y":0,
+                    "scale":2
+                }
+            ],
+            "deltaTime":10,
+            "colorKey": null
         }
     ]
 }
-

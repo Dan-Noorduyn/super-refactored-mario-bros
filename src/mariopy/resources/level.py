@@ -1,11 +1,12 @@
+from resources.display import SCREEN, SPRITE_COLLECTION, Animation
+from resources.dashboard import DASHBOARD
 import json
 from sys import stdout
 
 import pygame
 
-from core.entity_base import Goomba, Koopa, Coin, RandomBox
-from resources.dashboard import DASHBOARD
-from resources.display import SCREEN, SPRITE_COLLECTION, Animation
+from core.entity_base import (Goomba, Koopa, Coin, RandomBox, PowerUpBox,
+                              MushroomItem)
 
 
 class Tile:
@@ -15,6 +16,7 @@ class Tile:
 
     def __repr__(self):
         return f"Rect({self.rect.x}, {self.rect.y})"
+
 
 class _Level():
     def __init__(self):
@@ -38,6 +40,8 @@ class _Level():
 
         for x, y in data["level"]["entities"]["randomBox"]:
             self.addRandomBox(x, y)
+        for x, y in data["level"]["entities"]["PowerUpBox"]:
+            self.addPowerBox(x, y)
         for x, y in data["level"]["entities"]["Goomba"]:
             self.addGoomba(x, y)
         for x, y in data["level"]["entities"]["Koopa"]:
@@ -160,7 +164,8 @@ class _Level():
             return
 
     def addRandomBox(self, x, y):
-        self.level[y][x] = Tile(SPRITE_COLLECTION.get("randomBox"), pygame.Rect(x * 32, y * 32 - 1, 32, 32))
+        self.level[y][x] = Tile(SPRITE_COLLECTION.get("randomBox"),
+                                pygame.Rect(x * 32, y * 32 - 1, 32, 32))
         self.entityList.append(
             RandomBox(
                 SPRITE_COLLECTION,
@@ -169,6 +174,20 @@ class _Level():
                 DASHBOARD,
             )
         )
+
+    def addPowerBox(self, x, y):
+        self.level[y][x] = Tile(SPRITE_COLLECTION.get("PowerUpBox"),
+                                pygame.Rect(x * 32, y * 32 - 1, 32, 32))
+        self.entityList.append(
+            PowerUpBox(
+                SPRITE_COLLECTION,
+                x,
+                y,
+            )
+        )
+
+    def addMushroom(self, x, y):
+        self.entityList.append(MushroomItem(SPRITE_COLLECTION, x, y, self))
 
     def addCoin(self, x, y):
         self.entityList.append(Coin(SPRITE_COLLECTION, x, y))
@@ -182,5 +201,6 @@ class _Level():
         self.entityList.append(
             Koopa(x, y, self)
         )
+
 
 LEVEL: _Level = _Level()

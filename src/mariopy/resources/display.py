@@ -2,6 +2,7 @@ import json
 
 import pygame
 
+
 class Spritesheet():
     def __init__(self, filename):
         try:
@@ -32,6 +33,7 @@ class Spritesheet():
             image, (xTileSize * scalingfactor, yTileSize * scalingfactor)
         )
 
+
 class Animation:
     def __init__(self, images: list, idle_sprite: pygame.Surface = None,
                  air_sprite: pygame.Surface = None, delta_time: int = 7):
@@ -61,6 +63,7 @@ class Animation:
     def get_image(self):
         return self.__image
 
+
 def _load_background(sh: Spritesheet, data: dict, d: dict) -> None:
     for sprite in data["sprites"]:
         color_key = sprite["colorKey"] if "colorKey" in sprite else None
@@ -71,6 +74,7 @@ def _load_background(sh: Spritesheet, data: dict, d: dict) -> None:
             sprite["scalefactor"],
             color_key,
         )
+
 
 def _load_animation(sh: Spritesheet, data: dict, d: dict) -> None:
     for sprite in data["sprites"]:
@@ -86,6 +90,7 @@ def _load_animation(sh: Spritesheet, data: dict, d: dict) -> None:
             )
         d[sprite["name"]] = Animation(images, delta_time=sprite["deltaTime"])
 
+
 def _load_main(sh: Spritesheet, data: dict, d: dict) -> None:
     for sprite in data["sprites"]:
         color_key = sprite["colorKey"] if "colorKey" in sprite else None
@@ -98,6 +103,7 @@ def _load_main(sh: Spritesheet, data: dict, d: dict) -> None:
             xTileSize=data["size"][0],
             yTileSize=data["size"][1],
         )
+
 
 def _load_sprites(file_list: list) -> dict:
     res: dict = {}
@@ -114,6 +120,7 @@ def _load_sprites(file_list: list) -> dict:
             sw[data["type"]](spritesheet, data, res)
     return res
 
+
 def _load_font(font_path: str):
     spritesheet: Spritesheet = Spritesheet(font_path)
     font: dict = {}
@@ -125,15 +132,16 @@ def _load_font(font_path: str):
             char_at = 0
             row += 1
         font[char] = spritesheet.image_at(
-                    char_at,
-                    row,
-                    2,
-                    colorkey=pygame.color.Color(0, 0, 0),
-                    xTileSize=8,
-                    yTileSize=8
-                )
+            char_at,
+            row,
+            2,
+            colorkey=pygame.color.Color(0, 0, 0),
+            xTileSize=8,
+            yTileSize=8
+        )
         char_at += 1
     return font
+
 
 pygame.init()
 
@@ -152,5 +160,6 @@ _FILE_LIST = [
     "./resources/sprites/Animations.json",
     "./resources/sprites/BackgroundSprites.json",
     "./resources/sprites/ItemAnimations.json",
+    "./resources/sprites/big_mario.json",
 ]
 SPRITE_COLLECTION: dict = _load_sprites(_FILE_LIST)
