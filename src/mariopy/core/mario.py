@@ -43,7 +43,7 @@ class Mario(EntityBase):
         self.pauseObj = PauseMenu(self)
         self.lives = 3
         self.big_size = False
-        self.timer = 121
+        self.timer = 0
         self.next = False
 
     def update(self):
@@ -71,15 +71,6 @@ class Mario(EntityBase):
             self.collision.checkX()
         self.rect.y += self.vel.get_y()
         self.collision.checkY()
-
-    def drawMario(self):
-        if self.traits["goTrait"].heading == 1:
-            SCREEN.blit(self.animation.get_image(), self.getPos())
-        elif self.traits["goTrait"].heading == -1:
-            SCREEN.blit(
-                pygame.transform.flip(
-                    self.animation.get_image(), True, False), self.getPos()
-            )
 
     def checkEntityCollision(self):
         for ent in LEVEL.entityList:
