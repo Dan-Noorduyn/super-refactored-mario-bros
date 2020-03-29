@@ -47,13 +47,13 @@ class Mario(EntityBase):
         self.next = False
 
     def update(self):
-        self.input.checkForInput()
         self.updateTraits()
         self.moveMario()
         self.camera.move()
         self.applyGravity()
         self.drawMario()
         self.checkEntityCollision()
+        self.input.checkForInput()
         if DASHBOARD.time == 0:
             self.gameOver()
 

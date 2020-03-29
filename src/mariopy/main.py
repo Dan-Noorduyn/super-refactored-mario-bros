@@ -80,7 +80,7 @@ class _Game_Controller():
                                     if int(contents) < DASHBOARD.points:
                                         highscore_file = open("resources/highscore.txt", "w+")
                                         highscore_file.write(str(DASHBOARD.points))
-                                DASHBOARD.reset() 
+                                DASHBOARD.reset()
                                 mario.restart = True
                         else:
                             LEVEL.drawLevel(mario.camera)
@@ -88,6 +88,7 @@ class _Game_Controller():
                             mario.update()
                     pygame.display.update()
                     self.__clock.tick(MAX_FRAME_RATE)
+                DASHBOARD.reset()
                 self.menu.start = False
         except SystemExit:
             return

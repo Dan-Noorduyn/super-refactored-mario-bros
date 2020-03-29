@@ -295,7 +295,7 @@ class MainMenu:
                     if self.in_choosing_level or self.in_settings:
                         self.in_choosing_level = False
                         self.in_settings = False
-                        self.__init__(SCREEN, DASHBOARD, LEVEL)
+                        self.__init__()
                     else:
                         pygame.quit()
                         sys.exit()
