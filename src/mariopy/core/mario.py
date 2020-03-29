@@ -19,7 +19,6 @@ class Mario(EntityBase):
         super(Mario, self).__init__(x, y, gravity)
         self.camera = Camera(self.rect, self, LEVEL.levelLength)
         self.input = Input(self)
-        self.earnedPoints = 0
         self.inAir = False
         self.inJump = False
         self.animation = Animation(
@@ -64,7 +63,7 @@ class Mario(EntityBase):
             SCREEN.blit(
                 pygame.transform.flip(self.animation.get_image(), True, False), self.getPos()
             )
-
+            
     def moveMario(self):
         if(-(self.rect.x + self.vel.get_x()) < self.camera.x):
             self.rect.x += self.vel.get_x()
@@ -105,7 +104,7 @@ class Mario(EntityBase):
 
     def _onCollisionWithMushroom(self, item):
         DASHBOARD.points += 100
-        self.earnedPoints += 100
+        DASHBOARD.earnedPoints += 100
         if not self.big_size:
             self.big_size = True
             self.animation = None
@@ -118,7 +117,7 @@ class Mario(EntityBase):
                 SPRITE_COLLECTION.get("big_mario_idle"),
                 SPRITE_COLLECTION.get("big_mario_jump"),
             )
-            self.animation.update()
+            self.update()
             self.drawMario()
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
         item.alive = None
@@ -126,14 +125,14 @@ class Mario(EntityBase):
     def _onCollisionWithItem(self, item):
         LEVEL.entityList.remove(item)
         DASHBOARD.points += 100
-        self.earnedPoints += 100
+        DASHBOARD.earnedPoints += 100
         DASHBOARD.coins += 1
         SOUND_CONTROLLER.play_sfx(COIN_SOUND)
 
     def _onCollisionWithBlock(self, block):
         if not block.triggered:
             DASHBOARD.coins += 1
-            self.earnedPoints += 100
+            DASHBOARD.earnedPoints += 100
             SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
         block.triggered = True
 
@@ -171,7 +170,7 @@ class Mario(EntityBase):
                     SPRITE_COLLECTION.get("mario_idle"),
                     SPRITE_COLLECTION.get("mario_jump"),
                 )
-                self.animation.update()
+                self.update()
                 self.drawMario()
             else:
                 self.gameOver()
@@ -186,7 +185,7 @@ class Mario(EntityBase):
             ent.timer = 0
             ent.alive = "sleeping"
         DASHBOARD.points += 100
-        self.earnedPoints += 100
+        DASHBOARD.earnedPoints += 100
 
     def next_level(self):
         self.rect.x = 0
@@ -196,8 +195,8 @@ class Mario(EntityBase):
     def gameOver(self):
         self.lives -= 1
         DASHBOARD.coins = 0
-        DASHBOARD.points -= self.earnedPoints
-        self.earnedPoints = 0
+        DASHBOARD.points -= DASHBOARD.earnedPoints
+        DASHBOARD.earnedPoints = 0
         srf = pygame.Surface((640, 480))
         srf.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         srf.set_alpha(128)
