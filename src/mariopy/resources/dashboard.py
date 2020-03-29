@@ -19,6 +19,16 @@ class Dashboard():
             0, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
         )
 
+    def reset(self):
+        self.state = "menu"
+        self.level_name = ""
+        self.points = 0
+        self.coins = 0
+        self.ticks = 0
+        self.time = 420
+        self.lives = 3
+        self.new_level = False
+
     def update(self):
         self.drawText("MARIO", 20, 20, 15)
         self.drawText(self.pointString(), 20, 37, 15)
@@ -35,14 +45,15 @@ class Dashboard():
         self.drawText("@x{}".format(self.coinString()), 310, 37, 15)
 
         self.drawText("WORLD", 420, 20, 15)
-        self.drawText(str(self.level_name), 420, 37, 15)
+        if self.state != "menu":
+            self.drawText(str(self.level_name), 420, 37, 15)
 
         self.drawText("TIME", 550, 20, 15)
         if self.state != "menu":
             self.drawText(self.timeString(), 552, 37, 15)
         # update Time
         if self.state == "start":
-            self.ticks += 1
+            self.ticks += 3
             if self.ticks == 60:
                 self.ticks = 0
                 self.time -= 1
