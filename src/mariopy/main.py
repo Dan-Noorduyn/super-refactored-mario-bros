@@ -13,8 +13,10 @@ class _Game_Controller():
         self.__clock = pygame.time.Clock()
         self.menu = MainMenu()
 
-    def _finish_game(self, mario):
-        ...
+    def _stage_clear(self):
+        SOUND_CONTROLLER.stop_sfx()
+        SOUND_CONTROLLER.stop_music()
+        SOUND_CONTROLLER.play_music(STAGE_CLEAR)
 
     def run(self):
         try:
@@ -31,38 +33,32 @@ class _Game_Controller():
                     if mario.pause:
                         mario.pauseObj.update()
                     else:
-                        if DASHBOARD.time < 100 and _time_flag:
-                            SOUND_CONTROLLER.stop_music()
-                            SOUND_CONTROLLER.play_music(HURRY_OVERWORLD)
-                            _time_flag = False
-
                         if mario.collision.rightLevelBorderReached():
-                            if self.menu.curr_selected_level < self.menu.level_count:
-                                if _flag:
-                                    SOUND_CONTROLLER.stop_sfx()
-                                    SOUND_CONTROLLER.stop_music()
-                                    SOUND_CONTROLLER.play_music(STAGE_CLEAR)
-                                    DASHBOARD.state = "next"
-                                    _flag = False
+                            _time_flag = False
+                            if _flag:
+                                self._stage_clear()
+                                DASHBOARD.state = "next"
+                                _flag = False
 
-                                if DASHBOARD.time > 0:
-                                    if t > 60:
-                                        SOUND_CONTROLLER.play_sfx(COIN_SOUND)
-                                        DASHBOARD.time -= 1
-                                        DASHBOARD.points += 50
-                                        LEVEL.drawLevel(mario.camera)
-                                        DASHBOARD.update()
-                                        mario.input.checkForInput()
-                                        mario.drawMario()
-                                        pygame.display.update()
-                                        SOUND_CONTROLLER.play_sfx(COIN_SOUND)
-                                    t += 1
-                                else:
-                                    if SOUND_CONTROLLER.playing_sfx():
-                                        SOUND_CONTROLLER.stop_sfx()
-                                    elif not SOUND_CONTROLLER.playing_music():
-                                        wait += 1
-                                        if not (wait % 120):
+                            if DASHBOARD.time > 0:
+                                if t > 60:
+                                    SOUND_CONTROLLER.play_sfx(COIN_SOUND)
+                                    DASHBOARD.time -= 1
+                                    DASHBOARD.points += 50
+                                    SOUND_CONTROLLER.play_sfx(COIN_SOUND)
+                                LEVEL.drawLevel(mario.camera)
+                                DASHBOARD.update()
+                                mario.input.checkForInput()
+                                mario.drawMario()
+                                pygame.display.update()
+                                t += 1
+                            else:
+                                if SOUND_CONTROLLER.playing_sfx():
+                                    SOUND_CONTROLLER.stop_sfx()
+                                elif not SOUND_CONTROLLER.playing_music():
+                                    wait += 1
+                                    if not (wait % 120):
+                                        if self.menu.curr_selected_level < self.menu.level_count:
                                             next_level = self.menu.level_names[self.menu.curr_selected_level]
                                             self.menu.curr_selected_level += 1
                                             LEVEL.loadLevel(next_level)
@@ -75,23 +71,29 @@ class _Game_Controller():
                                             t = 0
                                             _time_flag = True
                                             _flag = True
-                            else:
-                                highscore_file = open("resources/highscore.txt","r")
-                                if highscore_file.mode == 'r':
-                                    contents = highscore_file.read()
-                                    highscore_file.close()
-                                    if int(contents) < DASHBOARD.points:
-                                        highscore_file = open("resources/highscore.txt", "w+")
-                                        highscore_file.write(str(DASHBOARD.points))
-                                DASHBOARD.reset()
-                                mario.restart = True
+                                        else:
+                                            highscore_file = open("resources/highscore.txt","r")
+                                            if highscore_file.mode == 'r':
+                                                contents = highscore_file.read()
+                                                highscore_file.close()
+                                                if int(contents) < DASHBOARD.points:
+                                                    highscore_file = open("resources/highscore.txt", "w+")
+                                                    highscore_file.write(str(DASHBOARD.points))
+                                            DASHBOARD.reset()
+                                            mario.restart = True
+                        elif DASHBOARD.time < 100 and _time_flag:
+                            SOUND_CONTROLLER.stop_music()
+                            SOUND_CONTROLLER.play_music(HURRY_OVERWORLD)
+                            _time_flag = False
                         else:
                             LEVEL.drawLevel(mario.camera)
+                            LEVEL.updateEntities(mario.camera)
                             DASHBOARD.update()
                             mario.update()
                     pygame.display.update()
                     self.__clock.tick(MAX_FRAME_RATE)
                 DASHBOARD.reset()
+                DASHBOARD.update()
                 self.menu.start = False
         except SystemExit:
             return

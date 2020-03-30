@@ -110,7 +110,6 @@ class _Level():
                         self._draw_sprite(
                             self.level[y][x], x + camera.pos.get_x(), y
                         )
-            self.updateEntities(camera)
         except IndexError:
             return
 
