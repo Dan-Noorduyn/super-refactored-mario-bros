@@ -112,8 +112,7 @@ class Mario(EntityBase):
             self.rect.w = img.get_width()
             self.rect.h = img.get_height()
             self.traits["goTrait"].animation = self.animation
-            self.update()
-            self.drawMario()
+
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
         item.alive = None
 
