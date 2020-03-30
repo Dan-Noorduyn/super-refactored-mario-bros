@@ -114,7 +114,7 @@ class Mario(EntityBase):
             self.traits["goTrait"].animation = self.animation
 
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
-        item.alive = None
+        item.dead = True
 
     def _onCollisionWithItem(self, item):
         LEVEL.entityList.remove(item)
