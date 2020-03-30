@@ -23,6 +23,7 @@ class Dashboard():
         self.state = "menu"
         self.level_name = ""
         self.points = 0
+        self.earnedPoints = 0
         self.coins = 0
         self.ticks = 0
         self.time = 420
