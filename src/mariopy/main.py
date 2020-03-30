@@ -91,8 +91,10 @@ class _Game_Controller():
                             LEVEL.updateEntities(mario.camera)
                             DASHBOARD.update()
                             mario.update()
+                    DASHBOARD.update()
                     pygame.display.update()
                     self.__clock.tick(MAX_FRAME_RATE)
+                DASHBOARD.reset()
                 self.menu.start = False
         except SystemExit:
             return
