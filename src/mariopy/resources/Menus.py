@@ -118,6 +118,7 @@ class MainMenu:
     def run(self):
         DASHBOARD.state = "menu"
         DASHBOARD.lives = 3
+        DASHBOARD.update()
         while not self.start:
             self.update()
 

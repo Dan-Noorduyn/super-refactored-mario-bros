@@ -30,7 +30,7 @@ class Collider:
         # except Exception:
         #     return
         for row in rows:
-            tiles = row[self.entity.getPosIndex().get_x():]
+            tiles = row[self.entity.getPosIndex().get_x():self.entity.getPosIndex().get_x() + 2]
             for tile in tiles:
                 if tile.rect is not None:
                     if self.entity.rect.colliderect(tile.rect):
