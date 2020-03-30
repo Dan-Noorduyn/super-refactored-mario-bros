@@ -47,6 +47,8 @@ class Collider:
             rows = []
             for i in range(self.entity.getPosIndex().get_y() - 1, len(self.level)):
                 rows.append(self.level[i])
+            if not rows:
+                self.entity.gameOver()
             # rows = [
             #     self.level[self.entity.getPosIndex().get_y() - 1],
             #     self.level[self.entity.getPosIndex().get_y()],

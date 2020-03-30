@@ -188,6 +188,7 @@ class Mario(EntityBase):
         self.rect.x = 0
         self.rect.y = 0
         self.camera.pos = Vector2D(self.rect.x, self.rect.y)
+        self.camera.level_length = LEVEL.levelLength
 
     def gameOver(self):
         self.lives -= 1
