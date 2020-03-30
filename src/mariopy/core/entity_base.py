@@ -233,6 +233,7 @@ class Koopa(EntityBase):
         self.levelObj = level
         self.EntityCollider = EntityCollider(self)
         self.inAir = False
+        self.hit_once = False
 
     ## If shell sleeping. kill it. If alive == true, kill it.
 

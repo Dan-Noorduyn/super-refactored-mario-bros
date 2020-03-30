@@ -139,11 +139,13 @@ class Mario(EntityBase):
         if isTop and mob.alive == "shellBouncing":
             SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
             self.rect.bottom = mob.rect.top
+            mob.hit_once = True
             self.bounce()
             self.killEntity(mob)
         elif isTop and mob.alive == "sleeping":
             SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
             self.rect.bottom = mob.rect.top
+            mob.hit_once = True
             self.bounce()
             if mob.rect.x < self.rect.x:
                 mob.leftrightTrait.direction = -1
@@ -190,7 +192,10 @@ class Mario(EntityBase):
             ent.alive = False
         else:
             ent.timer = 0
-            ent.alive = "sleeping"
+            if not ent.hit_once:
+                ent.alive = "sleeping"
+            else:
+                ent.alive = False
         DASHBOARD.points += 100
         DASHBOARD.earnedPoints += 100
 
