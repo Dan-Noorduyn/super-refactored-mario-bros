@@ -136,7 +136,6 @@ class Mario(EntityBase):
             self.rect.bottom = mob.rect.top
             self.bounce()
             self.killEntity(mob)
-            print("bounced on shell")
         if isTop and mob.alive == "shellBouncing":
             SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
             self.rect.bottom = mob.rect.top
@@ -153,7 +152,6 @@ class Mario(EntityBase):
                 mob.rect.x += 5
                 mob.leftrightTrait.direction = 1
             mob.alive = "shellBouncing"
-            print("Bounced on sleeping shell")
         elif isColliding and mob.alive == "sleeping":
             if mob.rect.x < self.rect.x:
                 mob.leftrightTrait.direction = -1
