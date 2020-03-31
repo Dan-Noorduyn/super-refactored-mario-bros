@@ -3,75 +3,18 @@ from enum import Enum
 
 import pygame
 
-from core.traits import *
-from core.input import *
-from utils.physics import Vector2D
-from resources.display import SCREEN, Animation, SPRITE_COLLECTION
+from core.input import Input
+from core.traits import LeftRightWalkTrait, bounceTrait, EntityCollider
 from resources.dashboard import DASHBOARD
-from core.traits import *
-from resources.sound import MUSHROOM_APPEARS
-
-
-class Entity():
-
-    # @brief Intitializes an entity with a position.
-    # @param x Initial x position of the entity.
-    # @param y Initial y position of the entity.
-    # @exception TypeError Arguments are not of type float.
-    def __init__(self, x: float, y: float):
-        try:
-            assert(isinstance(x, float))
-            assert(isinstance(y, float))
-        except AssertionError as e:
-            raise(TypeError("Arguments are not of type float."))
-
-        self.__pos: Vector2D = Vector2D(x, y)
-        self.__vel: Vector2D = Vector2D(0, 0)
-        self.__acc: Vector2D = Vector2D(0, 0)
-
-    # @brief Gets the position of the entity.
-    # @returns The position of the entity.
-    def get_pos(self) -> Vector2D:
-        return Vector2D(self.__pos.get_x(), self.__pos.get_y())
-
-    # @brief
-    def update_pos(self, v: Vector2D) -> None:
-        self.__pos += v
-
-    def set_pos(self, x: float, y: float) -> None:
-        self.__pos = Vector2D(x, y)
-
-    def get_vel(self) -> Vector2D:
-        return Vector2D(self.__vel.get_x(), self.__vel.get_y())
-
-    def update_vel(self, v: Vector2D) -> None:
-        self.__vel += v
-
-    def set_vel(self, vx: float, vy: float) -> None:
-        self.__vel = Vector2D(vx, vy)
-
-    def get_acc(self) -> Vector2D:
-        return Vector2D(self.__vel.get_x(), self.__vel.get_y())
-
-    def update_acc(self, v: Vector2D) -> None:
-        self.__acc += v
-
-    def set_acc(self, ax: float, ay: float) -> None:
-        self.__acc = Vector2D(ax, ay)
-
-    def update(self) -> None:
-        self.__vel += Vector2D(self.__acc.get_x(), self.__acc.get_y())
-        self.__pos += Vector2D(self.__vel.get_y(), self.__vel.get_y())
+from resources.display import SCREEN, SPRITE_COLLECTION, Animation
+from resources.sound import COIN_SOUND, MUSHROOM_APPEARS, SOUND_CONTROLLER
+from utils.physics import Vector2D
 
 
 class EntityBase(pygame.sprite.Sprite):
     def __init__(self, x, y, gravity):
         pygame.sprite.Sprite.__init__(self)
         self.vel = Vector2D(0, 0)
-        # self.image = pygame.Surface([x, y])
-        # print(self.image)
-        # self.rect = pygame.Rect(self.image.get_rect())
-        # print(self.rect)
         self.rect = pygame.Rect(x * 32, y * 32, 32, 32)
         self.gravity = gravity
         self.traits = None
@@ -111,8 +54,10 @@ class Coin(EntityBase):
 
     def update(self, cam):
         self.animation.update()
-        SCREEN.blit(self.animation.get_image(), (self.rect.x + cam.x,
-                                                 self.rect.y))
+        SCREEN.blit(
+            self.animation.get_image(),
+            (self.rect.x + cam.x, self.rect.y)
+        )
 
 
 class Goomba(EntityBase):
@@ -124,8 +69,6 @@ class Goomba(EntityBase):
                 SPRITE_COLLECTION.get("goomba-2"),
             ]
         )
-        # print(SPRITE_COLLECTION.get("goomba-1"))
-        # print(SPRITE_COLLECTION.get("goomba-2"))
         self.leftrightTrait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
         self.traits = {
@@ -144,7 +87,6 @@ class Goomba(EntityBase):
 
     def drawGoomba(self, camera):
         self.animation.update()
-        # print("updating goomba")
         SCREEN.blit(self.animation.get_image(), (self.rect.x + camera.x,
                                                  self.rect.y))
 
@@ -270,26 +212,26 @@ class Koopa(EntityBase):
     def checkEntityCollision(self):
         for ent in self.levelObj.entityList:
             if ent.type == "Mob" and ent != self:
-                isColliding, isTop = self.EntityCollider.check(ent)
-                if isColliding:
-                    self._onCollisionWithMob(ent, isColliding)
+                is_colliding, _ = self.EntityCollider.check(ent)
+                if is_colliding:
+                    self._onCollisionWithMob(ent, is_colliding)
 
-    def _onCollisionWithMob(self, ent, isColliding):
-        if isColliding and ent.alive:
+    def _onCollisionWithMob(self, ent, is_colliding):
+        if is_colliding and ent.alive:
             ent.bounce()
             ent.setPointsTextStartPosition(ent.rect.x + 3, ent.rect.y)
             ent.alive = False
             DASHBOARD.points += 100
             DASHBOARD.earnedPoints += 100
             ent.leftrightTrait.update()
-        elif isColliding and ent.alive == "sleeping":
+        elif is_colliding and ent.alive == "sleeping":
             ent.bounce()
             ent.setPointsTextStartPosition(ent.rect.x + 3, ent.rect.y)
             ent.alive = False
             DASHBOARD.points += 100
             DASHBOARD.earnedPoints += 100
             ent.leftrightTrait.update()
-        elif isColliding and ent.alive == "shellBouncing":
+        elif is_colliding and ent.alive == "shellBouncing":
             ent.bounce()
             self.bounce()
             ent.setPointsTextStartPosition(ent.rect.x + 3, ent.rect.y)
@@ -360,7 +302,6 @@ class Koopa(EntityBase):
 class RandomBox(EntityBase):
     def __init__(self, spriteCollection, x, y, dashboard, gravity=0):
         super(RandomBox, self).__init__(x, y, gravity)
-
         self.animation = copy(SPRITE_COLLECTION.get("randomBox"))
         self.type = "Block"
         self.triggered = False

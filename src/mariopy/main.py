@@ -1,12 +1,13 @@
 import pygame
-from resources.level import LEVEL
-from resources.Menus import MainMenu, PauseMenu
+
+from core.mario import Mario
 from resources.dashboard import DASHBOARD
-from resources.sound import *
-from core.mario import *
+from resources.level import LEVEL
+from resources.Menus import MainMenu
+from resources.sound import (COIN_SOUND, HURRY_OVERWORLD, SOUND_CONTROLLER,
+                             SOUNDTRACK, STAGE_CLEAR)
 
 MAX_FRAME_RATE: int = 60
-
 
 class _Game_Controller():
     def __init__(self):

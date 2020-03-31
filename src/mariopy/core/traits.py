@@ -1,10 +1,7 @@
 from random import randint
 
-import pygame
-
+from resources.sound import JUMP_SOUND, SOUND_CONTROLLER
 from utils.physics import Vector2D
-from resources.display import SCREEN
-from resources.sound import *
 
 
 class Collider:
@@ -17,18 +14,11 @@ class Collider:
     def checkX(self):
         if self.leftLevelBorderReached() or self.rightLevelBorderReached():
             return
-        # try:
+
         rows = []
         for i in range(self.entity.getPosIndex().get_y() - 1, len(self.level)):
             rows.append(self.level[i])
-        # rows = [
-        #     self.level[self.entity.getPosIndex().get_y() - 1],
-        #     self.level[self.entity.getPosIndex().get_y()],
-        #     self.level[self.entity.getPosIndex().get_y() + 1],
-        #     self.level[self.entity.getPosIndex().get_y() + 2]
-        # ]
-        # except Exception:
-        #     return
+
         for row in rows:
             tiles = row[self.entity.getPosIndex().get_x():self.entity.getPosIndex().get_x() + 2]
             for tile in tiles:
@@ -43,45 +33,37 @@ class Collider:
 
     def checkY(self):
         self.entity.onGround = False
-        try:
-            rows = []
-            for i in range(self.entity.getPosIndex().get_y() - 1, len(self.level)):
-                rows.append(self.level[i])
-            if not rows:
+
+        rows = []
+        for i in range(self.entity.getPosIndex().get_y() - 1, len(self.level)):
+            rows.append(self.level[i])
+
+        if not rows: # if there are no rows under you, then entity dies
+            if hasattr(self.entity, "gameOver"):
                 self.entity.gameOver()
-            # rows = [
-            #     self.level[self.entity.getPosIndex().get_y() - 1],
-            #     self.level[self.entity.getPosIndex().get_y()],
-            #     self.level[self.entity.getPosIndex().get_y() + 1]
-            # ]
-        except Exception:
-            try:
-                self.entity.gameOver()
-            except Exception:
+            else:
                 self.entity.alive = None
-            return
+
         for row in rows:
-            tiles = row[self.entity.getPosIndex().get_x(): self.entity.getPosIndex().get_x() + 2]
+            tiles = row[self.entity.getPosIndex().get_x():self.entity.getPosIndex().get_x() + 2]
             for tile in tiles:
-                if tile.rect is not None:
-                    if self.entity.rect.colliderect(tile.rect):
-                        if self.entity.rect.y < tile.rect.y and self.entity.vel.get_y() > 0:
-                            self.entity.onGround = True
-                            self.entity.rect.bottom = tile.rect.top
-                            self.entity.vel = Vector2D(self.entity.vel.get_x(), 0)
-                            # reset jump on bottom
-                            if self.entity.traits is not None:
-                                if "jumpTrait" in self.entity.traits:
-                                    self.entity.traits["jumpTrait"].reset()
-                                if "bounceTrait" in self.entity.traits:
-                                    self.entity.traits["bounceTrait"].reset()
-                        if self.entity.rect.y > tile.rect.y and self.entity.vel.get_y() < 0:
-                            self.entity.rect.top = tile.rect.bottom
-                            self.entity.vel.set_y(0)
+                if tile.rect is not None and self.entity.rect.colliderect(tile.rect):
+                    if self.entity.rect.y < tile.rect.y and self.entity.vel.get_y() > 0:
+                        self.entity.onGround = True
+                        self.entity.rect.bottom = tile.rect.top
+                        self.entity.vel.set_y(0)
+                        # reset jump on bottom
+                        if self.entity.traits is not None:
+                            if "jumpTrait" in self.entity.traits:
+                                self.entity.traits["jumpTrait"].reset()
+                            if "bounceTrait" in self.entity.traits:
+                                self.entity.traits["bounceTrait"].reset()
+                    else:
+                        self.entity.rect.top = tile.rect.bottom
+                        self.entity.vel.set_y(0)
 
     def rightLevelBorderReached(self):
-        if self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1:
-            return True
+        return self.entity.getPosIndexAsFloat().get_x() > self.levelObj.levelLength - 1
 
     def leftLevelBorderReached(self):
         if self.entity.rect.x < 0:
@@ -105,6 +87,9 @@ class bounceTrait:
 
     def reset(self):
         self.entity.inAir = False
+
+    def set(self):
+        self.entity.inAir = True
 
 
 class goTrait:
@@ -166,14 +151,13 @@ class jumpTrait:
             ((self.vertical_speed*self.vertical_speed)/(2*self.entity.gravity))
 
     def jump(self, jumping):
-        if jumping:
-            if not self.entity.inAir and not self.entity.inJump:  # only jump when mario is on ground and not in a jump. redundant check
-                SOUND_CONTROLLER.play_sfx(JUMP_SOUND)
-                self.entity.vel = Vector2D(self.entity.vel.get_x(), self.vertical_speed)
-                self.entity.inAir = True
-                self.initalHeight = self.entity.rect.y
-                self.entity.inJump = True
-                self.entity.obeygravity = False  # dont obey gravity in jump so as to reach jump height no matter what the speed
+        if jumping and not self.entity.inAir and self.entity.vel.get_y() == 0: # only jump when mario is on ground and not in a jump. redundant check
+            SOUND_CONTROLLER.play_sfx(JUMP_SOUND)
+            self.entity.vel.set_y(self.vertical_speed)
+            self.entity.inAir = True
+            self.initalHeight = self.entity.rect.y
+            self.entity.inJump = True
+            self.entity.obeygravity = False  # dont obey gravity in jump so as to reach jump height no matter what the speed
 
         if self.entity.inJump:  # check vertical distance travelled while mario is in a jump
             if (self.initalHeight-self.entity.rect.y) >= self.deaccelerationHeight or self.entity.vel.get_y() == 0:
@@ -182,6 +166,9 @@ class jumpTrait:
 
     def reset(self):
         self.entity.inAir = False
+
+    def set(self):
+        self.entity.inAir = True
 
 
 class LeftRightWalkTrait:

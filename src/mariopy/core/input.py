@@ -1,7 +1,7 @@
 import sys
 
 import pygame
-from pygame.locals import *
+from pygame.locals import K_LEFT, K_RIGHT, K_SPACE, K_UP, K_LSHIFT
 
 class Input:
     def __init__(self, entity):
@@ -14,33 +14,19 @@ class Input:
         self.checkForQuitAndRestartInputEvents()
 
     def checkForKeyboardInput(self):
-        pressedKeys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed()
 
-        if pressedKeys[K_LEFT] and not pressedKeys[K_RIGHT]:
+        if keys[K_LEFT] and not keys[K_RIGHT]:
             self.entity.traits["goTrait"].direction = -1
-        elif pressedKeys[K_RIGHT] and not pressedKeys[K_LEFT]:
+        elif keys[K_RIGHT] and not keys[K_LEFT]:
             self.entity.traits["goTrait"].direction = 1
         else:
             self.entity.traits['goTrait'].direction = 0
 
-        isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP]
-        self.entity.traits['jumpTrait'].jump(isJumping)
+        jumping = keys[K_SPACE] or keys[K_UP]
+        self.entity.traits['jumpTrait'].jump(jumping)
 
-        self.entity.traits['goTrait'].boost = pressedKeys[K_LSHIFT]
-
-    # def checkForMouseInput(self):
-    #     mouseX, mouseY = pygame.mouse.get_pos()
-    #     if self.isRightMouseButtonPressed():
-    #         self.entity.levelObj.addKoopa(
-    #             mouseY / 32, mouseX / 32 - self.entity.camera.pos.get_x()
-    #         )
-    #         self.entity.levelObj.addGoomba(
-    #             mouseY / 32, mouseX / 32 - self.entity.camera.pos.get_x()
-    #         )
-    #     if self.isLeftMouseButtonPressed():
-    #         self.entity.levelObj.addCoin(
-    #             mouseX / 32 - self.entity.camera.pos.get_x(), mouseY / 32
-    #         )
+        self.entity.traits['goTrait'].boost = keys[K_LSHIFT]
 
     def checkForQuitAndRestartInputEvents(self):
         events = pygame.event.get()
@@ -52,9 +38,3 @@ class Input:
                 (event.key == pygame.K_ESCAPE or event.key == pygame.K_F5):
                 self.entity.pause = True
                 self.entity.pauseObj.createBackgroundBlur()
-
-    # def isLeftMouseButtonPressed(self):
-    #     return pygame.mouse.get_pressed()[0]
-
-    # def isRightMouseButtonPressed(self):
-    #     return pygame.mouse.get_pressed()[2]

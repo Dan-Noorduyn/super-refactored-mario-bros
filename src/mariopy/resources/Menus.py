@@ -1,13 +1,14 @@
-import pygame
-import sys
 import json
 import os
+import sys
 
-from .level import LEVEL
-from .display import SCREEN, SPRITE_COLLECTION, Spritesheet
-from .dashboard import DASHBOARD
+import pygame
 from scipy.ndimage.filters import gaussian_filter
-from .sound import SOUNDTRACK, SOUND_CONTROLLER
+
+from resources.dashboard import DASHBOARD
+from resources.display import SCREEN, SPRITE_COLLECTION, Spritesheet
+from resources.level import LEVEL
+from resources.sound import SOUND_CONTROLLER, SOUNDTRACK
 
 
 class GaussianBlur:

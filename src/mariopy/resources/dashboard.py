@@ -1,6 +1,6 @@
 import pygame
 
-from .display import FONT_SPRITES, SCREEN, Spritesheet
+from resources.display import FONT_SPRITES, SCREEN, Spritesheet
 
 
 class Dashboard():
@@ -11,7 +11,7 @@ class Dashboard():
         self.points = 0
         self.coins = 0
         self.ticks = 0
-        self.time = 420
+        self.time = 400
         self.lives = 3
         self.new_level = False
         self.sprite_sheet = Spritesheet("./resources/img/title_screen.png")
@@ -26,7 +26,7 @@ class Dashboard():
         self.earnedPoints = 0
         self.coins = 0
         self.ticks = 0
-        self.time = 420
+        self.time = 400
         self.lives = 3
         self.new_level = False
 
@@ -54,7 +54,7 @@ class Dashboard():
             self.drawText(self.timeString(), 552, 37, 15)
         # update Time
         if self.state == "start":
-            self.ticks += 3
+            self.ticks += 2
             if self.ticks == 60:
                 self.ticks = 0
                 self.time -= 1

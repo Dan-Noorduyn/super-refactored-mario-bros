@@ -1,17 +1,17 @@
 import pygame
 
-
-from core.input import *
-from resources.level import LEVEL
-from core.entity_base import *
-from resources.sound import *
-
-
-from core.traits import *
-from utils.physics import Vector2D
-from resources.display import SCREEN, Animation, SPRITE_COLLECTION
+from core.entity_base import Camera, EntityBase
+from core.input import Input
+from core.traits import (Collider, EntityCollider, bounceTrait, goTrait,
+                         jumpTrait)
 from resources.dashboard import DASHBOARD
+from resources.display import SCREEN, SPRITE_COLLECTION, Animation
+from resources.level import LEVEL
 from resources.Menus import PauseMenu
+from resources.sound import (BUMP_SOUND, COIN_SOUND, DEATH_SOUND, GAME_OVER,
+                             MUSHROOM_SOUND, SOUND_CONTROLLER, SOUNDTRACK,
+                             STOMP_SOUND)
+from utils.physics import Vector2D
 
 
 class Mario(EntityBase):

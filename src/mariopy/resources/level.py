@@ -1,12 +1,11 @@
-from resources.display import SCREEN, SPRITE_COLLECTION, Animation
-from resources.dashboard import DASHBOARD
 import json
-from sys import stdout
 
 import pygame
 
-from core.entity_base import (Goomba, Koopa, Coin, RandomBox, PowerUpBox,
-                              MushroomItem)
+from core.entity_base import (Coin, Goomba, Koopa, MushroomItem, PowerUpBox,
+                              RandomBox)
+from resources.dashboard import DASHBOARD
+from resources.display import SCREEN, SPRITE_COLLECTION, Animation
 
 
 class Tile:
