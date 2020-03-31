@@ -119,6 +119,7 @@ class MainMenu:
         DASHBOARD.state = "menu"
         DASHBOARD.lives = 3
         DASHBOARD.update()
+        SOUND_CONTROLLER.play_music(SOUNDTRACK)
         while not self.start:
             self.update()
 
