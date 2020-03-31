@@ -159,7 +159,7 @@ class Goomba(EntityBase):
             self.movePointsTextUpAndDraw(camera)
             self.vel -= Vector2D(0, 0.5)
             self.rect.y += self.vel.get_y()
-        
+
         if self.timer >= self.timeAfterDeath:
             self.alive = None
         self.timer += 0.1
@@ -233,8 +233,9 @@ class Koopa(EntityBase):
         self.levelObj = level
         self.EntityCollider = EntityCollider(self)
         self.inAir = False
+        self.hit_once = False
 
-    ## If shell sleeping. kill it. If alive == true, kill it.
+    # If shell sleeping. kill it. If alive == true, kill it.
 
     def update(self, camera):
         if self.alive == True:
@@ -273,7 +274,6 @@ class Koopa(EntityBase):
                 if isColliding:
                     self._onCollisionWithMob(ent, isColliding)
 
-
     def _onCollisionWithMob(self, ent, isColliding):
         if isColliding and ent.alive:
             ent.bounce()
@@ -300,8 +300,6 @@ class Koopa(EntityBase):
             DASHBOARD.earnedPoints += 100
             ent.leftrightTrait.update()
             self.leftrightTrait.update()
-
-            
 
     def die(self, camera):
         if self.timer == 0:
@@ -402,6 +400,7 @@ class MushroomItem(EntityBase):
         self.timer = 0
         self.level = level
         self.leftrightTrait = None
+        self.dead = False
 
     def spawnMushroom(self, cam):
         if not self.sound_played:
@@ -416,6 +415,8 @@ class MushroomItem(EntityBase):
             self.applyGravity()
             self.drawMushroom(cam)
             self.leftrightTrait.update()
+        if self.dead:
+            self.alive = None
 
     def drawMushroom(self, cam):
         SCREEN.blit(
