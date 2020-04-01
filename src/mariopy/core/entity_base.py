@@ -284,6 +284,7 @@ class Koopa(EntityBase):
         else:
             self.alive = True
             self.timer = 0
+            self.left_right_trait.speed = 1
         self.timer += 0.1
 
     def update_alive(self, camera):
