@@ -65,6 +65,7 @@ class _Game_Controller():
                                         DASHBOARD.level_name = next_level[len(next_level)-3:len(next_level)]
                                         DASHBOARD.state = "start"
                                         DASHBOARD.time = 400
+                                        DASHBOARD.earned_points = 0
                                         mario.next_level()
                                         SOUND_CONTROLLER.play_music(SOUNDTRACK)
                                         wait = 0

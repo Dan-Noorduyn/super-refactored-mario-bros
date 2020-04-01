@@ -74,6 +74,7 @@ class Goomba(EntityBase):
         }
         self.in_air = False
         self.text_pos = Vector2D(x, y)
+        self.hit_once = False
 
     def update(self, camera):
         self.update_traits()
