@@ -14,23 +14,24 @@ class Spritesheet():
                 self.sheet.set_colorkey((255, 0, 220))
         except pygame.error:
             #print("Unable to load spritesheet image:", filename)
-            raise SystemExit
+            raise SystemExit()
 
-    def image_at(self, x, y, scalingfactor, colorkey=None, ignoreTileSize=False,
-                 xTileSize=16, yTileSize=16):
-        if ignoreTileSize:
-            rect = pygame.Rect((x, y, xTileSize, yTileSize))
+    def image_at(self, x, y, scaling_factor, color_key=None, ignore_tile_size=False,
+                 x_tile_size=16, y_tile_size=16):
+        if ignore_tile_size:
+            rect = pygame.Rect((x, y, x_tile_size, y_tile_size))
         else:
             rect = pygame.Rect(
-                (x * xTileSize, y * yTileSize, xTileSize, yTileSize))
+                (x * x_tile_size, y * y_tile_size, x_tile_size, y_tile_size))
         image = pygame.Surface(rect.size)
+
         image.blit(self.sheet, (0, 0), rect)
-        if colorkey is not None:
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey, pygame.RLEACCEL)
+        if color_key is not None:
+            if color_key == -1:
+                color_key = image.get_at((0, 0))
+            image.set_colorkey(color_key, pygame.RLEACCEL)
         return pygame.transform.scale(
-            image, (xTileSize * scalingfactor, yTileSize * scalingfactor)
+            image, (x_tile_size * scaling_factor, y_tile_size * scaling_factor)
         )
 
 
@@ -64,11 +65,11 @@ class Animation:
         return self.__image
 
 
-def _load_background(sh: Spritesheet, data: dict, d: dict) -> None:
+def _load_background(sheet: Spritesheet, data: dict, out: dict) -> None:
     for sprite in data["sprites"]:
         color_key = sprite["colorKey"] if "colorKey" in sprite else None
 
-        d[sprite["name"]] = sh.image_at(
+        out[sprite["name"]] = sheet.image_at(
             sprite["x"],
             sprite["y"],
             sprite["scalefactor"],
@@ -76,53 +77,52 @@ def _load_background(sh: Spritesheet, data: dict, d: dict) -> None:
         )
 
 
-def _load_animation(sh: Spritesheet, data: dict, d: dict) -> None:
+def _load_animation(sheet: Spritesheet, data: dict, out: dict) -> None:
     for sprite in data["sprites"]:
         images = []
         for image in sprite["images"]:
             images.append(
-                sh.image_at(
+                sheet.image_at(
                     image["x"],
                     image["y"],
                     image["scale"],
-                    colorkey=sprite["colorKey"],
+                    sprite["colorKey"],
                 )
             )
-        d[sprite["name"]] = Animation(images, delta_time=sprite["deltaTime"])
+        out[sprite["name"]] = Animation(images, delta_time=sprite["deltaTime"])
 
 
-def _load_main(sh: Spritesheet, data: dict, d: dict) -> None:
+def _load_main(sheet: Spritesheet, data: dict, out: dict) -> None:
     for sprite in data["sprites"]:
         color_key = sprite["colorKey"] if "colorKey" in sprite else None
-        d[sprite["name"]] = sh.image_at(
+        out[sprite["name"]] = sheet.image_at(
             sprite["x"],
             sprite["y"],
             sprite["scalefactor"],
-            colorkey=color_key,
-            ignoreTileSize=True,
-            xTileSize=data["size"][0],
-            yTileSize=data["size"][1],
+            color_key=color_key,
+            ignore_tile_size=True,
+            x_tile_size=data["size"][0],
+            y_tile_size=data["size"][1],
         )
 
 
 def _load_sprites(file_list: list) -> dict:
-    res: dict = {}
+    out: dict = {}
     for url in file_list:
         with open(url) as data:
             data: dict = json.load(data)
-            spritesheet = Spritesheet(data["spriteSheetURL"])
+            sheet = Spritesheet(data["spriteSheetURL"])
             sw: dict = {
                 "background": _load_background,
                 "animation": _load_animation,
                 "character": _load_main,
                 "item": _load_main
             }
-            sw[data["type"]](spritesheet, data, res)
-    return res
-
+            sw[data["type"]](sheet, data, out)
+    return out
 
 def _load_font(font_path: str):
-    spritesheet: Spritesheet = Spritesheet(font_path)
+    sheet: Spritesheet = Spritesheet(font_path)
     font: dict = {}
     row: int = 0
     char_at: int = 0
@@ -131,13 +131,13 @@ def _load_font(font_path: str):
         if char_at == 16:
             char_at = 0
             row += 1
-        font[char] = spritesheet.image_at(
+        font[char] = sheet.image_at(
             char_at,
             row,
             2,
-            colorkey=pygame.color.Color(0, 0, 0),
-            xTileSize=8,
-            yTileSize=8
+            color_key=pygame.color.Color(0, 0, 0),
+            x_tile_size=8,
+            y_tile_size=8
         )
         char_at += 1
     return font

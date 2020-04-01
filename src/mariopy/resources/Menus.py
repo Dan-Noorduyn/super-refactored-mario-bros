@@ -1,20 +1,21 @@
-import pygame
-import sys
 import json
 import os
+import sys
 
-from .level import LEVEL
-from .display import SCREEN, SPRITE_COLLECTION, Spritesheet
-from .dashboard import DASHBOARD
+import pygame
 from scipy.ndimage.filters import gaussian_filter
-from .sound import SOUNDTRACK, SOUND_CONTROLLER
+
+from resources.dashboard import DASHBOARD
+from resources.display import SCREEN, SPRITE_COLLECTION, Spritesheet
+from resources.level import LEVEL
+from resources.sound import SOUND_CONTROLLER, SOUNDTRACK
 
 
 class GaussianBlur:
     def __init__(self):
         self.kernel_size = 7
 
-    def filter(self, srfc, xpos, ypos, width, height):
+    def filter(self, srfc, width, height):
         nSrfc = pygame.Surface((width, height))
         pxa = pygame.surfarray.array3d(srfc)
         blurred = gaussian_filter(pxa, sigma=(self.kernel_size,
@@ -30,12 +31,12 @@ class PauseMenu:
         self.state = 0
         self.start = False
         self.spritesheet = Spritesheet("./resources/img/title_screen.png")
-        self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
+        self.pause_srfc = GaussianBlur().filter(SCREEN, SCREEN.get_width(), SCREEN.get_height())
         self.dot = self.spritesheet.image_at(
-            0, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
+            0, 150, 2, color_key=[0, 0, 0], ignore_tile_size=True
         )
         self.gray_dot = self.spritesheet.image_at(
-            20, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
+            20, 150, 2, color_key=[0, 0, 0], ignore_tile_size=True
         )
 
     def run(self):
@@ -44,14 +45,14 @@ class PauseMenu:
 
     def update(self):
         SCREEN.blit(self.pause_srfc, (0, 0))
-        DASHBOARD.drawText("PAUSED", 120, 160, 68)
-        DASHBOARD.drawText("CONTINUE", 150, 280, 32)
-        DASHBOARD.drawText("BACK TO MENU", 150, 320, 32)
-        self.drawDot()
+        DASHBOARD.draw_text("PAUSED", 120, 160, 68)
+        DASHBOARD.draw_text("CONTINUE", 150, 280, 32)
+        DASHBOARD.draw_text("BACK TO MENU", 150, 320, 32)
+        self.draw_dot()
         pygame.display.update()
-        self.checkInput()
+        self.check_input()
 
-    def drawDot(self):
+    def draw_dot(self):
         if self.state == 0:
             SCREEN.blit(self.dot, (100, 275))
             SCREEN.blit(self.gray_dot, (100, 315))
@@ -59,7 +60,7 @@ class PauseMenu:
             SCREEN.blit(self.dot, (100, 315))
             SCREEN.blit(self.gray_dot, (100, 275))
 
-    def checkInput(self):
+    def check_input(self):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -82,8 +83,8 @@ class PauseMenu:
                     if self.state < 1:
                         self.state += 1
 
-    def createBackgroundBlur(self):
-        self.pause_srfc = GaussianBlur().filter(SCREEN, 0, 0, 640, 480)
+    def create_background_blur(self):
+        self.pause_srfc = GaussianBlur().filter(SCREEN, 640, 480)
 
 
 class MainMenu:
@@ -102,40 +103,41 @@ class MainMenu:
             0,
             60,
             2,
-            colorkey=[255, 0, 220],
-            ignoreTileSize=True,
-            xTileSize=180,
-            yTileSize=88,
+            color_key=[255, 0, 220],
+            ignore_tile_size=True,
+            x_tile_size=180,
+            y_tile_size=88,
         )
         self.menu_dot = self.spritesheet.image_at(
-            0, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
+            0, 150, 2, color_key=[0, 0, 0], ignore_tile_size=True
         )
         self.menu_dot2 = self.spritesheet.image_at(
-            20, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
+            20, 150, 2, color_key=[0, 0, 0], ignore_tile_size=True
         )
-        self.loadSettings("./settings.json")
+        self.load_settings("./settings.json")
 
     def run(self):
         DASHBOARD.state = "menu"
         DASHBOARD.lives = 3
         DASHBOARD.update()
+        SOUND_CONTROLLER.play_music(SOUNDTRACK)
         while not self.start:
             self.update()
 
     def update(self):
-        self.checkInput()
+        self.check_input()
         if self.in_choosing_level:
             return
 
-        self.drawMenuBackground()
+        self.draw_menu_background()
         DASHBOARD.update()
 
         if not self.in_settings:
-            self.drawMenu()
+            self.draw_menu()
         else:
-            self.drawSettings()
+            self.draw_settings()
 
-    def drawDot(self):
+    def draw_dot(self):
         if self.state == 0:
             SCREEN.blit(self.menu_dot, (145, 273))
             SCREEN.blit(self.menu_dot2, (145, 313))
@@ -149,10 +151,10 @@ class MainMenu:
             SCREEN.blit(self.menu_dot2, (145, 273))
             SCREEN.blit(self.menu_dot2, (145, 313))
 
-    def loadSettings(self, url):
+    def load_settings(self, url):
         try:
-            with open(url) as jsonData:
-                data = json.load(jsonData)
+            with open(url) as json_data:
+                data = json.load(json_data)
                 if data["sound"]:
                     self.music = True
                     SOUND_CONTROLLER.unmute_music()
@@ -166,34 +168,33 @@ class MainMenu:
                 else:
                     self.sfx = False
                     SOUND_CONTROLLER.mute_sfx()
-
         except (IOError, OSError):
             self.music = False
             self.sfx = False
             SOUND_CONTROLLER.mute_music()
             SOUND_CONTROLLER.mute_sfx()
-            self.saveSettings("./settings.json")
+            self.save_settings("./settings.json")
 
-    def saveSettings(self, url):
+    def save_settings(self, url):
         data = {"sound": self.music, "sfx": self.sfx}
         with open(url, "w") as outfile:
             json.dump(data, outfile)
 
-    def drawMenu(self):
-        self.drawDot()
-        DASHBOARD.drawText("CHOOSE LEVEL", 180, 280, 24)
-        DASHBOARD.drawText("SETTINGS", 180, 320, 24)
-        DASHBOARD.drawText("EXIT", 180, 360, 24)
+    def draw_menu(self):
+        self.draw_dot()
+        DASHBOARD.draw_text("CHOOSE LEVEL", 180, 280, 24)
+        DASHBOARD.draw_text("SETTINGS", 180, 320, 24)
+        DASHBOARD.draw_text("EXIT", 180, 360, 24)
 
-        DASHBOARD.drawText("HIGH", 20, 140, 15)
-        DASHBOARD.drawText("SCORE:", 20, 160, 15)
+        DASHBOARD.draw_text("HIGH", 20, 140, 15)
+        DASHBOARD.draw_text("SCORE:", 20, 160, 15)
         highscore_file = open("resources/highscore.txt","r")
         if highscore_file.mode == 'r':
-            contents =highscore_file.read()
+            contents = highscore_file.read()
             highscore_file.close()
-            DASHBOARD.drawText(contents.strip(), 20, 180, 15)
+            DASHBOARD.draw_text(contents.strip(), 20, 180, 15)
 
-    def drawMenuBackground(self, withBanner=True):
+    def draw_menu_background(self, with_banner=True):
         for y in range(0, 13):
             for x in range(0, 20):
                 SCREEN.blit(
@@ -206,7 +207,7 @@ class MainMenu:
                     SPRITE_COLLECTION.get("ground"),
                     (x * 32, y * 32),
                 )
-        if(withBanner):
+        if(with_banner):
             SCREEN.blit(self.menu_banner, (150, 80))
         SCREEN.blit(
             SPRITE_COLLECTION.get("mario_idle"),
@@ -229,54 +230,54 @@ class MainMenu:
         )
         SCREEN.blit(SPRITE_COLLECTION.get("goomba-1"), (18.5*32, 12*32))
 
-    def drawSettings(self):
-        self.drawDot()
-        DASHBOARD.drawText("MUSIC", 180, 280, 24)
+    def draw_settings(self):
+        self.draw_dot()
+        DASHBOARD.draw_text("MUSIC", 180, 280, 24)
         if self.music:
-            DASHBOARD.drawText("ON", 340, 280, 24)
+            DASHBOARD.draw_text("ON", 340, 280, 24)
         else:
-            DASHBOARD.drawText("OFF", 340, 280, 24)
-        DASHBOARD.drawText("SFX", 180, 320, 24)
+            DASHBOARD.draw_text("OFF", 340, 280, 24)
+        DASHBOARD.draw_text("SFX", 180, 320, 24)
         if self.sfx:
-            DASHBOARD.drawText("ON", 340, 320, 24)
+            DASHBOARD.draw_text("ON", 340, 320, 24)
         else:
-            DASHBOARD.drawText("OFF", 340, 320, 24)
-        DASHBOARD.drawText("BACK", 180, 360, 24)
+            DASHBOARD.draw_text("OFF", 340, 320, 24)
+        DASHBOARD.draw_text("BACK", 180, 360, 24)
 
-    def chooseLevel(self):
-        self.drawMenuBackground(False)
+    def choose_level(self):
+        self.draw_menu_background(False)
         self.in_choosing_level = True
-        self.level_names = self.loadlevel_names()
-        self.drawLevelChooser()
+        self.level_names = self.load_level_names()
+        self.draw_level_chooser()
 
-    def drawBorder(self, x, y, width, height, color, thickness):
+    def draw_border(self, x, y, width, color, thickness):
         pygame.draw.rect(SCREEN, color, (x, y, width, thickness))
         pygame.draw.rect(SCREEN, color, (x, y+width, width, thickness))
         pygame.draw.rect(SCREEN, color, (x, y, thickness, width))
         pygame.draw.rect(SCREEN, color, (x+width, y, thickness,
                                          width+thickness))
 
-    def drawLevelChooser(self):
+    def draw_level_chooser(self):
         j = 0
         offset = 75
-        textOffset = 90
-        for i, levelName in enumerate(self.level_names):
-            if self.curr_selected_level == i+1:
+        text_offset = 90
+        for i, level_name in enumerate(self.level_names):
+            if self.curr_selected_level == i + 1:
                 color = (255, 255, 255)
             else:
                 color = (150, 150, 150)
             if i < 3:
-                DASHBOARD.drawText(levelName, 175*i+textOffset, 100, 12)
-                self.drawBorder(175*i+offset, 55, 125, 75, color, 5)
+                DASHBOARD.draw_text(level_name, 175*i+text_offset, 100, 12)
+                self.draw_border(175*i+offset, 55, 125, color, 5)
             else:
-                DASHBOARD.drawText(levelName, 175*j+textOffset, 250, 12)
-                self.drawBorder(175*j+offset, 210, 125, 75, color, 5)
+                DASHBOARD.draw_text(level_name, 175*j+text_offset, 250, 12)
+                self.draw_border(175*j+offset, 210, 125, color, 5)
                 j += 1
 
-    def loadlevel_names(self):
+    def load_level_names(self):
         files = []
         res = []
-        for r, d, f in os.walk("./resources/levels"):
+        for r, _, f in os.walk("./resources/levels"):
             for file in f:
                 files.append(os.path.join(r, file))
         for f in files:
@@ -285,7 +286,7 @@ class MainMenu:
         res.sort()
         return res
 
-    def checkInput(self):
+    def check_input(self):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -304,37 +305,37 @@ class MainMenu:
                     if self.in_choosing_level:
                         if self.curr_selected_level > 3:
                             self.curr_selected_level -= 3
-                            self.drawLevelChooser()
+                            self.draw_level_chooser()
                     if self.state > 0:
                         self.state -= 1
                 elif event.key == pygame.K_DOWN:
                     if self.in_choosing_level:
                         if self.curr_selected_level+3 <= self.level_count:
                             self.curr_selected_level += 3
-                            self.drawLevelChooser()
+                            self.draw_level_chooser()
                     if self.state < 2:
                         self.state += 1
                 elif event.key == pygame.K_LEFT:
                     if self.curr_selected_level > 1:
                         self.curr_selected_level -= 1
-                        self.drawLevelChooser()
+                        self.draw_level_chooser()
                 elif event.key == pygame.K_RIGHT:
                     if self.curr_selected_level < self.level_count:
                         self.curr_selected_level += 1
-                        self.drawLevelChooser()
+                        self.draw_level_chooser()
                 elif event.key == pygame.K_RETURN:
                     if self.in_choosing_level:
                         self.in_choosing_level = False
                         DASHBOARD.state = "start"
-                        DASHBOARD.time = 420
-                        LEVEL.loadLevel(self.level_names[self.curr_selected_level-1])
+                        DASHBOARD.time = 400
+                        LEVEL.load_level(self.level_names[self.curr_selected_level-1])
                         DASHBOARD.level_name = self.level_names[self.curr_selected_level-1].split("Level")[
                             1]
                         self.start = True
                         return
                     if not self.in_settings:
                         if self.state == 0:
-                            self.chooseLevel()
+                            self.choose_level()
                         elif self.state == 1:
                             self.in_settings = True
                             self.state = 0
@@ -349,7 +350,7 @@ class MainMenu:
                             else:
                                 SOUND_CONTROLLER.play_music(SOUNDTRACK)
                                 self.music = True
-                            self.saveSettings("./settings.json")
+                            self.save_settings("./settings.json")
                         elif self.state == 1:
                             if self.sfx:
                                 SOUND_CONTROLLER.mute_sfx()
@@ -357,7 +358,7 @@ class MainMenu:
                             else:
                                 SOUND_CONTROLLER.unmute_sfx()
                                 self.sfx = True
-                            self.saveSettings("./settings.json")
+                            self.save_settings("./settings.json")
                         elif self.state == 2:
                             self.in_settings = False
         pygame.display.update()
