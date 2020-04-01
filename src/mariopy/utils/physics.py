@@ -12,16 +12,16 @@ class Vector2D():
     def get_x(self) -> float:
         return self.__x
 
-    def get_y(self) -> float:
+    def get_y(self) ->  float:
         return self.__y
 
-    def add(self, v: "Vector2D") -> "Vector2D":
+    def add(self, v: "Vector2D") -> None:
         self.__x += v.get_x()
         self.__y += v.get_y()
 
     def set_x(self, x: float) -> None:
         self.__x = x
-    
+
     def set_y(self, y: float) -> None:
         self.__y = y
 

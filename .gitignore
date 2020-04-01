@@ -11,3 +11,6 @@ __pycache__
 *.lot
 *.toc
 *.out
+./src/mariopy/settings.json
+./src/mariopy/resources/highscore.txt
+*.DS_Store
