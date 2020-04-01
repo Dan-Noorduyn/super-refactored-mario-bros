@@ -136,19 +136,19 @@ class Mario(EntityBase):
             self.bounce()
             if mob.rect.x < self.rect.x:
                 mob.left_right_trait.direction = -1
-                # mob.rect.x += -5
+                mob.rect.x += -3
             else:
-                # mob.rect.x += 5
+                mob.rect.x += 3
                 mob.left_right_trait.direction = 1
             mob.alive = "shell_bouncing"
             mob.hit_once = True
         elif is_colliding and mob.alive == "sleeping":
             if mob.rect.x < self.rect.x:
                 mob.left_right_trait.direction = -1
-                mob.rect.right = self.rect.left - 2
+                mob.rect.x += -3
             else:
                 mob.left_right_trait.direction = 1
-                mob.rect.left = self.rect.right + 2
+                mob.rect.x += 3
             SOUND_CONTROLLER.play_sfx(KICK_SOUND)
             mob.alive = "shell_bouncing"
         elif is_colliding and mob.alive and self.timer > 120:

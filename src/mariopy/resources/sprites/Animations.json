@@ -25,28 +25,6 @@
             "colorKey": null
         },
         {
-            "name":"coin",
-            "images":[
-                {
-                    "x":24,
-                    "y":1,
-                    "scale":2
-                },
-                {
-                    "x":25,
-                    "y":1,
-                    "scale":2
-                },
-                {
-                    "x":26,
-                    "y":1,
-                    "scale":2
-                }
-            ],
-            "deltaTime":10,
-            "colorKey": -1
-        },
-        {
             "name":"PowerUpBox",
             "images":[
                 {
