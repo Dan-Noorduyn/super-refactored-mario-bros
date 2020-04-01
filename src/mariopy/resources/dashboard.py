@@ -7,7 +7,7 @@ class Dashboard():
     def __init__(self):
         self.state = "menu"
         self.level_name = ""
-        self.earnedPoints = 0
+        self.earned_points = 0
         self.points = 0
         self.coins = 0
         self.ticks = 0
@@ -16,14 +16,15 @@ class Dashboard():
         self.new_level = False
         self.sprite_sheet = Spritesheet("./resources/img/title_screen.png")
         self.mushroom_life = self.sprite_sheet.image_at(
-            0, 150, 2, colorkey=[0, 0, 0], ignoreTileSize=True
+            0, 150, 2, color_key=[0, 0, 0], ignore_tile_size=True
         )
+
 
     def reset(self):
         self.state = "menu"
         self.level_name = ""
         self.points = 0
-        self.earnedPoints = 0
+        self.earned_points = 0
         self.coins = 0
         self.ticks = 0
         self.time = 400
@@ -31,10 +32,10 @@ class Dashboard():
         self.new_level = False
 
     def update(self):
-        self.drawText("MARIO", 20, 20, 15)
-        self.drawText(self.pointString(), 20, 37, 15)
+        self.draw_text("MARIO", 20, 20, 15)
+        self.draw_text(self.point_string(), 20, 37, 15)
 
-        self.drawText("LIVES", 160, 20, 15)
+        self.draw_text("LIVES", 160, 20, 15)
         for lives in range(self.lives):
             if lives == 0:
                 SCREEN.blit(self.mushroom_life, (160, 37))
@@ -43,15 +44,15 @@ class Dashboard():
             if lives == 2:
                 SCREEN.blit(self.mushroom_life, (210, 37))
 
-        self.drawText("@x{}".format(self.coinString()), 310, 37, 15)
+        self.draw_text("@x{}".format(self.coin_string()), 310, 37, 15)
 
-        self.drawText("WORLD", 420, 20, 15)
+        self.draw_text("WORLD", 420, 20, 15)
         if self.state != "menu":
-            self.drawText(str(self.level_name), 420, 37, 15)
+            self.draw_text(str(self.level_name), 420, 37, 15)
 
-        self.drawText("TIME", 550, 20, 15)
+        self.draw_text("TIME", 550, 20, 15)
         if self.state != "menu":
-            self.drawText(self.timeString(), 552, 37, 15)
+            self.draw_text(self.time_string(), 552, 37, 15)
         # update Time
         if self.state == "start":
             self.ticks += 2
@@ -59,22 +60,22 @@ class Dashboard():
                 self.ticks = 0
                 self.time -= 1
 
-    def drawText(self, text, x, y, size):
+    def draw_text(self, text, x, y, size):
         for char in text:
-            charSprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
-            SCREEN.blit(charSprite, (x, y))
+            char_sprite = pygame.transform.scale(FONT_SPRITES[char], (size, size))
+            SCREEN.blit(char_sprite, (x, y))
             if char == " ":
                 x += size//2
             else:
                 x += size
 
-    def coinString(self):
+    def coin_string(self):
         return "{:02d}".format(self.coins)
 
-    def pointString(self):
+    def point_string(self):
         return "{:06d}".format(self.points)
 
-    def timeString(self):
+    def time_string(self):
         return "{:03d}".format(self.time)
 
 

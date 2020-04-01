@@ -5,15 +5,13 @@ from pygame.locals import K_LEFT, K_RIGHT, K_SPACE, K_UP, K_LSHIFT
 
 class Input:
     def __init__(self, entity):
-        self.mouseX = 0
-        self.mouseY = 0
         self.entity = entity
 
-    def checkForInput(self):
-        self.checkForKeyboardInput()
-        self.checkForQuitAndRestartInputEvents()
+    def check_for_input(self):
+        self.check_for_keyboard_input()
+        self.check_for_quit_and_restart_input_events()
 
-    def checkForKeyboardInput(self):
+    def check_for_keyboard_input(self):
         keys = pygame.key.get_pressed()
 
         if keys[K_LEFT] and not keys[K_RIGHT]:
@@ -28,7 +26,7 @@ class Input:
 
         self.entity.traits['goTrait'].boost = keys[K_LSHIFT]
 
-    def checkForQuitAndRestartInputEvents(self):
+    def check_for_quit_and_restart_input_events(self):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -37,4 +35,4 @@ class Input:
             if event.type == pygame.KEYDOWN and \
                 (event.key == pygame.K_ESCAPE or event.key == pygame.K_F5):
                 self.entity.pause = True
-                self.entity.pauseObj.createBackgroundBlur()
+                self.entity.pause_obj.create_background_blur()

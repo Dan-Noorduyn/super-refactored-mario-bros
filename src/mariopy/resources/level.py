@@ -19,36 +19,43 @@ class Tile:
 
 class _Level():
     def __init__(self):
-        self.levelLength: int = 0
-        self.entityList: list = []
+        self.level_length: int = 0
+        self.entity_list: list = []
         self.level: list = []
 
-    def loadLevel(self, levelname):
-        self.entityList.clear()
+    def load_level(self, level_name):
+        self.entity_list.clear()
         self.level.clear()
-        with open("./resources/levels/{}.json".format(levelname)) as jsonData:
-            data: dict = json.load(jsonData)
-            self.loadLayers(data)
-            self.loadObjects(data)
-            self.loadEntities(data)
-            self.levelLength = data["length"]
+        with open("./resources/levels/{}.json".format(level_name)) as json_data:
+            data: dict = json.load(json_data)
+            self.load_layers(data)
+            self.load_objects(data)
+            self.load_entities(data)
+            self.level_length = data["length"]
 
-    def loadEntities(self, data):
+    def load_entities(self, data):
         if "entities" not in data["level"]:
             return
-        
-        for x, y in data["level"]["entities"]["randomBox"]:
-            self.addRandomBox(x, y)
-        for x, y in data["level"]["entities"]["PowerUpBox"]:
-            self.addPowerBox(x, y)
-        for x, y in data["level"]["entities"]["Goomba"]:
-            self.addGoomba(x, y)
-        for x, y in data["level"]["entities"]["Koopa"]:
-            self.addKoopa(x, y)
-        for x, y in data["level"]["entities"]["coin"]:
-            self.addCoin(x, y)
 
-    def loadLayers(self, data):
+        entities = data["level"]["entities"]
+
+        if "randomBox" in entities:
+            for x, y in entities["randomBox"]:
+                self.add_random_box(x, y)
+        if "PowerUpBox" in entities:
+            for x, y in entities["PowerUpBox"]:
+                self.add_power_box(x, y)
+        if "Goomba" in entities:
+            for x, y in entities["Goomba"]:
+                self.add_goomba(x, y)
+        if "Koopa" in entities:
+            for x, y in entities["Koopa"]:
+                self.add_koopa(x, y)
+        if "coin" in entities:
+            for x, y in entities["coin"]:
+                self.add_coin(x, y)
+
+    def load_layers(self, data):
         layers = []
         for x in range(*data["level"]["layers"]["sky"]["x"]):
             layers.append(
@@ -68,26 +75,36 @@ class _Level():
             )
         self.level[:] = map(list, zip(*layers))
 
-    def loadObjects(self, data):
-        for x, y in data["level"]["objects"]["bush"]:
-            self.addBushSprite(x, y)
-        for x, y in data["level"]["objects"]["cloud"]:
-            self.addCloudSprite(x, y)
-        for x, y, z in data["level"]["objects"]["pipe"]:
-            self.addPipeSprite(x, y, z)
-        for x, y in data["level"]["objects"]["sky"]:
-            self.level[y][x] = Tile(SPRITE_COLLECTION.get("sky"), None)
-        for x, y in data["level"]["objects"]["ground"]:
-            self.level[y][x] = Tile(
-                SPRITE_COLLECTION.get("ground"),
-                pygame.Rect(x * 32, y * 32, 32, 32),
-            )
+    def load_objects(self, data):
+        if "objects" not in data["level"]:
+            return
 
-    def updateEntities(self, cam):
-        for entity in self.entityList:
+        objects = data["level"]["objects"]
+
+        if "bush" in objects:
+            for x, y in objects["bush"]:
+                self.add_bush_sprite(x, y)
+        if "cloud" in objects:
+            for x, y in objects["cloud"]:
+                self.add_cloud_sprite(x, y)
+        if "pipe" in objects:
+            for x, y, z in objects["pipe"]:
+                self.add_pipe_sprite(x, y, z)
+        if "sky" in objects:
+            for x, y in objects["sky"]:
+                self.level[y][x] = Tile(SPRITE_COLLECTION.get("sky"), None)
+        if "ground" in objects:
+            for x, y in objects["ground"]:
+                self.level[y][x] = Tile(
+                    SPRITE_COLLECTION.get("ground"),
+                    pygame.Rect(x * 32, y * 32, 32, 32),
+                )
+
+    def update_entities(self, cam):
+        for entity in self.entity_list:
             entity.update(cam)
             if entity.alive is None:
-                self.entityList.remove(entity)
+                self.entity_list.remove(entity)
 
     def _draw_sprite(self, sprite, x, y):
         dimensions = (x * 32, y * 32)
@@ -97,7 +114,7 @@ class _Level():
             sprite.sprite.update()
             SCREEN.blit(sprite.sprite.get_image(), dimensions)
 
-    def drawLevel(self, camera):
+    def draw_level(self, camera):
         try:
             for y in range(0, 15):
                 for x in range(0 - int(camera.pos.get_x() + 1), 20 - int(camera.pos.get_x() - 1)):
@@ -112,20 +129,20 @@ class _Level():
         except IndexError:
             return
 
-    def addCloudSprite(self, x, y):
+    def add_cloud_sprite(self, x, y):
         try:
-            for yOff in range(0, 2):
-                for xOff in range(0, 3):
-                    self.level[y + yOff][x + xOff] = Tile(
+            for y_off in range(0, 2):
+                for x_off in range(0, 3):
+                    self.level[y + y_off][x + x_off] = Tile(
                         SPRITE_COLLECTION.get(
-                            "cloud{}_{}".format(yOff + 1, xOff + 1)
+                            "cloud{}_{}".format(y_off + 1, x_off + 1)
                         ),
                         None,
                     )
         except IndexError:
             return
 
-    def addPipeSprite(self, x, y, length=2):
+    def add_pipe_sprite(self, x, y, length=2):
         try:
             # add Pipe Head
             self.level[y][x] = Tile(
@@ -149,56 +166,33 @@ class _Level():
         except IndexError:
             return
 
-    def addBushSprite(self, x, y):
-        try:
-            self.level[y][x] = Tile(SPRITE_COLLECTION.get("bush_1"), None)
-            self.level[y][x + 1] = Tile(
-                SPRITE_COLLECTION.get("bush_2"), None
-            )
-            self.level[y][x + 2] = Tile(
-                SPRITE_COLLECTION.get("bush_3"), None
-            )
-        except IndexError:
-            return
+    def add_bush_sprite(self, x, y):
+        for i in range(0, min(3, len(self.level[y][x:]))):
+            self.level[y][x + i] = Tile(SPRITE_COLLECTION.get("bush_{}".format(i + 1)), None)
 
-    def addRandomBox(self, x, y):
+    def add_random_box(self, x, y):
         self.level[y][x] = Tile(SPRITE_COLLECTION.get("randomBox"),
                                 pygame.Rect(x * 32, y * 32 - 1, 32, 32))
-        self.entityList.append(
-            RandomBox(
-                SPRITE_COLLECTION,
-                x,
-                y,
-                DASHBOARD,
-            )
-        )
+        self.entity_list.append(RandomBox(x, y))
 
-    def addPowerBox(self, x, y):
+    def add_power_box(self, x, y):
         self.level[y][x] = Tile(SPRITE_COLLECTION.get("PowerUpBox"),
                                 pygame.Rect(x * 32, y * 32 - 1, 32, 32))
-        self.entityList.append(
-            PowerUpBox(
-                SPRITE_COLLECTION,
-                x,
-                y,
-            )
+        self.entity_list.append(PowerUpBox(x, y))
+
+    def add_mushroom(self, x, y):
+        self.entity_list.append(MushroomItem(x, y, self))
+
+    def add_coin(self, x, y):
+        self.entity_list.append(Coin(x, y))
+
+    def add_goomba(self, x, y):
+        self.entity_list.append(
+            Goomba(x, y, self)
         )
 
-    def addMushroom(self, x, y):
-        self.entityList.append(MushroomItem(x, y, self))
-
-    def addCoin(self, x, y):
-        self.entityList.append(Coin(SPRITE_COLLECTION, x, y))
-
-    def addGoomba(self, x, y):
-        self.entityList.append(
-            Goomba(SPRITE_COLLECTION, x, y, self)
-        )
-
-    def addKoopa(self, x, y):
-        self.entityList.append(
-            Koopa(x, y, self)
-        )
+    def add_koopa(self, x, y):
+        self.entity_list.append(Koopa(x, y, self))
 
 
 LEVEL: _Level = _Level()

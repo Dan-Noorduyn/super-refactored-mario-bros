@@ -17,10 +17,10 @@ from utils.physics import Vector2D
 class Mario(EntityBase):
     def __init__(self, x, y, gravity=0.75):
         super(Mario, self).__init__(x, y, gravity)
-        self.camera = Camera(self.rect, self, LEVEL.levelLength)
+        self.camera = Camera(self.rect, self, LEVEL.level_length)
         self.input = Input(self)
-        self.inAir = False
-        self.inJump = False
+        self.in_air = False
+        self.in_jump = False
         self.animation = Animation(
             [
                 SPRITE_COLLECTION.get("mario_run1"),
@@ -36,10 +36,10 @@ class Mario(EntityBase):
             "bounceTrait": bounceTrait(self),
         }
         self.collision = Collider(self, LEVEL)
-        self.EntityCollider = EntityCollider(self)
+        self.entity_collider = EntityCollider(self)
         self.restart = False
         self.pause = False
-        self.pauseObj = PauseMenu(self)
+        self.pause_obj = PauseMenu(self)
         self.lives = 3
         self.big_size = False
         self.timer = 0
@@ -47,147 +47,151 @@ class Mario(EntityBase):
 
     def update(self):
         self.timer += 1
-        self.updateTraits()
-        self.moveMario()
+        self.update_traits()
+        self.move_mario()
+        self.apply_gravity()
         self.camera.move()
-        self.applyGravity()
-        self.drawMario()
-        self.checkEntityCollision()
-        self.input.checkForInput()
+        self.draw_mario()
+        self.check_entity_collision()
+        self.input.check_for_input()
         if DASHBOARD.time == 0:
-            self.gameOver()
+            self.game_over()
 
-    def drawMario(self):
+    def draw_mario(self):
         if self.traits["goTrait"].heading == 1:
-            SCREEN.blit(self.animation.get_image(), self.getPos())
+            SCREEN.blit(self.animation.get_image(), self.get_pos())
         elif self.traits["goTrait"].heading == -1:
             SCREEN.blit(
-                pygame.transform.flip(self.animation.get_image(), True, False), self.getPos()
+                pygame.transform.flip(self.animation.get_image(), True, False), self.get_pos()
             )
 
-    def moveMario(self):
+    def move_mario(self):
         if(-(self.rect.x + self.vel.get_x()) < self.camera.x):
             self.rect.x += self.vel.get_x()
-            self.collision.checkX()
+            self.collision.check_x()
         self.rect.y += self.vel.get_y()
-        self.collision.checkY()
+        self.collision.check_y()
 
-    def checkEntityCollision(self):
-        for ent in LEVEL.entityList:
-            isColliding, isTop = self.EntityCollider.check(ent)
-            if isColliding:
+    def check_entity_collision(self):
+        for ent in LEVEL.entity_list:
+            is_colliding, is_top = self.entity_collider.check(ent)
+            if is_colliding:
                 if ent.type == "Item":
-                    self._onCollisionWithItem(ent)
+                    self._on_collision_with_item(ent)
                 elif ent.type == "powerup":
-                    self._onCollisionWithMushroom(ent)
+                    self._on_collision_with_mushroom(ent)
                 elif ent.type == "Block":
-                    self._onCollisionWithBlock(ent)
+                    self._on_collision_with_block(ent)
                 elif ent.type == "PowerBlock":
-                    self._onCollisionWithPowerBlock(ent)
+                    self._on_collision_with_power_block(ent)
                 elif ent.type == "Mob" and self.timer > 60:
-                    self._onCollisionWithMob(ent, isColliding, isTop)
+                    self._on_collision_with_mob(ent, is_colliding, is_top)
 
-    def _onCollisionWithPowerBlock(self, box):
+    def _on_collision_with_power_block(self, box):
         if not box.triggered:
-            LEVEL.addMushroom(box.x, box.y)
-            box.item = (LEVEL.entityList[-1])
+            LEVEL.add_mushroom(box.x, box.y)
+            box.item = (LEVEL.entity_list[-1])
             SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
         box.triggered = True
 
-    def _onCollisionWithMushroom(self, item):
+    def _on_collision_with_mushroom(self, item):
         DASHBOARD.points += 100
-        DASHBOARD.earnedPoints += 100
+        DASHBOARD.earned_points += 100
         if not self.big_size:
-            self.big_size = True
-            self.animation = Animation(
-                [
-                    SPRITE_COLLECTION.get("big_mario_run1"),
-                    SPRITE_COLLECTION.get("big_mario_run2"),
-                    SPRITE_COLLECTION.get("big_mario_run3"),
-                ],
-                SPRITE_COLLECTION.get("big_mario_idle"),
-                SPRITE_COLLECTION.get("big_mario_jump"),
-            )
-            img = self.animation.get_image()
-            self.rect.w = img.get_width()
-            self.rect.h = img.get_height()
-            self.traits["goTrait"].animation = self.animation
-
+            self._big_mario()
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
         item.dead = True
 
-    def _onCollisionWithItem(self, item):
-        LEVEL.entityList.remove(item)
+    def _on_collision_with_item(self, item):
+        LEVEL.entity_list.remove(item)
         DASHBOARD.points += 100
-        DASHBOARD.earnedPoints += 100
+        DASHBOARD.earned_points += 100
         DASHBOARD.coins += 1
         SOUND_CONTROLLER.play_sfx(COIN_SOUND)
 
-    def _onCollisionWithBlock(self, block):
+    def _on_collision_with_block(self, block):
         if not block.triggered:
             DASHBOARD.coins += 1
-            DASHBOARD.earnedPoints += 100
+            DASHBOARD.earned_points += 100
             SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
         block.triggered = True
 
-    def _onCollisionWithMob(self, mob, isColliding, isTop):
-        if isTop and mob.alive == True:
+    def _on_collision_with_mob(self, mob, is_colliding, is_top):
+        if is_top and mob.alive == True:
             SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
             self.rect.bottom = mob.rect.top
             self.bounce()
-            self.killEntity(mob)
-        if isTop and mob.alive == "shellBouncing":
+            self.kill_entity(mob)
+        if is_top and mob.alive == "shell_bouncing":
             SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
             self.rect.bottom = mob.rect.top
             mob.hit_once = True
             self.bounce()
-            self.killEntity(mob)
-        elif isTop and mob.alive == "sleeping":
+            self.kill_entity(mob)
+        elif is_top and mob.alive == "sleeping":
             SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
             self.rect.bottom = mob.rect.top
             mob.hit_once = True
             self.bounce()
             if mob.rect.x < self.rect.x:
-                mob.leftrightTrait.direction = -1
+                mob.left_right_trait.direction = -1
                 mob.rect.x += -5
             else:
                 mob.rect.x += 5
-                mob.leftrightTrait.direction = 1
-            mob.alive = "shellBouncing"
-        elif isColliding and mob.alive == "sleeping":
+                mob.left_right_trait.direction = 1
+            mob.alive = "shell_bouncing"
+        elif is_colliding and mob.alive == "sleeping":
             if mob.rect.x < self.rect.x:
-                mob.leftrightTrait.direction = -1
+                mob.left_right_trait.direction = -1
                 mob.rect.x += -5
             else:
                 mob.rect.x += 5
-                mob.leftrightTrait.direction = 1
-            mob.alive = "shellBouncing"
-        elif isColliding and mob.alive:
+                mob.left_right_trait.direction = 1
+            mob.alive = "shell_bouncing"
+        elif is_colliding and mob.alive:
             if self.big_size is True:
-                self.big_size = False
-                self.timer = 0
-                self.animation = Animation(
-                    [
-                        SPRITE_COLLECTION.get("mario_run1"),
-                        SPRITE_COLLECTION.get("mario_run2"),
-                        SPRITE_COLLECTION.get("mario_run3"),
-                    ],
-                    SPRITE_COLLECTION.get("mario_idle"),
-                    SPRITE_COLLECTION.get("mario_jump"),
-                )
-                self.traits["goTrait"].animation = self.animation
-                img = self.animation.get_image()
-                self.rect.w = img.get_width()
-                self.rect.h = img.get_height()
-                self.update()
-                self.drawMario()
+                self._small_mario()
             else:
-                self.gameOver()
+                self.game_over()
 
     def bounce(self):
         self.traits["bounceTrait"].jump = True
 
-    def killEntity(self, ent):
+    def _small_mario(self):
+        self.big_size = False
+        self.timer = 0
+        self.animation = Animation(
+            [
+                SPRITE_COLLECTION.get("mario_run1"),
+                SPRITE_COLLECTION.get("mario_run2"),
+                SPRITE_COLLECTION.get("mario_run3"),
+            ],
+            SPRITE_COLLECTION.get("mario_idle"),
+            SPRITE_COLLECTION.get("mario_jump"),
+        )
+        self.traits["goTrait"].animation = self.animation
+        img = self.animation.get_image()
+        self.rect.w = img.get_width()
+        self.rect.h = img.get_height()
+
+    def _big_mario(self):
+        self.big_size = True
+        self.animation = Animation(
+            [
+                SPRITE_COLLECTION.get("big_mario_run1"),
+                SPRITE_COLLECTION.get("big_mario_run2"),
+                SPRITE_COLLECTION.get("big_mario_run3"),
+            ],
+            SPRITE_COLLECTION.get("big_mario_idle"),
+            SPRITE_COLLECTION.get("big_mario_jump"),
+        )
+        img = self.animation.get_image()
+        self.rect.w = img.get_width()
+        self.rect.h = img.get_height()
+        self.traits["goTrait"].animation = self.animation
+        self.rect.y -= 32
+
+    def kill_entity(self, ent):
         if ent.__class__.__name__ != "Koopa":
             ent.alive = False
         else:
@@ -197,19 +201,19 @@ class Mario(EntityBase):
             else:
                 ent.alive = False
         DASHBOARD.points += 100
-        DASHBOARD.earnedPoints += 100
+        DASHBOARD.earned_points += 100
 
     def next_level(self):
         self.rect.x = 0
         self.rect.y = 0
         self.camera.pos = Vector2D(self.rect.x, self.rect.y)
-        self.camera.level_length = LEVEL.levelLength
+        self.camera.level_length = LEVEL.level_length
 
-    def gameOver(self):
+    def game_over(self):
         self.lives -= 1
         DASHBOARD.coins = 0
-        DASHBOARD.points -= DASHBOARD.earnedPoints
-        DASHBOARD.earnedPoints = 0
+        DASHBOARD.points -= DASHBOARD.earned_points
+        DASHBOARD.earned_points = 0
         srf = pygame.Surface((640, 480))
         srf.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         srf.set_alpha(128)
@@ -227,15 +231,15 @@ class Mario(EntityBase):
             )
             SCREEN.blit(srf, (0, 0))
             pygame.display.update()
-            self.input.checkForInput()
+            self.input.check_for_input()
         while SOUND_CONTROLLER.playing_music():
             pygame.display.update()
-            self.input.checkForInput()
+            self.input.check_for_input()
         if self.lives == 0:
             SOUND_CONTROLLER.play_music(GAME_OVER)
             while SOUND_CONTROLLER.playing_music():
                 pygame.display.update()
-                self.input.checkForInput()
+                self.input.check_for_input()
             self.restart = True
             highscore_file = open("resources/highscore.txt", "r")
             if highscore_file.mode == 'r':
@@ -244,20 +248,22 @@ class Mario(EntityBase):
                 if int(contents) < DASHBOARD.points:
                     highscore_file = open("resources/highscore.txt", "w+")
                     highscore_file.write(str(DASHBOARD.points))
+                    highscore_file.close()
             DASHBOARD.points = 0
         else:
             DASHBOARD.state = "start"
-            DASHBOARD.time = 420
-            LEVEL.loadLevel("Level" + DASHBOARD.level_name)
+            DASHBOARD.time = 400
+            LEVEL.load_level("Level" + DASHBOARD.level_name)
             self.rect.x = 0
             self.rect.y = 0
             DASHBOARD.lives = self.lives
             SOUND_CONTROLLER.play_music(SOUNDTRACK)
             self.camera.pos = Vector2D(self.rect.x, self.rect.y)
+            self._small_mario()
 
-    def getPos(self):
+    def get_pos(self):
         return self.camera.x + self.rect.x, self.rect.y
 
-    def setPos(self, x, y):
+    def set_pos(self, x, y):
         self.rect.x = x
         self.rect.y = y
