@@ -128,7 +128,7 @@ class Mario(EntityBase):
             SOUND_CONTROLLER.play_sfx(KICK_SOUND)
             self.rect.bottom = mob.rect.top
             self.bounce()
-            self.kill_entity(mob)
+            mob.alive = "sleeping"
             mob.hit_once = True
         elif is_top and mob.alive == "sleeping":
             SOUND_CONTROLLER.play_sfx(KICK_SOUND)
@@ -259,12 +259,13 @@ class Mario(EntityBase):
             DASHBOARD.state = "start"
             DASHBOARD.time = 400
             LEVEL.load_level("Level" + DASHBOARD.level_name)
+            self._small_mario()
             self.rect.x = 0
             self.rect.y = 0
+            self.timer = 120
             DASHBOARD.lives = self.lives
             SOUND_CONTROLLER.play_music(SOUNDTRACK)
             self.camera.pos = Vector2D(self.rect.x, self.rect.y)
-            self._small_mario()
 
     def get_pos(self):
         return self.camera.x + self.rect.x, self.rect.y
