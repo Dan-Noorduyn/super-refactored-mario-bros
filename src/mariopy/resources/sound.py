@@ -67,6 +67,8 @@ JUMP_SOUND       = mixer.Sound("./resources/sfx/small_jump.ogg")
 DEATH_SOUND      = mixer.Sound("./resources/sfx/death.wav")
 MUSHROOM_SOUND   = mixer.Sound("./resources/sfx/powerup.ogg")
 MUSHROOM_APPEARS = mixer.Sound("./resources/sfx/powerup_appears.ogg")
+POWER_DOWN       = mixer.Sound("./resources/sfx/powerdown.wav")
+KICK_SOUND       = mixer.Sound("./resources/sfx/kick.ogg")
 
 __all__ = [
     "SOUND_CONTROLLER",
@@ -80,5 +82,7 @@ __all__ = [
     "JUMP_SOUND",
     "DEATH_SOUND",
     "MUSHROOM_SOUND",
-    "MUSHROOM_APPEARS"
+    "MUSHROOM_APPEARS",
+    "POWER_DOWN",
+    "KICK_SOUND"
 ]

@@ -10,7 +10,7 @@ from resources.level import LEVEL
 from resources.Menus import PauseMenu
 from resources.sound import (BUMP_SOUND, COIN_SOUND, DEATH_SOUND, GAME_OVER,
                              MUSHROOM_SOUND, SOUND_CONTROLLER, SOUNDTRACK,
-                             STOMP_SOUND)
+                             STOMP_SOUND, POWER_DOWN, KICK_SOUND)
 from utils.physics import Vector2D
 
 
@@ -42,7 +42,7 @@ class Mario(EntityBase):
         self.pause_obj = PauseMenu(self)
         self.lives = 3
         self.big_size = False
-        self.timer = 0
+        self.timer = 120
         self.next = False
 
     def update(self):
@@ -58,12 +58,13 @@ class Mario(EntityBase):
             self.game_over()
 
     def draw_mario(self):
-        if self.traits["goTrait"].heading == 1:
-            SCREEN.blit(self.animation.get_image(), self.get_pos())
-        elif self.traits["goTrait"].heading == -1:
-            SCREEN.blit(
-                pygame.transform.flip(self.animation.get_image(), True, False), self.get_pos()
-            )
+        if (self.timer >= 120) or (self.timer < 120 and 10 <= self.timer % 20 < 20):
+            if self.traits["goTrait"].heading == 1:
+                SCREEN.blit(self.animation.get_image(), self.get_pos())
+            elif self.traits["goTrait"].heading == -1:
+                SCREEN.blit(
+                    pygame.transform.flip(self.animation.get_image(), True, False), self.get_pos()
+                )
 
     def move_mario(self):
         if(-(self.rect.x + self.vel.get_x()) < self.camera.x):
@@ -84,7 +85,7 @@ class Mario(EntityBase):
                     self._on_collision_with_block(ent)
                 elif ent.type == "PowerBlock":
                     self._on_collision_with_power_block(ent)
-                elif ent.type == "Mob" and self.timer > 60:
+                elif ent.type == "Mob":
                     self._on_collision_with_mob(ent, is_colliding, is_top)
 
     def _on_collision_with_power_block(self, box):
@@ -122,16 +123,16 @@ class Mario(EntityBase):
             self.rect.bottom = mob.rect.top
             self.bounce()
             self.kill_entity(mob)
-        if is_top and mob.alive == "shell_bouncing":
-            SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
-            self.rect.bottom = mob.rect.top
             mob.hit_once = True
+        elif is_top and mob.alive == "shell_bouncing":
+            SOUND_CONTROLLER.play_sfx(KICK_SOUND)
+            self.rect.bottom = mob.rect.top
             self.bounce()
-            self.kill_entity(mob)
-        elif is_top and mob.alive == "sleeping":
-            SOUND_CONTROLLER.play_sfx(STOMP_SOUND)
-            self.rect.bottom = mob.rect.top
+            mob.alive = "sleeping"
             mob.hit_once = True
+        elif is_top and mob.alive == "sleeping":
+            SOUND_CONTROLLER.play_sfx(KICK_SOUND)
+            self.rect.bottom = mob.rect.top
             self.bounce()
             if mob.rect.x < self.rect.x:
                 mob.left_right_trait.direction = -1
@@ -140,6 +141,7 @@ class Mario(EntityBase):
                 mob.rect.x += 5
                 mob.left_right_trait.direction = 1
             mob.alive = "shell_bouncing"
+            mob.hit_once = True
         elif is_colliding and mob.alive == "sleeping":
             if mob.rect.x < self.rect.x:
                 mob.left_right_trait.direction = -1
@@ -147,10 +149,12 @@ class Mario(EntityBase):
             else:
                 mob.rect.x += 5
                 mob.left_right_trait.direction = 1
+            SOUND_CONTROLLER.play_sfx(KICK_SOUND)
             mob.alive = "shell_bouncing"
-        elif is_colliding and mob.alive:
+        elif is_colliding and mob.alive and self.timer > 120:
             if self.big_size is True:
                 self._small_mario()
+                SOUND_CONTROLLER.play_sfx(POWER_DOWN)
             else:
                 self.game_over()
 
@@ -173,6 +177,7 @@ class Mario(EntityBase):
         img = self.animation.get_image()
         self.rect.w = img.get_width()
         self.rect.h = img.get_height()
+        self.rect.y += 32
 
     def _big_mario(self):
         self.big_size = True
@@ -254,12 +259,13 @@ class Mario(EntityBase):
             DASHBOARD.state = "start"
             DASHBOARD.time = 400
             LEVEL.load_level("Level" + DASHBOARD.level_name)
+            self._small_mario()
             self.rect.x = 0
             self.rect.y = 0
+            self.timer = 120
             DASHBOARD.lives = self.lives
             SOUND_CONTROLLER.play_music(SOUNDTRACK)
             self.camera.pos = Vector2D(self.rect.x, self.rect.y)
-            self._small_mario()
 
     def get_pos(self):
         return self.camera.x + self.rect.x, self.rect.y
