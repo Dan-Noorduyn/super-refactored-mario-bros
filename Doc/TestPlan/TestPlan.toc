@@ -13,22 +13,22 @@
 \contentsline {subsection}{\numberline {3.1}Tests for Functional Requirements}{3}{subsection.3.1}
 \contentsline {subsubsection}{\numberline {3.1.1}User Input}{3}{subsubsection.3.1.1}
 \contentsline {paragraph}{Keyboard Movement Inputs}{3}{section*.7}
-\contentsline {subsubsection}{\numberline {3.1.2}Game Environment}{4}{subsubsection.3.1.2}
-\contentsline {subsubsection}{\numberline {3.1.3}Game Mechanics}{5}{subsubsection.3.1.3}
-\contentsline {subsection}{\numberline {3.2}Tests for Nonfunctional Requirements}{12}{subsection.3.2}
-\contentsline {subsubsection}{\numberline {3.2.1}Look and Feel}{12}{subsubsection.3.2.1}
-\contentsline {subsubsection}{\numberline {3.2.2}Performance}{12}{subsubsection.3.2.2}
-\contentsline {subsection}{\numberline {3.3}Traceability Between Test Cases and Requirements}{13}{subsection.3.3}
-\contentsline {section}{\numberline {4}Tests for Proof of Concept}{14}{section.4}
-\contentsline {subsection}{\numberline {4.1}Movement}{14}{subsection.4.1}
-\contentsline {paragraph}{Test that the game responds to user input.}{14}{section*.9}
-\contentsline {subsection}{\numberline {4.2}Level design}{15}{subsection.4.2}
-\contentsline {paragraph}{Test response of changes to level.}{15}{section*.10}
-\contentsline {section}{\numberline {5}Comparison to Existing Implementation}{15}{section.5}
-\contentsline {section}{\numberline {6}Unit Testing Plan}{15}{section.6}
-\contentsline {subsection}{\numberline {6.1}Unit testing of internal functions}{16}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Unit testing of output files}{16}{subsection.6.2}
-\contentsline {section}{\numberline {7}Appendix}{17}{section.7}
-\contentsline {subsection}{\numberline {7.1}Symbolic Parameters}{17}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Usability Survey Questions?}{18}{subsection.7.2}
-\contentsline {subsection}{\numberline {7.3}Figures}{18}{subsection.7.3}
+\contentsline {subsubsection}{\numberline {3.1.2}Game Environment}{11}{subsubsection.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.3}Game Mechanics}{12}{subsubsection.3.1.3}
+\contentsline {subsection}{\numberline {3.2}Tests for Nonfunctional Requirements}{18}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Look and Feel}{18}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}Performance}{19}{subsubsection.3.2.2}
+\contentsline {subsection}{\numberline {3.3}Traceability Between Test Cases and Requirements}{20}{subsection.3.3}
+\contentsline {section}{\numberline {4}Tests for Proof of Concept}{21}{section.4}
+\contentsline {subsection}{\numberline {4.1}Movement}{21}{subsection.4.1}
+\contentsline {paragraph}{Test that the game responds to user input.}{21}{section*.9}
+\contentsline {subsection}{\numberline {4.2}Level design}{22}{subsection.4.2}
+\contentsline {paragraph}{Test response of changes to level.}{22}{section*.10}
+\contentsline {section}{\numberline {5}Comparison to Existing Implementation}{22}{section.5}
+\contentsline {section}{\numberline {6}Unit Testing Plan}{22}{section.6}
+\contentsline {subsection}{\numberline {6.1}Unit testing of internal functions}{23}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Unit testing of output files}{23}{subsection.6.2}
+\contentsline {section}{\numberline {7}Appendix}{24}{section.7}
+\contentsline {subsection}{\numberline {7.1}Symbolic Parameters}{24}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Usability Survey Questions?}{25}{subsection.7.2}
+\contentsline {subsection}{\numberline {7.3}Figures}{25}{subsection.7.3}
