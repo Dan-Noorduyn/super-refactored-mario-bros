@@ -193,17 +193,17 @@ Output: Mario moves up, along the 90 degree line, at speed C, until he reaches h
 How test will be performed: A visual test will confirm that when the KEYBOARD\_JUMP is pressed, Mario jumps up at speed C, along the 90 degree line, until height Y, before falling back down to ground level at the speed of gravity.
 
 \item{}
-\sout{\textbf{test-UI4}: Test Duck Movement\\
+\sout{\textbf{test-UI4}: Test Duck Movement}\\
 
-Type: Functional, Dynamic, Manual
+\sout{Type: Functional, Dynamic, Manual}
 
-Initial State: Mario is standing still on the ground level.
+\sout{Initial State: Mario is standing still on the ground level.}
 
-Input: The KEYBOARD\_CROUCH will be pressed on the user's keyboard.
+\sout{Input: The KEYBOARD\_CROUCH will be pressed on the user's keyboard.}
 
-Output: Mario changes from a standing position to a crouching positing, along the 0 degree line, at speed V (Reference Figure 3 for a visual representation of Mario standing and sitting).
+\sout{Output: Mario changes from a standing position to a crouching positing, along the 0 degree line, at speed V (Reference Figure 3 for a visual representation of Mario standing and sitting).}
 
-How test will be performed: A visual test will confirm that while the KEYBOARD\_CROUCH is pressed, Mario will be in a crouching position.}
+\sout{How test will be performed: A visual test will confirm that while the KEYBOARD\_CROUCH is pressed, Mario will be in a crouching position.}
 
 \item{\textbf{test-UI5}: Test Sprinting Right Movement\\}
 
@@ -302,17 +302,17 @@ Output: Mario moves quickly right along the 0 degree line at a speed of V + S, u
 How test will be performed: A visual test will confirm that when the KEYBOARD\_RIGHT is pressed, Mario moves quickly right along the 0 degree line at a speed of V + S, until he reaches the edge of the platform. Mario then falls downwards along the 270 degree line at the speed of gravity while also continuing to move right, resulting in a direction between 270 degrees and 0 degrees, until he lands on the ground level.
 
 \item{}
-\sout{\textbf{test-UI13}: Test Duck Overriding Other Controls\\
+\sout{\textbf{test-UI13}: Test Duck Overriding Other Controls}\\
 
-Type: Functional, Dynamic, Manual
+\sout{Type: Functional, Dynamic, Manual}
 
-Initial State: Mario is standing still on the ground level.
+\sout{Initial State: Mario is standing still on the ground level.}
 
-Input: The KEYBOARD\_CROUCH is pressed down first and held down continually while the KEYBOARD\_LEFT, KEYBOARD\_RIGHT and KEYBOARD\_JUMP keys are pressed in succession on the user's keyboard.
+\sout{Input: The KEYBOARD\_CROUCH is pressed down first and held down continually while the KEYBOARD\_LEFT, KEYBOARD\_RIGHT and KEYBOARD\_JUMP keys are pressed in succession on the user's keyboard.}
 
-Output: Mario ducks and remains crouched for the remainder of the inputs.
+\sout{Output: Mario ducks and remains crouched for the remainder of the inputs.}
 
-How test will be performed: A visual test will confirm that when the KEYBOARD\_CROUCH is held down and the KEYBOARD\_LEFT, KEYBOARD\_RIGHT and KEYBOARD\_JUMP keys are pressed in succession, Mario remains crouched.}
+\sout{How test will be performed: A visual test will confirm that when the KEYBOARD\_CROUCH is held down and the KEYBOARD\_LEFT, KEYBOARD\_RIGHT and KEYBOARD\_JUMP keys are pressed in succession, Mario remains crouched.}
 
 \textbf{Functional Keyboard Inputs}
 
@@ -666,7 +666,7 @@ The following table details which test cases trace to which requirements (the ID
 \hline
 \multicolumn{1}{|l}{\bfseries Requirement ID} & \multicolumn{1}{|l|}{\bfseries Requirement Description} & \multicolumn{1}{l|}{\bfseries Test ID(s)}\\
 \hline
-FR1 - FR5, PR4 & These requirements relate to movement of the player character & UI1 \textcolor{red}{- UI3, UI5} - \sout{UI13} \textcolor{red}{UI12}\\
+\sout{FR1 - FR5} \textcolor{red}{FR1, FR2}, PR4 & These requirements relate to movement of the player character & UI1 \textcolor{red}{- UI3, UI5} - \sout{UI13} \textcolor{red}{UI12}\\
 \hline
 FR6 - FR9 & These requirements  detail how enemies can and should die. & GM1, GM2, GM3, GM4 \\
 \hline
@@ -674,9 +674,9 @@ FR10, FR11, FR12 & These functional requirements detail how the player’s chara
 \hline
 FR13, FR14 & These functional requirements detail how the player can beat levels and collectively the game. & GM8, GM9\\
 \hline
-\textcolor{red}{FR15, FR16} & \textcolor{red}{These functional requirements details the mushroom power-up} & \textcolor{red}{GM10, GM13, GM14}\\
+\textcolor{red}{FR15 - FR17} & \textcolor{red}{These functional requirements details the mushroom power-up} & \textcolor{red}{GM10, GM13, GM14}\\
 \hline
-\textcolor{red}{FR17, FR18} & \textcolor{red}{These functional requirements details the collection of coins} & \textcolor{red}{GM11, GM12}\\
+\textcolor{red}{FR18, FR19} & \textcolor{red}{These functional requirements details the collection of coins} & \textcolor{red}{GM11, GM12}\\
 \hline
 LF1 & This requirement relates to the feel of the game being similar to the original. & LF1\\
 \hline
@@ -772,7 +772,7 @@ KEYBOARD\_RIGHT & Keyboard key that moves the onscreen character sideways to the
 \hline
 KEYBOARD\_JUMP & Keyboard key that moves the onscreen character vertically upwards. & Up Arrow\\
 \hline
-KEYBOARD\_CROUCH & Keyboard key that crouches the onscreen character. & Down Arrow\\
+\sout{KEYBOARD\_CROUCH} & \sout{Keyboard key that crouches the onscreen character.} & \sout{Down Arrow}\\
 \hline
 KEYBOARD\_SPRINT & Keyboard key that makes the onscreen character sprint. & Shift\\
 \hline
