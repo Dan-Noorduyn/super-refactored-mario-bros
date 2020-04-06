@@ -182,7 +182,7 @@ The primary use case of this product is to be played from start to end, and get 
 \subsubsection{Ease of Use Requirements}
 \begin{enumerate}[{UH}1. ]
     \item The product shall be usable for anybody over the age of 10.\\
-    \textbf{Fit Criteria:} Users shall be able to start a level within \sout{30 seconds} \textcolor{red}{INITIAL\_UNDERSTANDING\_TIME} of booting the game
+    \textbf{Fit Criteria:} Users shall be able to start a level within \sout{30 seconds} \textcolor{red}{UNDERSTAND\_TIME} of booting the game
     \item The product shall have simple, standard controls.\\
     \textbf{Fit Criteria:} Users shall move their character within \sout{10 seconds} \textcolor{red}{MOVEMENT\_TIME} of starting a level.
 \suspend{enumerate}
@@ -193,19 +193,19 @@ N/A
 \subsubsection{Learning Requirements}
 \resume{enumerate}[{[{UH}1.]}]
     \item The product shall be playable by a user after reading the in game tutorial.\\
-    \textbf{Fit Criteria:} \sout{A test group of 20 users} \textcolor{red}{TEST\_USERS} shall read the tutorial and play the first level, 90\% of the test group shall rate their experience as favourable regarding understanding game controls and rules.
+    \textbf{Fit Criteria:} \sout{A test group of 20 users} \textcolor{red}{TEST\_USERS} shall read the tutorial and play the first level, $90$\% of the test group shall rate their experience as favourable regarding understanding game controls and rules.
     \item The product shall be playable by some users without reading the in game tutorial.\\
-    \textbf{Fit Criteria:} A test group of 20 users shall read the tutorial and play the first level, 50\% of the test group shall rate their experience as favourable regarding understanding game controls and rules.
+    \textbf{Fit Criteria:} \sout{A test group of 20 users} \textcolor{red}{TEST\_USERS} shall read the tutorial and play the first level, $50$\% of the test group shall rate their experience as favourable regarding understanding game controls and rules.
 \suspend{enumerate}
 
 \subsubsection{Understandability and Politeness Requirements}
 \resume{enumerate}[{[{UH}1.]}]
-    \item The product shall use simple language which can be understandable by 95\% of users.\\
-    \textbf{Fit Criteria:} A questionnaire will be authored and 95\% of users shall rate their experience positively in understanding the rules of the game.
+    \item The product shall use simple language which can be understandable by $95$\% of users.\\
+    \textbf{Fit Criteria:} A questionnaire will be authored and $95$\% of \sout{users} \textcolor{red}{TEST\_USERS} shall rate their experience positively in understanding the rules of the game.
     \item The product shall use standard icons indicative of their function to avoid confusion of the user.\\
     \textbf{Fit Criteria:} The game shall include all standard images of the original game.
     \item The product shall use a simple font which is easily read by all users.
-    \textbf{Fit Criteria:} A questionnaire will be authored and 95\% of users shall rate their experience as favourable reading through the game menus.
+    \textbf{Fit Criteria:} A questionnaire will be authored and $95$\% of \sout{users} \textcolor{red}{TEST\_USERS} shall rate their experience as favourable reading through the game menus.
 \end{enumerate}
 
 \subsubsection{Accessibility Requirements}
@@ -217,12 +217,12 @@ N/A
 
 \subsubsection{Speed and Latency Requirements}
 \begin{enumerate}[{PR}1. ]
-    \item The product shall run at 60 frames per second.\\
-    \textbf{Fit Criteria:} A play test shall be conducted with a group of 10 testers whose framerates shall be captured through the first level of the game, the framerate shall maintain 60 frames per second 95\% of the time under normal conditions.
-    \item The product shall take no more than 3 seconds to load and display all resources.\\
-    \textbf{Fit Criteria:} A play test shall be conducted with a group of 10 testers to confirm the game loads within 3 seconds 90\% of the time.
-    \item The product shall not significantly slow down if there are 100 entities displaying on the screen.\\
-    \textbf{Fit Criteria:} A \sout{playtest} \textcolor{red}{play test} shall be conducted with a group of 10 testers to confirm the game stays above 60 frames per second 95\% of the time.
+    \item The product shall run at \sout{60 frames per second} \textcolor{red}{FRAME\_SPEED}.\\
+    \textbf{Fit Criteria:} A play test shall be conducted \sout{with a group of 10 testers} \textcolor{red}{by TEST\_USERS} whose frame rates shall be captured through the first level of the game, the frame rate shall maintain \sout{60 frames per second} \textcolor{red}{FRAME\_SPEED} 95\% of the time under normal conditions.
+    \item The product shall take no more than \sout{3 seconds} \textcolor{red}{the LOAD\_TIME} to load and display all resources.\\
+    \textbf{Fit Criteria:} A play test shall be conducted \sout{with a group of 10 testers} \textcolor{red}{by TEST\_USERS} to confirm the game loads within \sout{3 seconds} \textcolor{red}{the LOAD\_TIME} 90\% of the time.
+    \item The product shall not significantly slow down if there are \sout{100 entities} \textcolor{red}{TEST\_ENTITIES} displaying on the screen.\\
+    \textbf{Fit Criteria:} A \sout{playtest} \textcolor{red}{play test} shall be conducted \sout{with a group of 10 testers} \textcolor{red}{by TEST\_USERS} to confirm the game stays above \sout{60 frames per second} \textcolor{red}{FRAME\_SPEED} 95\% of the time.
 \suspend{enumerate}
 
 \subsubsection{Safety-Critical Requirements}
@@ -231,45 +231,45 @@ N/A
 \subsubsection{Precision or Accuracy Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
     \item The product shall respond correctly to inputs 100\% of the time.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{A test will be run with TEST\_USERS completing every level and afterwards recording the number of times they experienced any lack of response to their inputs. This value must be below INPUT\_RESPONSE to pass.}
     \item The product shall correctly calculate the high-score 100\% of the time.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{A test will be run with TEST\_USERS completing every level and afterwards recording the number of times they experienced discrepancies with the highscore. This value must be below HIGHSCORE\_CORRECT to pass.}
 \suspend{enumerate}
 
 \subsubsection{Reliability and Availability Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall be able to be run by a user for at least 1 hour.\\
-    \textbf{Fit Criteria:} Testing will be done on multiple machines with different configurations, and be run for 1 hour each.
+    \item The product shall be able to be run by a user for at least \sout{1 hour} \textcolor{red}{RUN\_TIME}.\\
+    \textbf{Fit Criteria:} Testing will be done on multiple machines with different configurations, and be run for \sout{1 hour} \textcolor{red}{RUN\_TIME} each.
 \suspend{enumerate}
 
 \subsubsection{Robustness or Fault-Tolerance Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
     \item The product shall not crash if given many inputs at a time.\\
-    \textbf{Fit Criteria:} N/A
-    \item The product shall not crash if there are under 1000 entities visible.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{TEST\_USERS will each test out random speeds and input sequences and record the number of crashes. This number must be below CRASH\_ACCEPTABLE}
+    \item The product shall not crash if there are under \sout{1000 entities} \textcolor{red}{ROBUST\_ENTITIES} visible.\\
+    \textbf{Fit Criteria:} \textcolor{red}{A special level will be created with under CRASH\_ENTITIES. The game will be controlled to load the level and must not crash.}
 \suspend{enumerate}
 
 \subsubsection{Capacity Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall be able to handle a single user.\\
-    \textbf{Fit Criteria:} N/A
+    \item \sout{The product shall be able to handle a single user.}\\
+    \textbf{Fit Criteria:} \sout{N/A}
 \suspend{enumerate}
 
 \subsubsection{Scalability or Extensibility Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
     \item The product shall be easily modifiable for the addition of features.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{A programer who has 3 years experience with python and has used the pygame library to create non-trivial games before, must be able to determine how to add additional features within TIME\_ADDING.}
     \item The product shall contain an easy way to add levels.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{A programer who has 3 years experience with python and has used the pygame library to create non-trivial games before must be able to determine how to add additional levels within TIME\_ADDING.}
     \item The product shall be easily modifiable for the addition of enemies and blocks.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{A programer who has 3 years experience with python and has used the pygame library to create non-trivial games before must be able to determine how to add additional features within TIME\_ADDING.}
 \suspend{enumerate}
 
 \subsubsection{Longevity Requirements}
 \resume{enumerate}[{[{PR}1. ]}]
-    \item The product shall run until a major Python or Pygame update.\\
-    \textbf{Fit Criteria:} N/A
+    \item \sout{The product shall run until a major Python or Pygame update.}\\
+    \textbf{Fit Criteria:} \sout{N/A}
 \end{enumerate}
 
 
@@ -279,27 +279,27 @@ N/A
 \subsubsection{Expected Physical Environment}
 \begin{enumerate}[{OE}1. ]
     \item The product shall run on a personal computer.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{A developer will use a different computer than the one used to develop the game and download/install the game onto the alternate computer. The game must run on the alternate computer to pass.}
 \suspend{enumerate}
 
 \subsubsection{Requirements for Interfacing with Adjacent Systems}
 \resume{enumerate}[{[{OE}1. ]}]
     \item The product shall run on computer using Windows 10, MacOS Catalina, and Ubuntu 18.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{The developers' personal computers combined have all of the required testing operating systems. The game must run identically on each of the personal computers to pass.}
     \item The product shall run on a computer with Python 3.7 and Pygame.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{The TEST\_USERS personal computers must have these two dependencies installed. The game must run one each of their setups to pass. }
 \suspend{enumerate}
 
 \subsubsection{Productization Requirements}
 \resume{enumerate}[{[{OE}1. ]}]
-    \item The product shall be available on GitLab for download.\\
-    \textbf{Fit Criteria:} N/A
+    \item \sout{The product shall be available on GitLab for download.}\\
+    \textbf{Fit Criteria:} \sout{N/A}
 \suspend{enumerate}
 
 \subsubsection{Release Requirements}
 \resume{enumerate}[{[{OE}1. ]}]
     \item The product will have a final release in early April, 2020.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{The game must be complete and available for download on GitHub by this time.}
 \end{enumerate}
 
 
@@ -309,17 +309,17 @@ N/A
 \subsubsection{Maintenance Requirements}
 \begin{enumerate}[{MS}1. ]
     \item The product shall be maintained by the developers until early April, 2020.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{TEST\_USERS must be able to contact the developers until April, 2020 and explain issues.}
     \item The product shall receive updates to fix bugs.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{TEST\_USERS must be able to contact the developers until April, 2020 and explain issues.}
     \item The product shall be open source, and may receive updates from other programmers.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{By the end of April, 2020 the game must be avaiable on GitHub as an open source project. To test others ability to make changes, in June 2020 a developer will observe the changes made to the repository. There must be no contact from other developers requesting to edit the project.}
 \suspend{enumerate}
 
 \subsubsection{Supportability Requirements}
 \resume{enumerate}[{[{MS}1. ]}]
     \item The product shall be supported on OS's mentioned previous.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{The developers' personal computers combined have all of the required testing operating systems. The game must run identically on each of the personal computers to pass.}
 \end{enumerate}
 
 \subsubsection{Adaptability Requirements}
@@ -338,13 +338,13 @@ N/A
 \subsubsection{Integrity Requirements}
 \resume{enumerate}[{[{SR}1. ]}]
     \item All data shall be stored locally on the users machine.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{A packet test will be run on by TEST\_USERS to ensure no data is being uploaded.}
 \suspend{enumerate}
 
 \subsubsection{Privacy Requirements}
 \resume{enumerate}[{[{SR}1. ]}]
     \item The product shall not save any personal user data.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:}  \textcolor{red}{A packet test will be run on by TEST\_USERS to ensure no data is being uploaded.}
 \suspend{enumerate}
 
 \subsubsection{Audit Requirements}
@@ -353,9 +353,9 @@ N/A
 \subsubsection{Immunity Requirements}
 \resume{enumerate}[{[{SR}1. ]}]
     \item The developers of the project shall not provide malicious links.\\
-    \textbf{Fit Criteria:} N/A
-    \item Official versions of the product shall only come from the developers GitLab repository.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{The TEST\_USERS during the period of testing will report no malicious links attached to the project.}
+    \item \sout{Official versions of the product shall only come from the developers GitLab repository.}\\
+    \textbf{Fit Criteria:} \sout{N/A}
 \end{enumerate}
 
 
@@ -365,7 +365,7 @@ N/A
 \subsubsection{Cultural Requirements}
 \begin{enumerate}[{CR}1. ]
     \item The product shall not contain any controversial content.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{The TEST\_USERS represent a wide range of people and as such will be asked to report an controversial content they come across while testing the game. There must be zero reports of such content.}
     \item The product shall use Canadian English spelling.\\
     \textbf{Fit Criteria:} All text in-game shall be run through a spell-checking engine ie. Grammarly.
 \end{enumerate}
@@ -380,7 +380,7 @@ N/A
 \subsubsection{Compliance Requirements}
 \begin{enumerate}[{LR}1. ]
     \item The product shall not violate copyright.\\
-    \textbf{Fit Criteria:} N/A
+    \textbf{Fit Criteria:} \textcolor{red}{One of the developers uncles is a lawyer. The lawyer will review the game and make sure it is in accordance with the \href{https://www.copyright.gov/legislation/dmca.pdf}{\textcolor{red}{Digital Millennium Copyright Act}}.}
     \item The product shall give credits to creators of any original content used by the product, that was not created by the developers.\\
     \textbf{Fit Criteria:} The main screen of the game shall include the names of all the developers and the original owner.
 \end{enumerate}
@@ -392,8 +392,8 @@ N/A
 
 \subsection{Health and Safety Requirements}
 \begin{enumerate}[{HS}1. ]
-    \item The product shall not endanger its users in any way.\\
-    \textbf{Fit Criteria:} N/A
+    \item \sout{The product shall not endanger its users in any way.}\\
+    \textbf{Fit Criteria:} \sout{N/A}
 \end{enumerate}
 
 \section{Project Issues}
@@ -502,13 +502,31 @@ Their values are defined in this section for easy maintenance.
 \hline
 \textcolor{red}{KEYBOARD\_ESC} & \textcolor{red}{Keyboard key that pauses the game mid play.} & \textcolor{red}{Escape Key}\\
 \hline
-\textcolor{red}{TEST\_USERS} & \textcolor{red}{A group of users chosen by the development team for their unique background and help round of an age range from 12 to 25. These users will also have ot self identity as familiar with the orginal game.} & \textcolor{red}{N/A}\\
+\textcolor{red}{TEST\_USERS} & \textcolor{red}{A group of $20$ users chosen by the development team for their unique background and help round of an age range from 10 to 25. These users will also have to self identity as familiar with the orginal game.} & \textcolor{red}{N/A}\\
 \hline
-\textcolor{red}{\INITIAL\_NAV\_TIME} & \textcolor{red}{1 minute and 30 seconds.} & \textcolor{red}{N/A}\\
+\textcolor{red}{INITIAL\_NAV\_TIME} & \textcolor{red}{N/A} & \textcolor{red}{$1$ minute and $30$ seconds.}\\
 \hline
-\textcolor{red}{INITIAL\_UNDERSTANDING\_TIME} & \textcolor{red}{30 seconds} & \textcolor{red}{N/A}\\
+\textcolor{red}{UNDERSTAND\_TIME} & \textcolor{red}{N/A} & \textcolor{red}{$30$ seconds}\\
 \hline
-\textcolor{red}{MOVEMENT\_TIME} & \textcolor{red}{10 seconds} & \textcolor{red}{N/A}\\
+\textcolor{red}{MOVEMENT\_TIME} & \textcolor{red}{N/A} & \textcolor{red}{$10$ seconds}\\
+\hline
+\textcolor{red}{FRAME\_SPEED} & \textcolor{red}{N/A} & \textcolor{red}{$60$ frames per second}\\
+\hline
+\textcolor{red}{LOAD\_TIME} & \textcolor{red}{N/A} & \textcolor{red}{$3$ seconds}\\
+\hline
+\textcolor{red}{TEST\_ENTITIES} & \textcolor{red}{N/A} & \textcolor{red}{$100$ entities}\\
+\hline
+\textcolor{red}{INPUT\_RESPONSE} & \textcolor{red}{N/A} & \textcolor{red}{$3$}\\
+\hline
+\textcolor{red}{HIGHSCORE\_CORRECT} & \textcolor{red}{N/A} & \textcolor{red}{$3$}\\
+\hline
+\textcolor{red}{RUN\_TIME} & \textcolor{red}{N/A} & \textcolor{red}{$1$ hour}\\
+\hline
+\textcolor{red}{CRASH\_ACCEPTABLE} & \textcolor{red}{N/A} & \textcolor{red}{$0$ crashes}\\
+\hline
+\textcolor{red}{ROBUST\_ENTITIES} & \textcolor{red}{N/A} & \textcolor{red}{$1000$ entities}\\
+\hline
+\textcolor{red}{TIME\_ADDING} & \textcolor{red}{N/A} & \textcolor{red}{$5$ minutes}\\
 \hline
 \end{tabular}
 \end{table}
