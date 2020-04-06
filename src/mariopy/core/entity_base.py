@@ -127,7 +127,7 @@ class Item():
     def __init__(self, x, y):
         self.item_pos = Vector2D(x, y)
         self.item_vel = Vector2D(0, 0)
-        self.coin_animation = copy(SPRITE_COLLECTION.get("coin-item"))
+        self.animation = copy(SPRITE_COLLECTION.get("coin-item"))
         self.sound_played = False
 
     def spawn_coin(self, cam):
@@ -135,20 +135,20 @@ class Item():
             self.sound_played = True
             DASHBOARD.points += 100
             SOUND_CONTROLLER.play_sfx(COIN_SOUND)
-        self.coin_animation.update()
+        self.animation.update()
 
-        if self.coin_animation.timer < 45:
-            if self.coin_animation.timer < 15:
+        if self.animation.timer < 45:
+            if self.animation.timer < 15:
                 self.item_vel -= Vector2D(0, 0.5)
                 self.item_pos += Vector2D(0, self.item_vel.get_y())
-            elif self.coin_animation.timer < 45:
+            elif self.animation.timer < 45:
                 self.item_vel += Vector2D(0, 0.5)
                 self.item_pos += Vector2D(0, self.item_vel.get_y())
             SCREEN.blit(
-                self.coin_animation.get_image(), (self.item_pos.get_x() + cam.x,
+                self.animation.get_image(), (self.item_pos.get_x() + cam.x,
                                                   self.item_pos.get_y())
             )
-        elif self.coin_animation.timer < 80:
+        elif self.animation.timer < 80:
             self.item_vel = Vector2D(0, -0.75)
             self.item_pos += Vector2D(0, self.item_vel.get_y())
             DASHBOARD.draw_text("100", self.item_pos.get_x() + 3 + cam.x,
@@ -274,7 +274,6 @@ class RandomBox(EntityBase):
         self.animation = copy(SPRITE_COLLECTION.get("randomBox"))
         self.type = "Block"
         self.triggered = False
-        self.time = 0
         self.max_time = 10
         self.vel = 1
         self.item = Item(self.rect.x, self.rect.y)
@@ -285,12 +284,12 @@ class RandomBox(EntityBase):
         else:
             self.animation.set_image(SPRITE_COLLECTION.get("empty"))
             self.item.spawn_coin(cam)
-            if self.time < self.max_time:
-                self.time += 1
+            if self.timer < self.max_time:
+                self.timer += 1
                 self.rect.y -= self.vel
             else:
-                if self.time < self.max_time * 2:
-                    self.time += 1
+                if self.timer < self.max_time * 2:
+                    self.timer += 1
                     self.rect.y += self.vel
         SCREEN.blit(
             SPRITE_COLLECTION.get("sky"),
@@ -307,10 +306,8 @@ class MushroomItem(EntityBase):
         self.animation = copy(SPRITE_COLLECTION.get("mushroom"))
         self.sound_played = False
         self.alive = False
-        self.timer = 0
         self.level = level
         self.left_right_trait = None
-        self.dead = False
 
     def spawn_mushroom(self, cam):
         if not self.sound_played:
@@ -325,7 +322,7 @@ class MushroomItem(EntityBase):
             self.apply_gravity()
             self.draw_mushroom(cam)
             self.left_right_trait.update()
-        if self.dead:
+        else:
             self.alive = None
 
     def draw_mushroom(self, cam):
@@ -339,16 +336,11 @@ class MushroomItem(EntityBase):
 class PowerUpBox(EntityBase):
     def __init__(self, x, y, gravity=0):
         super(PowerUpBox, self).__init__(x, y, gravity)
-
         self.animation = copy(SPRITE_COLLECTION.get("PowerUpBox"))
         self.type = "PowerBlock"
         self.triggered = False
-        self.time = 0
         self.max_time = 10
-        self.x = x
-        self.y = y
         self.vel = 1
-        self.item = None
         self.spawn = False
 
     def update(self, cam):
@@ -360,12 +352,12 @@ class PowerUpBox(EntityBase):
         else:
             self.animation.set_image(SPRITE_COLLECTION.get("empty"))
 
-            if self.time < self.max_time:
-                self.time += 1
+            if self.timer < self.max_time:
+                self.timer += 1
                 self.rect.y -= self.vel
             else:
-                if self.time < self.max_time * 2:
-                    self.time += 1
+                if self.timer < self.max_time * 2:
+                    self.timer += 1
                     self.rect.y += self.vel
         SCREEN.blit(
             SPRITE_COLLECTION.get("sky"),

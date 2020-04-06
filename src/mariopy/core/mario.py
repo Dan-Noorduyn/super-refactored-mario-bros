@@ -2,8 +2,8 @@ import pygame
 
 from core.entity_base import Camera, EntityBase
 from core.input import Input
-from core.traits import (Collider, EntityCollider, BounceTrait, goTrait,
-                         jumpTrait)
+from core.traits import (Collider, EntityCollider, BounceTrait, GoTrait,
+                         JumpTrait)
 from resources.dashboard import DASHBOARD
 from resources.display import SCREEN, SPRITE_COLLECTION, Animation
 from resources.level import LEVEL
@@ -31,8 +31,8 @@ class Mario(EntityBase):
             SPRITE_COLLECTION.get("mario_jump"),
         )
         self.traits = {
-            "jumpTrait": jumpTrait(self),
-            "goTrait": goTrait(self.animation, self.camera, self),
+            "JumpTrait": JumpTrait(self),
+            "GoTrait": GoTrait(self.animation, self.camera, self),
             "BounceTrait": BounceTrait(self),
         }
         self.collision = Collider(self, LEVEL)
@@ -59,9 +59,9 @@ class Mario(EntityBase):
 
     def draw_mario(self):
         if (self.timer >= 120) or (self.timer < 120 and 10 <= self.timer % 20 < 20):
-            if self.traits["goTrait"].heading == 1:
+            if self.traits["GoTrait"].heading == 1:
                 SCREEN.blit(self.animation.get_image(), self.get_pos())
-            elif self.traits["goTrait"].heading == -1:
+            elif self.traits["GoTrait"].heading == -1:
                 SCREEN.blit(
                     pygame.transform.flip(self.animation.get_image(), True, False), self.get_pos()
                 )
@@ -90,7 +90,7 @@ class Mario(EntityBase):
 
     def _on_collision_with_power_block(self, box):
         if not box.triggered:
-            LEVEL.add_mushroom(box.x, box.y)
+            LEVEL.add_mushroom(box.rect.x // 32, box.rect.y // 32)
             box.item = (LEVEL.entity_list[-1])
             SOUND_CONTROLLER.play_sfx(BUMP_SOUND)
         box.triggered = True
@@ -101,7 +101,7 @@ class Mario(EntityBase):
         if not self.big_size:
             self._big_mario()
             SOUND_CONTROLLER.play_sfx(MUSHROOM_SOUND)
-        item.dead = True
+        item.alive = False
 
     def _on_collision_with_item(self, item):
         LEVEL.entity_list.remove(item)
@@ -170,7 +170,7 @@ class Mario(EntityBase):
             SPRITE_COLLECTION.get("mario_idle"),
             SPRITE_COLLECTION.get("mario_jump"),
         )
-        self.traits["goTrait"].animation = self.animation
+        self.traits["GoTrait"].animation = self.animation
         img = self.animation.get_image()
         self.rect.w = img.get_width()
         self.rect.h = img.get_height()
@@ -190,7 +190,7 @@ class Mario(EntityBase):
         img = self.animation.get_image()
         self.rect.w = img.get_width()
         self.rect.h = img.get_height()
-        self.traits["goTrait"].animation = self.animation
+        self.traits["GoTrait"].animation = self.animation
         self.rect.y -= 32
 
     def kill_entity(self, ent):
