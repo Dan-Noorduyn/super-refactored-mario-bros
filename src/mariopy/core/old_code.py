@@ -78,8 +78,8 @@ from .entity_base import *
 #                             self.entity.vel.set_y(0)
 #                             # reset jump on bottom
 #                             if self.entity.traits is not None:
-#                                 if "jumpTrait" in self.entity.traits:
-#                                     self.entity.traits["jumpTrait"].reset()
+#                                 if "JumpTrait" in self.entity.traits:
+#                                     self.entity.traits["JumpTrait"].reset()
 #                                 if "bounceTrait" in self.entity.traits:
 #                                     self.entity.traits["bounceTrait"].reset()
 #                         if self.entity.vel.get_y() < 0:
@@ -100,8 +100,8 @@ from .entity_base import *
 #                         self.entity.vel.set_y(0)
 #                         # reset jump on bottom
 #                         if self.entity.traits is not None:
-#                             if "jumpTrait" in self.entity.traits:
-#                                 self.entity.traits["jumpTrait"].reset()
+#                             if "JumpTrait" in self.entity.traits:
+#                                 self.entity.traits["JumpTrait"].reset()
 #                             if "bounceTrait" in self.entity.traits:
 #                                 self.entity.traits["bounceTrait"].reset()
 #                     if self.entity.vel.get_y() < 0:
@@ -224,16 +224,16 @@ from .entity_base import *
 #         pressedKeys = pygame.key.get_pressed()
 
 #         if pressedKeys[K_LEFT] and not pressedKeys[K_RIGHT]:
-#             self.entity.traits["goTrait"].direction = -1
+#             self.entity.traits["GoTrait"].direction = -1
 #         elif pressedKeys[K_RIGHT] and not pressedKeys[K_LEFT]:
-#             self.entity.traits["goTrait"].direction = 1
+#             self.entity.traits["GoTrait"].direction = 1
 #         else:
-#             self.entity.traits['goTrait'].direction = 0
+#             self.entity.traits['GoTrait'].direction = 0
 
 #         isJumping = pressedKeys[K_SPACE] or pressedKeys[K_UP]
-#         self.entity.traits['jumpTrait'].jump(isJumping)
+#         self.entity.traits['JumpTrait'].jump(isJumping)
 
-#         self.entity.traits['goTrait'].boost = pressedKeys[K_LSHIFT]
+#         self.entity.traits['GoTrait'].boost = pressedKeys[K_LSHIFT]
 
 #     # def checkForMouseInput(self):
 #     #     mouseX, mouseY = pygame.mouse.get_pos()
@@ -694,7 +694,7 @@ from .entity_base import *
 #         super(Item, self).__init__(8, SCREEN)
 #         self.ItemPos = Vector2D(x, y)
 #         self.itemVel = Vector2D(0, 0)
-#         self.coin_animation = copy(collection.get("coin-item").animation)
+#         self.animation = copy(collection.get("coin-item").animation)
 #         self.sound_played = False
 
 #     def spawnCoin(self, cam, dashboard):
@@ -702,18 +702,18 @@ from .entity_base import *
 #             self.sound_played = True
 #             dashboard.points += 100
 #             SOUND_CONTROLLER.play_sfx(COIN_SOUND)
-#         self.coin_animation.update()
-#         if self.coin_animation.timer < 45:
-#             if self.coin_animation.timer < 15:
+#         self.animation.update()
+#         if self.animation.timer < 45:
+#             if self.animation.timer < 15:
 #                 self.itemVel -= Vector2D(0, 0.5)
 #                 self.ItemPos += Vector2D(0, self.itemVel.get_y())
-#             elif self.coin_animation.timer < 45:
+#             elif self.animation.timer < 45:
 #                 self.itemVel += Vector2D(0, 0.5)
 #                 self.ItemPos += Vector2D(0, self.itemVel.get_y())
 #             SCREEN.blit(
-#                 self.coin_animation.image, (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
+#                 self.animation.image, (self.ItemPos.get_x() + cam.x, self.ItemPos.get_y())
 #             )
-#         elif self.coin_animation.timer < 80:
+#         elif self.animation.timer < 80:
 #             self.itemVel = Vector2D(0, -0.75)
 #             self.ItemPos += Vector2D(0, self.itemVel.get_y())
 #             self.drawText("100", self.ItemPos.get_x() + 3 + cam.x, self.ItemPos.get_y(), 8)
@@ -824,8 +824,8 @@ from .entity_base import *
     #     )
 
     #     self.traits = {
-    #         "jumpTrait": jumpTrait(self),
-    #         "goTrait": goTrait(self.animation, self.camera, self),
+    #         "JumpTrait": JumpTrait(self),
+    #         "GoTrait": GoTrait(self.animation, self.camera, self),
     #         "bounceTrait": bounceTrait(self),
     #     }
     #     self.levelObj = LEVEL
@@ -986,7 +986,7 @@ from .entity_base import *
 #         self.entity.inAir = False
 
 
-# class goTrait:
+# class GoTrait:
 #     def __init__(self, animation, camera, ent):
 #         self.animation = animation
 #         self.direction = 0
@@ -1044,7 +1044,7 @@ from .entity_base import *
 #             )
 
 
-# class jumpTrait:
+# class JumpTrait:
 #     def __init__(self, entity):
 #         self.vertical_speed = -12 #jump speed
 #         self.jumpHeight = 120 #jump height in pixels

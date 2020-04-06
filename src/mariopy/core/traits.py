@@ -7,7 +7,6 @@ class Collider:
         self.entity = entity
         self.level_obj = level
         self.level = level.level
-        self.result = []
 
     def check_x(self):
         if self.left_level_border_reached() or self.right_level_border_reached():
@@ -53,10 +52,10 @@ class Collider:
                         self.entity.vel.set_y(0)
                         # reset jump on bottom
                         if self.entity.traits is not None:
-                            if "jumpTrait" in self.entity.traits:
-                                self.entity.traits["jumpTrait"].reset()
-                            if "bounceTrait" in self.entity.traits:
-                                self.entity.traits["bounceTrait"].reset()
+                            if "JumpTrait" in self.entity.traits:
+                                self.entity.traits["JumpTrait"].reset()
+                            if "BounceTrait" in self.entity.traits:
+                                self.entity.traits["BounceTrait"].reset()
                     else:
                         self.entity.rect.top = tile.rect.bottom
                         self.entity.vel.set_y(0)
@@ -71,7 +70,7 @@ class Collider:
             return True
 
 
-class bounceTrait:
+class BounceTrait:
     def __init__(self, entity):
         self.vel = 5
         self.jump = False
@@ -91,7 +90,7 @@ class bounceTrait:
         self.entity.in_air = True
 
 
-class goTrait:
+class GoTrait:
     def __init__(self, animation, camera, ent):
         self.animation = animation
         self.direction = 0
@@ -140,7 +139,7 @@ class goTrait:
                     self.animation.idle()
 
 
-class jumpTrait:
+class JumpTrait:
     def __init__(self, entity):
         self.vertical_speed = -12  # jump speed
         self.jump_height = 120  # jump height in pixels
@@ -200,9 +199,8 @@ class EntityCollider:
 
     def check(self, target):
         if self.entity.rect.colliderect(target.rect):
-            return self.determine_side(target.rect, self.entity.rect)
-        self.is_colliding, self.is_top = False, False
-        return self.is_colliding, self.is_top
+            return True, self.determine_side(target.rect, self.entity.rect)
+        return False, False
 
     def determine_side(self, rect1, rect2):
         if (
@@ -213,11 +211,8 @@ class EntityCollider:
             if rect2.collidepoint(
                 (rect1.midleft[0] / 2, rect1.midleft[1] / 2)
             ) or rect2.collidepoint((rect1.midright[0] / 2, rect1.midright[1] / 2)):
-                self.is_colliding, self.is_top = True, False
-                return self.is_colliding, self.is_top
+                return False
             else:
                 if self.entity.vel.get_y() > 0:
-                    self.is_colliding, self.is_top = True, True
-                    return self.is_colliding, self.is_top
-        self.is_colliding, self.is_top = True, False
-        return self.is_colliding, self.is_top
+                    return True
+        return False
