@@ -55,8 +55,8 @@ class Collider:
                         if self.entity.traits is not None:
                             if "jumpTrait" in self.entity.traits:
                                 self.entity.traits["jumpTrait"].reset()
-                            if "bounceTrait" in self.entity.traits:
-                                self.entity.traits["bounceTrait"].reset()
+                            if "BounceTrait" in self.entity.traits:
+                                self.entity.traits["BounceTrait"].reset()
                     else:
                         self.entity.rect.top = tile.rect.bottom
                         self.entity.vel.set_y(0)
@@ -71,7 +71,7 @@ class Collider:
             return True
 
 
-class bounceTrait:
+class BounceTrait:
     def __init__(self, entity):
         self.vel = 5
         self.jump = False

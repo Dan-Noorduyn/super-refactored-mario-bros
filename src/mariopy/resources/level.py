@@ -4,7 +4,6 @@ import pygame
 
 from core.entity_base import (Coin, Goomba, Koopa, MushroomItem, PowerUpBox,
                               RandomBox)
-from resources.dashboard import DASHBOARD
 from resources.display import SCREEN, SPRITE_COLLECTION, Animation
 
 

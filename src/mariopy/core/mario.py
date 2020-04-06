@@ -2,7 +2,7 @@ import pygame
 
 from core.entity_base import Camera, EntityBase
 from core.input import Input
-from core.traits import (Collider, EntityCollider, bounceTrait, goTrait,
+from core.traits import (Collider, EntityCollider, BounceTrait, goTrait,
                          jumpTrait)
 from resources.dashboard import DASHBOARD
 from resources.display import SCREEN, SPRITE_COLLECTION, Animation
@@ -33,7 +33,7 @@ class Mario(EntityBase):
         self.traits = {
             "jumpTrait": jumpTrait(self),
             "goTrait": goTrait(self.animation, self.camera, self),
-            "bounceTrait": bounceTrait(self),
+            "BounceTrait": BounceTrait(self),
         }
         self.collision = Collider(self, LEVEL)
         self.entity_collider = EntityCollider(self)
@@ -123,13 +123,11 @@ class Mario(EntityBase):
             self.rect.bottom = mob.rect.top
             self.bounce()
             self.kill_entity(mob)
-            mob.hit_once = True
         elif is_top and mob.alive == "shell_bouncing":
             SOUND_CONTROLLER.play_sfx(KICK_SOUND)
             self.rect.bottom = mob.rect.top
             self.bounce()
             mob.alive = "sleeping"
-            mob.hit_once = True
         elif is_top and mob.alive == "sleeping":
             SOUND_CONTROLLER.play_sfx(KICK_SOUND)
             self.rect.bottom = mob.rect.top
@@ -141,7 +139,6 @@ class Mario(EntityBase):
                 mob.rect.x += 3
                 mob.left_right_trait.direction = 1
             mob.alive = "shell_bouncing"
-            mob.hit_once = True
         elif is_colliding and mob.alive == "sleeping":
             if mob.rect.x < self.rect.x:
                 mob.left_right_trait.direction = -1
@@ -159,7 +156,7 @@ class Mario(EntityBase):
                 self.game_over()
 
     def bounce(self):
-        self.traits["bounceTrait"].jump = True
+        self.traits["BounceTrait"].jump = True
 
     def _small_mario(self):
         self.big_size = False

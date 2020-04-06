@@ -2,7 +2,7 @@ from copy import copy
 
 import pygame
 
-from core.traits import LeftRightWalkTrait, bounceTrait, EntityCollider
+from core.traits import LeftRightWalkTrait, BounceTrait, EntityCollider
 from resources.dashboard import DASHBOARD
 from resources.display import SCREEN, SPRITE_COLLECTION, Animation
 from resources.sound import COIN_SOUND, MUSHROOM_APPEARS, SOUND_CONTROLLER
@@ -22,6 +22,7 @@ class EntityBase(pygame.sprite.Sprite):
         self.type = ""
         self.on_ground = False
         self.obey_gravity = True
+        self.text_pos = Vector2D(x, y)
 
     def apply_gravity(self):
         if self.obey_gravity:
@@ -42,6 +43,14 @@ class EntityBase(pygame.sprite.Sprite):
 
     def get_pos_index_as_float(self):
         return Vector2D(self.rect.x / 32.0, self.rect.y / 32.0)
+
+    def set_points_text_start_position(self, x, y):
+        self.text_pos = Vector2D(x, y)
+
+    def move_points_text_up_and_draw(self, camera):
+        self.text_pos += Vector2D(-0.5, 0)
+        DASHBOARD.draw_text("100", self.text_pos.get_x() + camera.x,
+                           self.text_pos.get_y(), 8)
 
 
 class Coin(EntityBase):
@@ -70,11 +79,9 @@ class Goomba(EntityBase):
         self.left_right_trait = LeftRightWalkTrait(self, level)
         self.type = "Mob"
         self.traits = {
-            "bounceTrait": bounceTrait(self),
+            "BounceTrait": BounceTrait(self),
         }
         self.in_air = False
-        self.text_pos = Vector2D(x, y)
-        self.hit_once = False
 
     def update(self, camera):
         self.update_traits()
@@ -107,21 +114,13 @@ class Goomba(EntityBase):
         self.timer += 0.1
 
     def bounce(self):
-        self.traits["bounceTrait"].jump = True
+        self.traits["BounceTrait"].jump = True
 
     def draw_flat_goomba(self, camera):
         SCREEN.blit(
             SPRITE_COLLECTION.get("goomba-flat"),
             (self.rect.x + camera.x, self.rect.y),
         )
-
-    def set_points_text_start_position(self, x, y):
-        self.text_pos = Vector2D(x, y)
-
-    def move_points_text_up_and_draw(self, camera):
-        self.text_pos += Vector2D(-0.5, 0)
-        DASHBOARD.draw_text("100", self.text_pos.get_x() + camera.x,
-                           self.text_pos.get_y(), 8)
 
 
 class Item():
@@ -166,19 +165,14 @@ class Koopa(EntityBase):
             ]
         )
         self.traits = {
-            "bounceTrait": bounceTrait(self),
+            "BounceTrait": BounceTrait(self),
         }
         self.left_right_trait = LeftRightWalkTrait(self, level)
-        self.timer = 0
         self.time_after_death = 35
         self.type = "Mob"
         self.level_obj = level
         self.entity_collider = EntityCollider(self)
         self.in_air = False
-        self.hit_once = False
-        self.text_pos = Vector2D(x, y)
-
-    # If shell sleeping. kill it. If alive == true, kill it.
 
     def update(self, camera):
         if self.alive == True:
@@ -211,38 +205,18 @@ class Koopa(EntityBase):
         self.check_entity_collision()
 
     def check_entity_collision(self):
-        for ent in self.level_obj.entity_list:
-            if ent.type == "Mob" and ent != self:
-                is_colliding, _ = self.entity_collider.check(ent)
-                if is_colliding:
-                    self._on_collision_with_mob(ent, is_colliding)
+        if self.alive == "shell_bouncing":
+            for ent in self.level_obj.entity_list:
+                if ent.type == "Mob" and ent != self:
+                    is_colliding, _ = self.entity_collider.check(ent)
+                    if is_colliding:
+                        self._on_collision_with_mob(ent)
 
-    def _on_collision_with_mob(self, ent, is_colliding):
-        if is_colliding and ent.alive:
-            ent.bounce()
-            ent.set_points_text_start_position(ent.rect.x + 3, ent.rect.y)
-            ent.alive = False
-            DASHBOARD.points += 100
-            DASHBOARD.earned_points += 100
-            ent.left_right_trait.update()
-        elif is_colliding and ent.alive == "sleeping":
-            ent.bounce()
-            ent.set_points_text_start_position(ent.rect.x + 3, ent.rect.y)
-            ent.alive = False
-            DASHBOARD.points += 100
-            DASHBOARD.earned_points += 100
-            ent.left_right_trait.update()
-        elif is_colliding and ent.alive == "shell_bouncing":
-            ent.bounce()
-            self.bounce()
-            ent.set_points_text_start_position(ent.rect.x + 3, ent.rect.y)
-            self.set_points_text_start_position(self.rect.x + 3, self.rect.y)
-            ent.alive = False
-            self.alive = False
-            DASHBOARD.points += 100
-            DASHBOARD.earned_points += 100
-            ent.left_right_trait.update()
-            self.left_right_trait.update()
+    def _on_collision_with_mob(self, ent):
+        ent.bounce()
+        ent.set_points_text_start_position(ent.rect.x + 3, ent.rect.y)
+        ent.alive = False
+        ent.left_right_trait.update()
 
     def die(self, camera):
         if self.timer == 0:
@@ -273,7 +247,7 @@ class Koopa(EntityBase):
         self.timer += 6
 
     def bounce(self):
-        self.traits["bounceTrait"].jump = True
+        self.traits["BounceTrait"].jump = True
 
     def sleeping_in_shell(self, camera):
         if self.timer < self.time_after_death:
@@ -292,13 +266,6 @@ class Koopa(EntityBase):
         self.draw_koopa(camera)
         self.animation.update()
         self.left_right_trait.update()
-
-    def set_points_text_start_position(self, x, y):
-        self.text_pos = Vector2D(x, y)
-
-    def move_points_text_up_and_draw(self, camera):
-        self.text_pos += Vector2D(-0.5, 0)
-        DASHBOARD.draw_text("100", self.text_pos.get_x() + camera.x, self.text_pos.get_y(), 8)
 
 
 class RandomBox(EntityBase):
