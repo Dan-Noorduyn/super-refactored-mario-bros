@@ -4,6 +4,8 @@
 \usepackage{tabularx}
 \usepackage{caption}
 \usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{ulem}
 
 \title{SE 3XA3: Development Plan\\super-refactored-mario-python}
 
@@ -32,6 +34,7 @@ Jan 29, 2020 & Daniel Noorduyn & POC and Roles Touched Up\\
 Jan 29, 2020 & David Jandric & TMP, GWP, CS Rough Draft and Final\\
 Jan 29, 2020 & Alexander Samaha & Project Schedule completed and linked\\
 Jan 31, 2020 & Daniel Noorduyn & Finshing Touches\\
+\textcolor{red}{April 6, 2020} & \textcolor{red}{Daniel Noorduyn} & \textcolor{red}{Rev 1 Touch-ups}\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -45,9 +48,10 @@ project.
 
 \section{Team Meeting Plan}
 
-Meetings will take place every Tuesday and Wednesday in ITB 236 from 2:30PM to
-4:30PM. Informal meetings will be held on Thursdays at 6:00PM, if required.
-Alex will log, Dan will be chair, David will act as technology expert.
+Meetings will take place every Tuesday and Wednesday in \sout{ITB 236 from
+2:30PM to 4:30PM} \textcolor{red}{Thode Library from 4:30PM to 5:30 PM}.
+Informal meetings will be held on Thursdays at 6:00PM, if required. Alex will
+log, Dan will be chair, David will act as technology expert.
 Rules for agendas:
 \begin{enumerate}
     \item Items must be pertinent to next deliverable.
@@ -105,16 +109,36 @@ feasible. The team has voted that David Jandric fulfill this position.
 Each member of the team has unique expertise that will benefit the overall
 project. The breakdown is in the following table:
 
+\textcolor{red}{Old table:}
+
 \begin{center}
   \begin{tabular}{ |c|c| }
     \hline
-    Team Member & Expertise\\
+    \sout{Team Member} & \sout{Expertise}\\
     \hline
-     David Jandric & Documentation\\
-     Alexander Samaha & Git\\
-     Daniel Noorduyn & LaTeX\\
-     David Jandric & Technology\\
-     Alexander Samaha & Design\\
+     \sout{David Jandric} & \sout{Documentation}\\
+     \sout{Alexander Samaha} & \sout{Git}\\
+     \sout{Daniel Noorduyn} & \sout{LaTeX}\\
+     \sout{David Jandric} & \sout{Technology}\\
+     \sout{Alexander Samaha} & \sout{Design}\\
+    \hline
+  \end{tabular}
+\end{center}
+
+\textcolor{red}{New table:}
+
+\begin{center}
+  \begin{tabular}{ |c|c| }
+    \hline
+    \textcolor{red}{Team Member} & \textcolor{red}{Expertise}\\
+    \hline
+    \textcolor{red}{David Jandric} & \textcolor{red}{Documentation}\\
+     & \textcolor{red}{Technology}\\
+    \hline
+    \textcolor{red}{Alexander Samaha} & \textcolor{red}{Git}\\
+     & \textcolor{red}{Design}\\
+    \hline
+    \textcolor{red}{Daniel Noorduyn} & \textcolor{red}{LaTeX}\\
     \hline
   \end{tabular}
   \captionof{table}{Team Member Expertise}
@@ -127,11 +151,14 @@ from the start, and therefore understand how fluid the assigned roles are.
 \section{Git Workflow Plan}
 
 Our repository is centralized around the master branch, and new branches are
-created for different features and modules. These branches are destroyed once
-merged with master. Labels will be used in order to track bugs, stylistic
-changes, documentation requirements, issues that may require discussion, and
-suggestions. We will be using milestones in order to track the due dates
-of the deliverables.
+created for different features and modules. \textcolor{red}{This type of plan is
+called a
+\href{https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow}{Feature
+Branch} workflow plan.} \sout{These branches are} \textcolor{red}{Each branch
+is} destroyed once merged with master. Labels will be used in order to track
+bugs, stylistic changes, documentation requirements, issues that may require
+discussion, and suggestions. We will be using milestones in order to track the
+due dates of the deliverables.
 
 \section{Proof of Concept Demonstration Plan}
 
@@ -220,12 +247,12 @@ reference for future development.
 
 \section{Coding Style}
 
-Since our project will be coded in Python, we will be following the PEP8
-style standard for Python, which comes from the creators of Python.
-A coding style like this can be helpful by keeping the structure and look of
-our code consistent, which helps with maintaining the code base. Using a
-consistent coding style can also help other developers read and understand the
-code.
+Since our project will be coded in Python, we will be following the
+\href{https://www.python.org/dev/peps/pep-0008/}{\textcolor{red}{PEP8}} style standard for
+Python, which comes from the creators of Python. A coding style like this can be
+helpful by keeping the structure and look of our code consistent, which helps
+with maintaining the code base. Using a consistent coding style can also help
+other developers read and understand the code.
 
 \section{Project Schedule}
 A link to our project schedule can be found in the project repository linked below:

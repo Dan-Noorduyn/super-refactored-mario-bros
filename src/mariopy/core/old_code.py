@@ -1049,8 +1049,8 @@ from .entity_base import *
 #         self.vertical_speed = -12 #jump speed
 #         self.jumpHeight = 120 #jump height in pixels
 #         self.entity = entity
-#         self.initalHeight = 384 #stores the position of mario at jump
-#         self.deaccelerationHeight = self.jumpHeight - ((self.vertical_speed*self.vertical_speed)/(2*self.entity.gravity))
+#         self.initialHeight = 384 #stores the position of mario at jump
+#         self.decelerationHeight = self.jumpHeight - ((self.vertical_speed*self.vertical_speed)/(2*self.entity.gravity))
 
 #     def jump(self,jumping):
 #         if jumping:
@@ -1058,12 +1058,12 @@ from .entity_base import *
 #                 SOUND_CONTROLLER.play_sfx(JUMP_SOUND)
 #                 self.entity.vel = Vector2D(self.entity.vel.get_x(), self.vertical_speed)
 #                 self.entity.inAir = True
-#                 self.initalHeight = self.entity.rect.y
+#                 self.initialHeight = self.entity.rect.y
 #                 self.entity.inJump = True
 #                 self.entity.obeygravity = False #dont obey gravity in jump so as to reach jump height no matter what the speed
 
 #         if self.entity.inJump: #check vertical distance travelled while mario is in a jump
-#             if (self.initalHeight-self.entity.rect.y) >= self.deaccelerationHeight or self.entity.vel.get_y() == 0:
+#             if (self.initialHeight-self.entity.rect.y) >= self.decelerationHeight or self.entity.vel.get_y() == 0:
 #                 self.entity.inJump = False
 #                 self.entity.obeygravity = True #mario obeys gravity again and continues normal play
 
