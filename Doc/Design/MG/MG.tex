@@ -8,6 +8,8 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage{ulem}
+\usepackage{xcolor}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -31,7 +33,7 @@
 
 \title{SE 3XA3: Module Guide\\Super Refactored Mario Python}
 
-\author{203, Abstract Connoisseurs 
+\author{203, Abstract Connoisseurs
 		\\ David Jandric, jandricd
 		\\ Daniel Noorduyn, noorduyd
 		\\ Alexander Samaha, samahaa
@@ -68,7 +70,7 @@
 
 \subsection{Overview}
 
-Super Refactored Mario Bros is modeled after the original Super Mario Bros game from Nintendo. The goal of the project is to create an almost perfect clone of the original game, but make it open source. This would allow others to learn how to use the python library pygame. Additionally, the creator of the original code that this project is based on hasn't completed the game. Further, they have created some unorganized and quite amateur code which our team hopes to refactor into readable and understandable code. The team will also finish the game and add several key lacking features. 
+Super Refactored Mario Bros is modeled after the original Super Mario Bros game from Nintendo. The goal of the project is to create an almost perfect clone of the original game, but make it open source. This would allow others to learn how to use the python library pygame. Additionally, the creator of the original code that this project is based on hasn't completed the game. Further, they have created some unorganized and quite amateur code which our team hopes to refactor into readable and understandable code. The team will also finish the game and add several key lacking features. \textcolor{red}{This document aims to translate the functional and non-functional requirements as seen in the \href{https://gitlab.cas.mcmaster.ca/jandric/super-refactored-mario-bros/-/blob/master/Doc/SRS/SRS.pdf}{\textcolor{red}{SRS}} into a direct programming scenario. This document outlines how behaviours desired in the SRS will be implemented into the code of the game. Our team has decided on a Main-Subroutine architecture which is how the following outlined modules are designed to interact with each other.}
 
 \subsection{Scope}
 
@@ -95,7 +97,7 @@ change.
 
 \begin{description}
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acCharacters}:] The amount and type of characters the user can choose from. 
+\item[\refstepcounter{acnum} \actheacnum \label{acCharacters}:] The amount and type of characters the user can choose from.
 \item[\refstepcounter{acnum} \actheacnum \label{acPower}:] The amount and type of power-ups from the item boxes.
 \item[\refstepcounter{acnum} \actheacnum \label{acSpeed}:] The frame-rate of specific computers.
 \item[\refstepcounter{acnum} \actheacnum \label{acRes}:] The resolution of different monitors.
@@ -124,7 +126,7 @@ below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
 \begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{mController}:] Controller
+\item [\refstepcounter{mnum} \mthemnum \label{mGameController}:] \sout{Controller} \textcolor{red}{Game\_Controller}
 \item [\refstepcounter{mnum} \mthemnum \label{mInput}:] Input
 \item [\refstepcounter{mnum} \mthemnum \label{mMenu}:] Menu
 \item [\refstepcounter{mnum} \mthemnum \label{mDashboard}:] Dashboard
@@ -138,10 +140,22 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mSpritesheet}:] Spritesheet
 \item [\refstepcounter{mnum} \mthemnum \label{mCollider}:] Collider
 \item [\refstepcounter{mnum} \mthemnum \label{mLevel}:] Level
-\item [\refstepcounter{mnum} \mthemnum \label{mLevels}:] Levels.json
-\item [\refstepcounter{mnum} \mthemnum \label{mSprites}:] Sprites
-\item [\refstepcounter{mnum} \mthemnum \label{mSprite}:] Sprite
+\item [\sout{\refstepcounter{mnum} \mthemnum \label{mLevels}:}] \sout{Levels.json}
+\item [\sout{\refstepcounter{mnum} \mthemnum \label{mSprites}:}] \sout{Sprites}
+\item [\sout{\refstepcounter{mnum} \mthemnum \label{mSprite}:}] \sout{Sprite}
 \item [\refstepcounter{mnum} \mthemnum \label{mEntityB}:] Entity\_Base
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mAnimation}:}] \textcolor{red}{Animation}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mCoin}:}] \textcolor{red}{Coin}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mItem}:}] \textcolor{red}{Item}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mRandomBox}:}] \textcolor{red}{RandomBox}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mMushroomItem}:}] \textcolor{red}{MushroomItem}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mPowerUpBox}:}] \textcolor{red}{PowerUpBox}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mEntityCollider}:}] \textcolor{red}{EntityCollider}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mBounceTrait}:}] \textcolor{red}{BounceTrait}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mGoTrait}:}] \textcolor{red}{GoTrait}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mJumpTrait}:}] \textcolor{red}{JumpTrait}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mLeftRightWalkTrait}:}] \textcolor{red}{LeftRightWalkTrait}
+\item [\textcolor{red}{\refstepcounter{mnum} \mthemnum \label{mTile}:}] \textcolor{red}{Tile}
 \end{description}
 
 \begin{table}[h!]
@@ -151,10 +165,10 @@ actually be implemented.
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding Module} & Controller \\
+{Hardware-Hiding Module} & \sout{Controller} \textcolor{red}{Game\_Controller} \\
 \midrule
 
-\multirow{8}{0.3\textwidth}{Behaviour-Hiding Module} & Input\\
+\multirow{13}{0.3\textwidth}{Behaviour-Hiding Module} & Input\\
 & Menu \\
 & Dashboard\\
 & Pause\\
@@ -162,16 +176,28 @@ actually be implemented.
 & Camera\\
 & Goomba \\
 & Koopa \\
+& \textcolor{red}{Coin} \\
+& \textcolor{red}{Item} \\
+& \textcolor{red}{RandomBox} \\
+& \textcolor{red}{MushroomItem} \\
+& \textcolor{red}{PowerUpBox} \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Software Decision Module} & Vector2D\\
+\multirow{15}{0.3\textwidth}{Software Decision Module} & Vector2D\\
 & Sound\_Controller\\
 & SpriteSheet\\
 & Collider\\
 & Level\\
-& Levels.json\\
-& Sprites \\
-& Sprite\\
+& \sout{Levels.json}\\
+& \sout{Sprites} \\
+& \sout{Sprite}\\
+& \textcolor{red}{Animation} \\
+& \textcolor{red}{EntityCollider} \\
+& \textcolor{red}{BounceTrait} \\
+& \textcolor{red}{GoTrait} \\
+& \textcolor{red}{JumpTrait} \\
+& \textcolor{red}{LeftRightWalkTrait} \\
+& \textcolor{red}{Tile} \\
 \bottomrule
 
 \end{tabular}
@@ -201,7 +227,7 @@ that the module is not a leaf and will not have to be implemented. Whether or
 not this module is implemented depends on the programming language
 selected.
 
-\subsection{Hardware Hiding Modules (\mref{mController})}
+\subsection{Hardware Hiding Modules (\mref{mGameController})}
 
 \begin{description}
 \item[Secrets:]The data structures and algorithms used to implement the virtual input and output
@@ -210,6 +236,14 @@ selected.
   system. This module provides the interface between the hardware and the
   software. So, the system can use it to display outputs or to accept inputs.
 \item[Implemented By:] OS
+\end{description}
+
+\subsubsection{\textcolor{red}{Game\_Controller Module (\mref{mGameController})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{Process of starting the game, passing objects to others, and running the game.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{The main controller that initializes subroutines and organizes the functionality of the entire architecture.}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \subsection{Behaviour-Hiding Module}
@@ -276,7 +310,7 @@ selected.
 \subsubsection{Goomba Module (\mref{mGoomba})}
 
 \begin{description}
-\item[Secrets:] The function of the Goomba enemies.
+\item[Secrets:] The function of the Goomba enemies \textcolor{red}{such as their movement and how they can be killed}.
 \item[Services:] Allows the user to interact with an enemy, and gain points from their death.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
@@ -284,9 +318,49 @@ selected.
 \subsubsection{Koopa Module (\mref{mKoopa})}
 
 \begin{description}
-\item[Secrets:] The function of the Koopa enemies.
+\item[Secrets:] The function of the Koopa enemies \textcolor{red}{such as their movement, how they can be killed and their shell movement}.
 \item[Services:] Allows the user to interact with an enemy, and gain points from their death.
 \item[Implemented By:] Super Refactored Mario Bros
+\end{description}
+
+\subsubsection{\textcolor{red}{Coin Module (\mref{mCoin})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{Item Module (\mref{mItem})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{Contains the coin animation and when/how the coins appear/disappear.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{The user can interact with these coins to gain points/}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{RandomBox Module (\mref{mRandomBox})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{Contains the random box animation, and when the box is functional/non-functional.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{The user can interact with the box and gain points from getting coins from it.}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{MushroomItem Module (\mref{mMushroomItem})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{Contains the functions to make the mushrooms appear, move the mushroom, and disappear.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{The user can interact with these mushrooms to transform Mario from 'big Mario' to 'small Mario' and gain points.}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{PowerUpBox Module (\mref{mPowerUpBox})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{Contains the power-up box animation and when the box is functional/non-functional.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{The user can interact with the power-up box to get a mushroom to appear.}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \subsection{Software Decision Module}
@@ -296,7 +370,7 @@ selected.
   facts, or programming considerations. The secrets of this module are
   \emph{not} described in the SRS.
 \item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user. 
+  do not provide direct interaction with the user.
   % Changes in these modules are more likely to be motivated by a desire to
   % improve performance than by externally imposed changes.
 \item[Implemented By:] Super Refactored Mario Bros
@@ -306,7 +380,7 @@ selected.
 
 \begin{description}
 \item[Secrets:] The method of doing the vector addition, as well as calculation the magnitude of a vector.
-\item[Services:] Uses vector addition in order to create new vectors for doing math with positions, velocities and accelerations. 
+\item[Services:] Uses vector addition in order to create new vectors for doing math with positions, velocities and accelerations.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
@@ -338,40 +412,96 @@ selected.
 
 \begin{description}
 \item[Secrets:] The method of which objects and entities in the game are spawned and placed in a level.
-\item[Services:] Loads objects and entities from sprites and places them within the context of a level. 
+\item[Services:] Loads objects and entities from sprites and places them within the context of a level.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
-\subsubsection{Levels.json Module (\mref{mLevels})}
+\subsubsection{\sout{Levels.json Module} (\mref{mLevels})}
 
 \begin{description}
-\item[Secrets:] Contains the structure of every level as a combination of sprites.
-\item[Services:] Used to create unique levels that the user can play.
-\item[Implemented By:] Super Refactored Mario Bros
+\item[\sout{Secrets:}] \sout{Contains the structure of every level as a combination of sprites.}
+\item[\sout{Services:}] \sout{Used to create unique levels that the user can play.}
+\item[\sout{Implemented By:}] \sout{Super Refactored Mario Bros}
 \end{description}
 
-\subsubsection{Sprites Module (\mref{mSprites})}
+\subsubsection{\sout{Sprites Module (\mref{mSprites})}}
 
 \begin{description}
-\item[Secrets:] The method of which collections of sprites are loaded to be used in the game.
-\item[Services:] Loads a collection of sprites to be used by the different entities and level building modules.
-\item[Implemented By:] Super Refactored Mario Bros
+\item[\sout{Secrets:}] \sout{The method of which collections of sprites are loaded to be used in the game.}
+\item[\sout{Services:}] \sout{Loads a collection of sprites to be used by the different entities and level building modules.}
+\item[\sout{Implemented By:}] \sout{Super Refactored Mario Bros}
 \end{description}
 
-\subsubsection{Sprite Module (\mref{mSprite})}
+\subsubsection{\sout{Sprite Module (\mref{mSprite})}}
 
 \begin{description}
-\item[Secrets:] The method of which the game draws a sprite.
-\item[Services:] Provides functionalities to draw a sprite from an image to be used in the game.
-\item[Implemented By:] Super Refactored Mario Bros
+\item[\sout{Secrets:}] \sout{The method of which the game draws a sprite.}
+\item[\sout{Services:}] \sout{Provides functionalities to draw a sprite from an image to be used in the game.}
+\item[\sout{Implemented By:}] \sout{Super Refactored Mario Bros}
 \end{description}
 
-\subsubsection{Sprite Module (\mref{mEntityB})}
+\subsubsection{\sout{Sprite} \textcolor{red}{Entity Base} Module (\mref{mEntityB})}
 
 \begin{description}
 \item[Secrets:] The various fields that are general to all attributes in the game.
 \item[Services:] Provides functionalities to update and access fields required of all attributes in the game.
 \item[Implemented By:] Super Refactored Mario Bros
+\end{description}
+
+\subsubsection{\textcolor{red}{Animation Module (\mref{mAnimation})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{The images to be displayed and how they change over time.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{Provides animation functionality to any entities required by the game.}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{EntityCollider Module (\mref{mAEntityCollider})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{The methods for checking if two entities are colliding.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{Provides functionality to entities that can interact with other entities in the game.}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{BounceTrait Module (\mref{mBounceTrait})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{GoTrait Module (\mref{mGoTrait})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{JumpTrait Module (\mref{mJumpTrait})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{LeftRightWalkTrait Module (\mref{mLeftRightWalkTrait})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
+\end{description}
+
+\subsubsection{\textcolor{red}{Tile Module (\mref{mTile})}}
+
+\begin{description}
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+\item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \section{Traceability Matrix} \label{SecTM}
