@@ -33,7 +33,7 @@
 
 \title{SE 3XA3: Module Guide\\Super Refactored Mario Python}
 
-\author{203, Abstract Connoisseurs 
+\author{203, Abstract Connoisseurs
 		\\ David Jandric, jandricd
 		\\ Daniel Noorduyn, noorduyd
 		\\ Alexander Samaha, samahaa
@@ -97,7 +97,7 @@ change.
 
 \begin{description}
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acCharacters}:] The amount and type of characters the user can choose from. 
+\item[\refstepcounter{acnum} \actheacnum \label{acCharacters}:] The amount and type of characters the user can choose from.
 \item[\refstepcounter{acnum} \actheacnum \label{acPower}:] The amount and type of power-ups from the item boxes.
 \item[\refstepcounter{acnum} \actheacnum \label{acSpeed}:] The frame-rate of specific computers.
 \item[\refstepcounter{acnum} \actheacnum \label{acRes}:] The resolution of different monitors.
@@ -183,7 +183,11 @@ actually be implemented.
 & \textcolor{red}{PowerUpBox} \\
 \midrule
 
+<<<<<<< HEAD
 \multirow{16}{0.3\textwidth}{Software Decision Module} & Vector2D\\
+=======
+\multirow{15}{0.3\textwidth}{Software Decision Module} & Vector2D\\
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 & Sound\_Controller\\
 & SpriteSheet\\
 & Collider\\
@@ -191,7 +195,10 @@ actually be implemented.
 & \sout{Levels.json}\\
 & \sout{Sprites} \\
 & \sout{Sprite}\\
+<<<<<<< HEAD
 & \textcolor{red}{EntityBase} \\
+=======
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 & \textcolor{red}{Animation} \\
 & \textcolor{red}{EntityCollider} \\
 & \textcolor{red}{BounceTrait} \\
@@ -327,16 +334,26 @@ selected.
 \subsubsection{\textcolor{red}{Coin Module (\mref{mCoin})}}
 
 \begin{description}
+<<<<<<< HEAD
 \item[\textcolor{red}{Secrets:}] \textcolor{red}{Contains the coin animation (revolving) for static in level coins and how they can disappear.}
 \item[\textcolor{red}{Services:}] \textcolor{red}{The user can interact with these coins to gain points.}
+=======
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 \item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \subsubsection{\textcolor{red}{Item Module (\mref{mItem})}}
 
 \begin{description}
+<<<<<<< HEAD
 \item[\textcolor{red}{Secrets:}] \textcolor{red}{Contains the coin animation for appearing out of the random box and when/how the coins disappear.}
 \item[\textcolor{red}{Services:}] \textcolor{red}{The user can interact with these coins to gain points.}
+=======
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{Contains the coin animation and when/how the coins appear/disappear.}
+\item[\textcolor{red}{Services:}] \textcolor{red}{The user can interact with these coins to gain points/}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 \item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
@@ -371,7 +388,7 @@ selected.
   facts, or programming considerations. The secrets of this module are
   \emph{not} described in the SRS.
 \item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user. 
+  do not provide direct interaction with the user.
   % Changes in these modules are more likely to be motivated by a desire to
   % improve performance than by externally imposed changes.
 \item[Implemented By:] Super Refactored Mario Bros
@@ -381,7 +398,7 @@ selected.
 
 \begin{description}
 \item[Secrets:] The method of doing the vector addition, as well as calculation the magnitude of a vector.
-\item[Services:] Uses vector addition in order to create new vectors for doing math with positions, velocities and accelerations. 
+\item[Services:] Uses vector addition in order to create new vectors for doing math with positions, velocities and accelerations.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
@@ -413,11 +430,15 @@ selected.
 
 \begin{description}
 \item[Secrets:] The method of which objects and entities in the game are spawned and placed in a level.
-\item[Services:] Loads objects and entities from sprites and places them within the context of a level. 
+\item[Services:] Loads objects and entities from sprites and places them within the context of a level.
 \item[Implemented By:] Super Refactored Mario Bros
 \end{description}
 
+<<<<<<< HEAD
 \subsubsection{\sout{Levels.json Module (\mref{mLevels})}}
+=======
+\subsubsection{\sout{Levels.json Module} (\mref{mLevels})}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 
 \begin{description}
 \item[\sout{Secrets:}] \sout{Contains the structure of every level as a combination of sprites.}
@@ -468,40 +489,65 @@ selected.
 \subsubsection{\textcolor{red}{BounceTrait Module (\mref{mBounceTrait})}}
 
 \begin{description}
+<<<<<<< HEAD
 \item[\textcolor{red}{Secrets:}] \textcolor{red}{How this module updates an entities state.}
 \item[\textcolor{red}{Services:}] \textcolor{red}{Gives entities a method for bouncing up.}
+=======
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 \item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \subsubsection{\textcolor{red}{GoTrait Module (\mref{mGoTrait})}}
 
 \begin{description}
+<<<<<<< HEAD
 \item[\textcolor{red}{Secrets:}] \textcolor{red}{How this module updates an entities state and how it interacts with the user.}
 \item[\textcolor{red}{Services:}] \textcolor{red}{Provides advanced movement functionality for an entity.}
+=======
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 \item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \subsubsection{\textcolor{red}{JumpTrait Module (\mref{mJumpTrait})}}
 
 \begin{description}
+<<<<<<< HEAD
 \item[\textcolor{red}{Secrets:}] \textcolor{red}{How this module updates an entities state and how it interacts with the user.}
 \item[\textcolor{red}{Services:}] \textcolor{red}{Provides jumping functionality to an entity.}
+=======
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 \item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \subsubsection{\textcolor{red}{LeftRightWalkTrait Module (\mref{mLeftRightWalkTrait})}}
 
 \begin{description}
+<<<<<<< HEAD
 \item[\textcolor{red}{Secrets:}] \textcolor{red}{How this module updates an entities state.}
 \item[\textcolor{red}{Services:}] \textcolor{red}{Provides simple horizontal movement to an entity.}
+=======
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 \item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 
 \subsubsection{\textcolor{red}{Tile Module (\mref{mTile})}}
 
 \begin{description}
+<<<<<<< HEAD
 \item[\textcolor{red}{Secrets:}] \textcolor{red}{How the module stores data.}
 \item[\textcolor{red}{Services:}] \textcolor{red}{Provides a simple data class for representing a static object with an image.}
+=======
+\item[\textcolor{red}{Secrets:}] \textcolor{red}{}
+\item[\textcolor{red}{Services:}] \textcolor{red}{}
+>>>>>>> 49e66307151aad934c55e5ef99a9fb34249c35ef
 \item[\textcolor{red}{Implemented By:}] \textcolor{red}{Super Refactored Mario Bros}
 \end{description}
 

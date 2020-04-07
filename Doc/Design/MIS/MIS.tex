@@ -11,6 +11,9 @@
 \usepackage{url}
 \usepackage{longtable}
 \usepackage{float}
+\usepackage{soul}
+\usepackage{xcolor}
+\usepackage{ulem}
 
 \oddsidemargin -10mm
 \evensidemargin -10mm
@@ -62,6 +65,7 @@
 \begin{tabular}{lll}
     Vector2D & &\\
     pygame.Rect & // & Class for representing a rectangle\\
+    \textcolor{red}{pygame.sprite.Sprite} & \textcolor{red}{//} & \textcolor{red}{Class for representing a sprite}\\
 \end{tabular}
 
 \subsection* {Syntax}
@@ -72,7 +76,7 @@
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new entity\_base & $\mathbb{Z, Z, R}$ & entity\_base & ---\\
+new EntityBase & $\mathbb{Z, Z, R}$ & EntityBase & ---\\
 \hline
 apply\_gravity & --- & --- & ---\\
 \hline
@@ -81,6 +85,10 @@ update\_traits & --- & --- & ---\\
 get\_pos\_index & --- & Vector2D & ---\\
 \hline
 get\_float\_pos\_index & --- & Vector2D & ---\\
+\hline
+\color{red}set\_points\_text\_start\_position & \color{red}$\mathbb{R, R}$ & \color{red}--- & \color{red}---\\
+\hline
+\color{red}move\_points\_text\_up\_and\_draw & \color{red}Camera & \color{red}--- & \color{red}---\\
 \hline
 \end{tabular}
 
@@ -98,6 +106,7 @@ timer: $\mathbb{N}$ & // & Keeps track of the number of time the entity has been
 type: string & // & Represents the name of the type of entity\\
 on\_ground: $\mathbb{B}$ & // & Self explanatory\\
 obey\_gravity: $\mathbb{B}$ & // & Self explanatory\\
+\color{red}text\_pos: Vector2D & \color{red}// & \color{red}Text position to show points when dying\\
 \end{tabular}
 
 \subsubsection* {State Invariant}
@@ -110,13 +119,14 @@ None
 
 \subsubsection* {Access Routine Semantics}
 
-new entity\_base(x, y, gravity):
+new EntityBase(x, y, gravity):
 \begin{itemize}
     \item transition: 
     \begin{itemize}[]
-        \item vel, rect, gravity := Vector2D(0, 0), Rect(x * 32, y * 32, 32, 32)
+        \item vel, rect, gravity := Vector2D(0, 0), Rect(x * 32, y * 32, 32, 32)\textcolor{red}{, gravity}
         \item traits, alive, on\_ground, obey\_gravity := None, True, False, True
         \item timer\_after\_death, timer, type := 5, 0, ""
+        \item \color{red}text\_pos := Vector2D(x, y)
     \end{itemize}
     \item output: $out := self$
 \end{itemize}
@@ -151,6 +161,17 @@ new entity\_base(x, y, gravity):
     \item output: $out := $ Vector2D(rect.x / 32, rect.y / 32)
 \end{itemize}
 
+\noindent \textcolor{red}{set\_points\_text\_start\_position(x, y):}
+\begin{itemize}
+    \item \textcolor{red}{transition: text\_pos := Vector2D(x, y)}
+\end{itemize}
+
+\noindent \textcolor{red}{move\_points\_text\_up\_and\_draw(camera):}
+\begin{itemize}
+    \item \textcolor{red}{transition: text\_pos += Vector2D(-0.5, 0)}
+    \item \textcolor{red}{output: draw the points text at (text\_pos.get\_x() + camera.x, text\_pos.get\_y())}
+\end{itemize}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,6 +182,8 @@ new entity\_base(x, y, gravity):
 
 \begin{tabular}{lll}
     Animation & & \\
+    \color{red}LeftRightWalkTrait & &\\
+    \color{red}BounceTrait & &\\ 
     Camera & & \\
     EntityBase & & \\
     Level & & \\
@@ -175,7 +198,10 @@ new entity\_base(x, y, gravity):
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new goomba & Surface, Map[string: Surface $|$ Animation], $\mathbb{R, R}$, Level & entity\_base & ---\\
+new Goomba & \begin{tabular}{l}
+   \st{Surface, Map[string: Surface $|$ Animation],} \\
+    $\mathbb{R, R}$, Level 
+\end{tabular}& \st{entity\_base}\textcolor{red}{Goomba}& ---\\
 \hline
 update & Camera & --- & ---\\
 \hline
@@ -185,17 +211,29 @@ on\_dead & Camera & --- & ---\\
 \hline
 draw\_flat\_goomba & Camera & --- & ---\\
 \hline
+\textcolor{red}{bounce} & \color{red}--- & \color{red}--- & \color{red}---\\
+\hline
 \end{tabular}
 
 \subsection* {Semantics}
 
 \subsubsection* {State Variables}
 \begin{tabular}{lll}
-sprite\_collection: Map[string: Surface | Animation] & // & Collection of all sprites\\
-animation: Animation & // & Represents the images related to Koopa animation\\
-screen: Surface & // & Represents the entire screen\\
+\st{sprite\_collection: Map[string: Surface | Animation]} & \st{//} & \st{Collection of all sprites}\\
+animation: Animation & // & 
+    \begin{tabular}{l}
+        Represents the images\\
+        related to Koopa animation\\
+    \end{tabular}\\
+\st{screen: Surface} & \st{//} & \st{Represents the entire screen}\\
 type: string & // & The type of the entity\\
-dashboard: Dashboard & // & Represents the dashboard\\
+\st{dashboard: Dashboard} & \st{//} & \st{Represents the dashboard}\\
+\color{red}left\_right\_trait: LeftRightWalkTrait & \color{red}// & 
+    \begin{tabular}{l}
+        \color{red}Variable holding LeftRightWalkTrait\\
+        \color{red}to handle Goomba movement
+    \end{tabular}\\
+\color{red}in\_air: $\mathbb{B}$ & \color{red}// & \color{red}Self explanatory
 \end{tabular}
 
 \subsubsection* {State Invariant}
@@ -208,20 +246,25 @@ None
 
 \subsubsection* {Access Routine Semantics}
 
-new goomba(screen, sprite\_coll, x, y, level):
+new Goomba(\st{screen, sprite\_coll,} x, y, level):
 \begin{itemize}
     \item transition: 
     \begin{itemize}[]
-        \item sprite\_collection := sprite\_coll
+        \item \st{sprite\_collection := sprite\_coll}
         \item animation := A new animation object, initialized with the images related to the Goomba
-        \item screen, type, dashboard := screen, "Mob", level.dashboard
+        \item \st{screen, type, dashboard := screen, "Mob", level.dashboard}
+        \item \color{red}left\_right\_trait := LeftRightWalkTrait(self, level)
+        \item \color{red}type := "Mob"
+        \item \color{red}traits := List containing an initialized BounceTrait
+        \item \color{red}in\_air := False
     \end{itemize}
     \item output: $out := self$
 \end{itemize}
 
 update(camera):
 \begin{itemize}
-    \item transition: If the Goomba is alive, then apply gravity (using apply\_gravity()) and draw the Goomba (using draw\_goomba(camera)). If the Goomba is dead, then call on\_dead(camera).
+    \item \st{transition: If the Goomba is alive, then apply gravity (using apply\_gravity()) and draw the Goomba (using draw\_goomba(camera)). If the Goomba is dead, then call on\_dead(camera)}.
+    \item \color{red}Update traits (using self.update\_traits()), then apply gravity (using self.apply\_gravity()). If the Goomba is alive, then draw the Goomba (using draw\_goomba(camera)) and update left\_right\_trait (using self.left\_right\_trait.update(). If the Goomba is dead, then call on\_dead(camera).
 \end{itemize}
 
 draw\_goomba(camera):
@@ -231,12 +274,17 @@ draw\_goomba(camera):
 
 on\_dead(camera):
 \begin{itemize}
-    \item transition: When killed, the Goomba will draw a string representing the number of points given by killing the Goomba, and also replace the regular animation images of the Goomba with the flat image. Then, after one cycle of this, it will set the alive attribute to None, deleting the Goomba.
+    \item transition: When killed, the Goomba will draw a string representing the number of points given by killing the Goomba, and also replace the regular animation images of the Goomba with the flat image. Then, after \st{one cycle of this} \textcolor{red}{time\_after\_death cycles}, it will set the alive attribute to None, deleting the Goomba.
 \end{itemize}
 
 draw\_flat\_goomba(camera):
 \begin{itemize}
     \item transition: Draws the flat Goomba to the screen.
+\end{itemize}
+
+\textcolor{red}{bounce():}
+\begin{itemize}
+    \item \color{red}transition: traits["BounceTrait"].jump = True
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -251,8 +299,11 @@ draw\_flat\_goomba(camera):
     Animation & & \\
     Camera & & \\
     EntityBase & & \\
+    \color{red}EntityCollider & & \\
     Level & & \\
     pygame.Surface & & \\
+    \color{red}LeftRightWalkTrait & & \\
+    \color{red}BounceTrait & & \\
 \end{tabular}
 
 \subsection* {Syntax}
@@ -263,7 +314,10 @@ draw\_flat\_goomba(camera):
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new koopa & Surface, Map[string: Surface $|$ Animation], $\mathbb{R, R}$, Level & entity\_base & ---\\
+new Koopa & \begin{tabular}{l}
+    \st{Surface, Map[string: Surface $|$ Animation],}\\
+     $\mathbb{R, R}$, Level
+\end{tabular} & Koopa & ---\\
 \hline
 update & Camera & --- & ---\\
 \hline
@@ -271,22 +325,30 @@ draw\_koopa & Camera & --- & ---\\
 \hline
 shell\_bouncing & Camera & --- & ---\\
 \hline
+\color{red}check\_entity\_collision & \color{red}--- & \color{red}--- & \color{red}---\\
+\hline
 die & Camera & --- & ---\\
+\hline
+\color{red}bounce & \color{red}--- & \color{red}--- & \color{red}---\\
 \hline
 sleeping\_in\_shell & Camera & --- & ---\\
 \hline
 update\_alive & Camera & --- & ---\\
+\hline
 \end{tabular}
 
 \subsection* {Semantics}
 
 \subsubsection* {State Variables}
 \begin{tabular}{lll}
-sprite\_collection: Map[string: Surface | Animation] & // & Collection of all sprites\\
+\st{sprite\_collection: Map[string: Surface | Animation]} & \st{//} & \st{Collection of all sprites}\\
 animation: Animation & // & Represents the images related to Koopa animation\\
-screen: Surface & // & Represents the entire screen\\
+\st{screen: Surface} & \st{//} & \st{Represents the entire screen}\\
 type: string & // & The type of the entity\\
-dashboard: Dashboard & // & Represents the dashboard\\
+\st{dashboard: Dashboard} & \st{//} & \st{Represents the dashboard}\\
+\color{red}left\_right\_trait: LeftRightWalkTrait & \color{red} //& \color{red}Same as Goomba\\
+\color{red}entity\_collider: EntityCollider & \color{red} //& \color{red}Used for checking collision with entities\\
+\color{red}in\_air& \color{red} //& \color{red}Same as Goomba\\
 \end{tabular}
 
 \subsubsection* {State Invariant}
@@ -299,13 +361,15 @@ None
 
 \subsubsection* {Access Routine Semantics}
 
-new koopa(screen, sprite\_coll, x, y, level):
+new Koopa(\st{screen, sprite\_coll, }x, y, level):
 \begin{itemize}
     \item transition: 
     \begin{itemize}[]
-        \item sprite\_collection := sprite\_coll
+        \item \st{sprite\_collection := sprite\_coll}
         \item animation := A new animation object, initialized with the images related to the Koopa
-        \item screen, type, dashboard := screen, "Mob", level.dashboard
+        \item \st{screen, type, dashboard := screen, "Mob", level.dashboard}
+        \item \color{red} time\_after\_death, type, level\_obj := 35, "Mob", level
+        \item \color{red} entity\_collider, in\_air := EntityCollider(self), False
     \end{itemize}
     \item output: $out := self$
 \end{itemize}
@@ -332,12 +396,22 @@ die(camera):
 
 sleeping\_in\_shell(camera):
 \begin{itemize}
-    \item transition: If the timer $\lt$ time\_after\_death, then draw the Koopa hiding image. Otherwise, set alive, timer := True, 0. Then, increment timer.
+    \item transition: If the timer $<$ time\_after\_death , then draw the Koopa hiding image. Otherwise, set alive, timer := True, 0. Then, increment timer.
 \end{itemize}
 
 update\_alive(camera):
 \begin{itemize}
     \item transition: Call apply\_gravity, draw\_koopa(camera), animation.update()
+\end{itemize}
+
+\textcolor{red}{check\_entity\_collision():}
+\begin{itemize}
+    \item \color{red}transition: Check all entities in the level, and if they are colliding and the Koopa is bouncing, then kill the other entity.
+\end{itemize}
+
+\textcolor{red}{bounce():}
+\begin{itemize}
+    \item \color{red}transition: traits["BounceTrait"].jump = True
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -364,6 +438,8 @@ set\_pos & $\mathbb{N}, \mathbb{N}$ & & TypeError\\
 \hline
 update & & &\\
 \hline
+\textcolor{red}{draw\_mario} & & &\\
+\hline
 move\_mario & & & \\
 \hline
 check\_entity\_collision & & &\\
@@ -374,21 +450,29 @@ on\_collision\_with\_block & random\_block & & TypeError\\
 \hline
 on\_collision\_with\_mob & entity\_base, collision\_state & & TypeError\\
 \hline
+\textcolor{red}{on\_collision\_with\_mushroom} & \textcolor{red}{Item} & & \textcolor{red}{TypeError}\\
+\hline
+\textcolor{red}{on\_collision\_with\_power\_block} & \textcolor{red}{Item} & & \textcolor{red}{TypeError}\\
+\hline
+\textcolor{red}{small\_mario} & & & \\
+\hline
+\textcolor{red}{big\_mario} & & & \\
+\hline
 bounce & & &\\
 \hline
 kill\_entity & entity\_base & & TypeError\\
 \hline
-death\_in\_game & & &\\
+\textcolor{red}{next\_level} & & & \\
 \hline
 game\_over & & &\\
 \hline
-get\_lives & & $\mathbb{N}$ &\\
+\st{get\_lives} & & $\mathbb{N}$ &\\
 \hline
 \end{tabular}
 
 \subsection*{Semantics}
 \subsubsection*{State Variables}
-sprite\_collection: Object of type Sprites\\
+\st{sprite\_collection: Object of type Sprites}\\
 camera: Object of type Camera\\
 input: Object of type Input\\
 in\_air: $\mathbb{B}$\\
@@ -404,6 +488,9 @@ restart: $\mathbb{B}$\\
 pause: $\mathbb{B}$\\
 pause\_obj: Object of type Pause\\
 lives: $\mathbb{N}$\\
+\textcolor{red}{big\_size: $\mathbb{B}$}\\
+\textcolor{red}{timer: $\mathbb{N}$}\\
+\textcolor{red}{next: $\mathbb{B}$}\\
 
 \subsubsection*{State Invariant}
 None
@@ -417,13 +504,13 @@ None
 \subsubsection*{Access Routine Semantics}
 new Mario(x, y, level, screen, dashboard, gravity):
 \begin{itemize}
-    \item transition: sprite\_collection = Sprites().sprite\_collection\\
+    \item transition: \st{sprite\_collection = Sprites().sprite\_collection}\\
 camera = new Camera(rect, self)\\
 input = new Input(self)\\
 in\_air = False\\
 in\_jump = False\\
 animation = new Animation(Seq of sprite\_collection)\\
-traits = \\
+traits = \textcolor{red}{\{ jump\_trait, bounce\_trait, go\_trait \}}\\
 level\_obj = level\\
 collision = Collider(self)\\
 screen = screen\\
@@ -433,11 +520,20 @@ restart = False\\
 pause = False\\
 pause\_obj = Pause(screen, self, dashboard)\\
 lives = $\mathbb{N}$\\
+\textcolor{red}{big\_size: False}\\
+\textcolor{red}{timer: 120}\\
+\textcolor{red}{next: False}\\\textbf{}
 \end{itemize}
 
 update():
 \begin{itemize}
-    \item transition: updates the following functions update\_traits, move\_mario, camera, gravity, check\_entity\_collision and check\_for\_input.
+    \item transition: updates the following functions update\_traits, draw\_mario move\_mario, camera, apply\_gravity, check\_entity\_collision, check\_for\_input and game\_over if time == 0.
+    \item exception: None
+\end{itemize}
+
+\textcolor{red}{draw\_mario():}
+\begin{itemize}
+    \item transition: x, y := x + vel.get\_x, y + vel.get\_y
     \item exception: None
 \end{itemize}
 
@@ -449,8 +545,22 @@ move\_mario():
 
 check\_entity\_on\_collision():
 \begin{itemize}
-    \item transition: Checks if Mario collided with either of Item, Block or Mob entity and redirects to appropriate function.
+    \item transition: Checks if Mario collided with either of Item, Block, Mob entity, \textcolor{red}{power-up block or mushroom} and redirects to appropriate function.
     \item exception: None
+\end{itemize}
+
+\textcolor{red}{on\_collision\_with\_mushroom(item):}
+\begin{itemize}
+    \item transition: big\_size == True $\Rightarrow$ big\_mario()\\
+    increments dashboard.points by 100 and dashboard.coins by 1. mushroom is set to dead.
+    \item exception: TypeError if item is not of type Item
+\end{itemize}
+
+\textcolor{red}{on\_collision\_with\_mushroom(box):}
+\begin{itemize}
+    \item transition: $\lnot$ box.triggered $\Rightarrow$ add\_mushroom(box.x, box.y); box.triggered := True\\
+    removes the box from the list of entities, sets box to triggered
+    \item exception: TypeError if item is not of type Item
 \end{itemize}
 
 on\_collision\_with\_item(item):
@@ -465,29 +575,84 @@ on\_collision\_with\_block(block):
     \item exception: TypeError if block is not of type RandomBlock
 \end{itemize}
 
-on\_collision\_with\_mob(mob, collision\_state):
+on\_collision\_with\_mob(mob, is\_colliding, is\_top):
 \begin{itemize}
-    \item transition: Collided block is activated, dashboard.coins is incremented by 1.
-    \item exception: TypeError if mob is not of type entity\_base
+    \item \textcolor{red}{transition: if is\_top and is\_colliding == True $\Rightarrow$ bounce() and mob.alive := "sleeping" and mob.hit\_once := True\\
+    if is\_top and mob.alive == "shell\_bouncing" $\Rightarrow$ bounce() and mob.alive := "sleeping" and mob.hit\_once := True\\
+    if is\_top and mob.alive == "sleeping" $\Rightarrow$ bounce() and (if mob.rect.x < self.rect.x $\Rightarrow$ left\_right\_trait.direction = -1 and mob.rect.x += -5 else $\Rightarrow$ mob.rect.x += 5 and left\_right\_trait.direction = 1) and mob.alive := "sleeping" and mob.hit\_once == True\\
+    if is\_colliding and mob.alive == "sleeping" $\Rightarrow$ (if mob.rect.x < self.rect.x $\Rightarrow$ left\_right\_trait.direction = -1 and mob.rect.x += -5 else $\Rightarrow$ mob.rect.x += 5 and left\_right\_trait.direction = 1)\\
+    if mob.alive and is\_colliding and self.timer $>$ 120 $\Rightarrow$ (if big\_size $\Rightarrow$ small\_mario() else $\Rightarrow$ game\_over())}
+    \item \textcolor{red}{exception: TypeError if mob is not of type entity\_base}
 \end{itemize}
+
+\color{red}
+\textcolor{red}{small\_size():}
+\begin{itemize}
+    \item \textcolor{red}{transition: big\_size := False\\
+    timer := 0\\
+    animation := new Animation(Seq of sprite\_collection)\\
+    traits[go\_trait].animation := animation\\
+    img := animation.get\_image()
+    rect.x := img.get\_width()
+    rect.h := img.get\_height()
+    rect.y += 32} 
+    \item exception: None
+\end{itemize}
+
+big\_mario():
+\begin{itemize}
+    \item transition: big\_size := True\\
+    animation := Animation(Seq of sprite\_collection)\\
+    img = animation.get\_image()\\
+    rect.w := img.get\_width()\\
+    rect.h := img.get\_height()\\
+    rect.y -= 32
+    traits[go\_trait].animation = animation
+    \item exception: None
+\end{itemize}
+
+\color{black}
 
 bounce():
 \begin{itemize}
-    \item transition: traits["bounceTrait"].jump := True
+    \item transition: traits["BounceTrait"].jump := True
     \item exception: None
 \end{itemize}
 
 kill\_entity(ent):
 \begin{itemize}
-    \item transition: If the entity is not a Koopa, then ent.alive := False, otherwise ent.alive := "sleeping". Dashboard.points is further incremented 100 points.
+    \item transition: If the entity is not a Koopa, then ent.alive := False, otherwise ent.alive := "sleeping". \\
+    \color{red}
+    dashboard.points += 100\\
+    dashboard.earned\_points += 100\\
+    \color{black}
     \item TypeError if ent is not of type entity\_base
 \end{itemize}
 
 game\_over():
 \begin{itemize}
-    \item transition: The screen is filled with black excluding a small circle around the player character. self.restart := True. 
+    \item transition: The screen is filled with black excluding a small circle around the player character. self.restart := True.\\
+    \color{red}
+    lives -= 1\\
+    coins := 0\\
+    dashboard.points -= dashboard.earned\_points\\
+    dashboard.earned\_points := 0\\
+    if lives == 0 $\Rightarrow$ restart := True $\land$ dashboard.points := 0\\
+    else $\Rightarrow$ dashboard.state := "start" $\land$ dashboard.time := 420 $\land$ small\_mario() $\land$ timer := 120 $\land$ dashboard.lives := lives $\land$ rect.x, rect.y := 0, 0 $\land$ camera.pos := Vector2D(rect.x, rect.y)
+    \color{black}
     \item exception: None
 \end{itemize}
+
+\color{red}
+next\_level():
+\begin{itemize}
+    \item transition: rect.x := 0\\
+    rect.y := 0
+    camera.pos := Vector2D(rect.x, rect.y)\\
+    camera.level\_length = Level.level\_length
+    \item exception: None
+\end{itemize}
+\color{black}
 
 get\_pos():
 \begin{itemize}
@@ -501,13 +666,13 @@ set\_pos(x, y):
     \item exception: TypeError if x, y are not of type Integer.
 \end{itemize}
 
-get\_lives():
+\st{get\_lives():}
 \begin{itemize}
     \item output: out := self.lives
     \item exception: None
 \end{itemize}
 
-death\_in\_game():
+\st{death\_in\_game():}
 \begin{itemize}
     \item transition: if self.lives != 0 $\Rightarrow$ self.restart, lives := True, lives - 1 \emph{//If lives are not zero, then restart level.}\\
     else call game\_over()
@@ -536,7 +701,7 @@ None
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new Camera & $\mathbb{N}$, entity & Camera & \\
+new Camera & Vector2D, $\mathbb{N}$, Entity, $\mathbb{N}$ & Camera & \\
 \hline
 move & & &\\
 \hline
@@ -548,6 +713,8 @@ pos: Object of type Vector2D \emph{Contains the coordinates for camera position.
 entity: Object of type Entity\\
 x: $\mathbb{N}$\\ 
 y: $\mathbb{N}$\\
+\textcolor{red}{last\_pos: $\mathbb{N}$}\\
+\textcolor{red}{level\_length = $\mathbb{N}$}\\
 
 \subsubsection*{State Invariant}
 None
@@ -564,12 +731,18 @@ new Camera(pos, entity):
                       self.entity := entity\\
                       self.x := pos.get\_x()\\
                       self.y := pos.get\_y()\\
+                      \textcolor{red}{last\_pos = pos.get\_x()}\\
+                        \textcolor{red}{level\_length = level\_length}\\
     \item exception: None
 \end{itemize}
 
 move():
+
 \begin{itemize}
-    \item transition: x\_pos\_float := entity.get\_pos\_index\_as\_float().get\_x(). if $10 < \text{x\_pos\_float} < 50 \Rightarrow$ pos := Vector2D(x\_pos\_float + 10, pos.get\_y())\\
+\item \st{transition}: x\_pos\_float := entity.get\_pos\_index\_as\_float().get\_x().\\ 
+    if $10 < \text{x\_pos\_float} < 50 \Rightarrow$ pos := Vector2D(x\_pos\_float + 10, pos.get\_y())\\
+    \item \textcolor{red}{transition}: x\_pos\_float := entity.get\_pos\_index\_as\_float().get\_x().\\ 
+    if $10 < \text{x\_pos\_float} <$ level\_length - 10) $\land$ (-x\_pos\_float + 10) $<$ last\_pos $\Rightarrow$ pos := Vector2D(x\_pos\_float + 10, pos.get\_y())\\
     x := pos.get\_x() * 32\\
     y := pos.get\_y() * 32
     \item exception None
@@ -597,42 +770,44 @@ None
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new Level & Screen, Dashboard & Level & \\
+new Level & \st{Screen, Dashboard} & Level & \\
 \hline
-load\_level & String & & FileNotFoundError\\
+load\_level & String & --- & FileNotFoundError\\
 \hline
-load\_entities & JSON &  & \\
+load\_entities & JSON & --- & --- \\
 \hline
-load\_layers & JSON & & \\
+load\_layers & JSON & --- & --- \\
 \hline
-load\_objects & JSON & &\\
+load\_objects & JSON & --- & --- \\
 \hline
-update\_entities & Camera & &\\
+update\_entities & Camera & ---  & --- \\
 \hline
-draw\_level & Camera & & IndexError\\
+draw\_level & Camera & --- & IndexError\\
 \hline
-add\_cloud\_sprite & $\mathbb{N}, \mathbb{N}$ & & IndexError\\
+add\_cloud\_sprite & $\mathbb{N}, \mathbb{N}$ & ---  & IndexError\\
 \hline
-add\_pipe\_sprite  & $\mathbb{N}, \mathbb{N}, \mathbb{N}$ & & IndexError\\
+add\_pipe\_sprite  & $\mathbb{N}, \mathbb{N}, \mathbb{N}$ & ---  & IndexError\\
 \hline
-add\_bush\_sprite & $\mathbb{N}, \mathbb{N}$ & & IndexError\\
+add\_bush\_sprite & $\mathbb{N}, \mathbb{N}$ & ---  & IndexError\\
 \hline
-add\_random\_box & $\mathbb{N}, \mathbb{N}$ & & \\
+add\_random\_box & $\mathbb{N}, \mathbb{N}$ & --- & \\
 \hline
-add\_coin & $\mathbb{N}, \mathbb{N}$ & &\\
+add\_coin & $\mathbb{N}, \mathbb{N}$ & --- &\\
 \hline
-add\_goomba & $\mathbb{N}, \mathbb{N}$ & &\\
+add\_goomba & $\mathbb{N}, \mathbb{N}$ & --- &\\
 \hline
-add\_koopa & $\mathbb{N}, \mathbb{N}$ & &\\
+add\_koopa & $\mathbb{N}, \mathbb{N}$ & --- &\\
+\hline
+\color{red}add\_power\_box & \color{red}$\mathbb{N}, \mathbb{N}$ & \color{red}--- &\\
 \hline
 \end{tabular}
 
 \subsection*{Semantics}
 \subsubsection*{State Variables}
-sprites: Object of type Sprite\\
+\st{sprites: Object of type Sprite\\
 dashboard: Object of type Dashboard\\
-screen: Object of type Screen\\
-level: Object of type Level\\
+screen: Object of type Screen}\\
+level: \st{Object of type Level}\textcolor{red}{Seq of Tile}\\
 level\_length: $\mathbb{N}$\\
 entity\_list: Seq of Entity
 
@@ -647,10 +822,10 @@ None
 new Level(screen, dashboard):
 \begin{itemize}
     \item transition:\\
-    sprites := sprites()\\
+    \st{sprites := sprites()\\
     dashboard := dashboard\\
-    screen := screen\\
-    level := None\\
+    screen := screen}\\
+    level := \st{None}\textcolor{red}{[]}\\
     level\_length := 0\\
     entity\_list := []\\
     \item exception: None
@@ -669,7 +844,7 @@ load\_level(levelname):
 
 load\_entities(data):
 \begin{itemize}
-    \item transition: 
+    \item transition: \\
 \begin{tabular}{|p{3cm}|l|}
 \hhline{|-|-|}
 $c = \mbox{random\_box}$ & add\_random\_box(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
@@ -680,6 +855,8 @@ $c = \mbox{koopa}$ & add\_koopa(x, y) $\Rightarrow \forall x, y \in data["level"
 \hhline{|-|-|}
 $c = \mbox{coin}$ & add\_coin \_box(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
 \hhline{|-|-|}
+\color{red}$c = \mbox{power\_box}$ & \color{red}add\_power\_box(x, y) $\Rightarrow \forall x, y \in data["level"]["entities"][c]$\\
+\hhline{|-|-|}
 \end{tabular}
     \item exception: None
 \end{itemize}
@@ -688,8 +865,8 @@ load\_layers(data):
 \begin{itemize}
     \item transition:\\
     layers := [ ]  //\emph{Initializes an empty sequence}\\
-    $\forall x \in data["level"]["layers"]["sky"]["x"] \mid (\forall y \in data["level"]["layers"]["sky"]["y"]$ : \text{layers + Tile(sprites.sprite\_collection.get("sky"), None))}$\\
-    $\forall x \in data["level"]["layers"]["ground"]["x"] \mid (\forall y \in data["level"]["layers"]["ground"]["y"]$ : \text{layers + Tile(sprites.sprite\_collection.get("ground"), None))}$\\
+    $\forall x \in data["level"]["layers"]["sky"]["x"] \mid (\forall y \in data["level"]["layers"]["sky"]["y"]$ : \text{layers + Tile(sprites.sprite\_collection.get("sky"), None))}\\
+    $\forall x \in data["level"]["layers"]["ground"]["x"] \mid (\forall y \in data["level"]["layers"]["ground"]["y"]$ : \text{layers + Tile(sprites.sprite\_collection.get("ground"), None))}\\
     //\emph{This is initializing the sky and ground blocks and appending them to a layer sequence.}
     \item exception: None
 \end{itemize}
@@ -711,12 +888,12 @@ $i = \mbox{pipe}$ & add\_pipe\_sprite(x, y) $\Rightarrow \forall x, y \in data["
 
 update\_entities(cam): 
 \begin{itemize}
-    \item transition: $\forall\ \text{entity} \in \text{entity\_list} : \text{entity.update(cam)} \land$\\
+    \item transition: $\forall\ \text{entity} \in \text{entity\_list} : \text{entity.update(cam)}$ $\land$ \textcolor{red}{(entity.alive = None $\Rightarrow$ entity\_list.remove(entity))}\\
 \begin{tabular}{|p{3cm}|l|}
 \hhline{|-|-|}
-$\mbox{entity.alive}$ & None\\
+\st{$\mbox{entity.alive}$} & None\\
 \hhline{|-|-|}
-$\lnot \mbox{entity.alive}$ & entity\_list.remove(entity)\\
+\st{$\lnot \mbox{entity.alive}$} & entity\_list.remove(entity)\\
 \hhline{|-|-|}
 \end{tabular}
     \item exception: None
@@ -724,30 +901,25 @@ $\lnot \mbox{entity.alive}$ & entity\_list.remove(entity)\\
 
 draw\_level(camera):
 \begin{itemize}
-    \item transition:
-    $\forall\ y \in [0 .. 15] : \forall\ x \in [0 - \text{camera.pos.get\_x()} + 1 .. 20 - \text{camera.pos.get\_x()} -1]$\\
-    
-% Please add the following required packages to your document preamble:
-
+    \item transition: $\forall\ y \in [$0 .. 15$] : \forall\ x \in [0 - \text{camera.pos.get\_x()} + 1$ .. $20 - \text{camera.pos.get\_x()} -1]$ . \textcolor{red}{\_draw\_sprite(level[y][x], x, y)}\\
 \begin{table}[H]
 \begin{tabular}{lllll}
 \cline{1-3}
-\multicolumn{1}{|l|}{\multirow{8}{*}{level{[}y{]}{[}x{]}.sprite}} & \multicolumn{1}{l|}{\multirow{5}{*}{level{[}y{]}{[}x{]}.sprite.redraw\_background}}        & \multicolumn{1}{l|}{\multirow{5}{*}{\begin{tabular}[c]{@{}l@{}}screen.blit(sprite\_collection.get("sky").image, (x \\ + camera.pos.get\_x()) * 32, y * 32)\\ $\land$ level{[}y{]}{[}x{]}.sprite.draw\_sprite(x \\ + camera.pos.get(x), y, screen)) \\ $\land$ update\_entities(camera)\end{tabular}}} &  &  \\
-\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
-\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
-\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
-\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\ \cline{2-3}
-\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{\multirow{3}{*}{$\lnot$level{[}y{]}{[}x{]}.sprite.redraw\_background}} & \multicolumn{1}{l|}{\multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}level{[}y{]}{[}x{]}.sprite.draw\_sprite(x \\ + camera.pos.get(x), y, screen) \\ $\land$ update\_entities(camera)\end{tabular}}}                                                                                                        &  &  \\
-\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\
-\multicolumn{1}{|l|}{}                                            & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{}                                                                                                                                                                                                                                                                                 &  &  \\ \cline{1-3}
-\multicolumn{1}{|l|}{$\lnot$level{[}y{]}{[}x{]}.sprite}           & \multicolumn{1}{l|}{}                                                                      & \multicolumn{1}{l|}{update\_entities(camera)}                                                                                                                                                                                                                                                         &  &  \\ \cline{1-3}
-                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  &  \\
-                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  &  \\
-                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  &  \\
-                                                                  &                                                                                            &                                                                                                                                                                                                                                                                                                       &  & 
+\multicolumn{1}{|l|}{\multirow{8}{*}{\st{level{[}y{]}{[}x{]}.sprite}}} & \multicolumn{1}{l|}{\multirow{5}{*}{level{[}y{]}{[}x{]}.sprite.redraw\_background}} & \multicolumn{1}{l|}{\multirow{5}{*}{\begin{tabular}[c]{@{}l@{}}screen.blit(sprite\_collection.get("sky").image, (x \\ + camera.pos.get\_x()) * 32, y * 32)\\ $\land$ level{[}y{]}{[}x{]}.sprite.draw\_sprite(x \\ + camera.pos.get(x), y, screen)) \\ $\land$ update\_entities(camera)\end{tabular}}} & & \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & & \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & & \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & & \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & & \\ \cline{2-3}
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{\multirow{3}{*}{$\lnot$level{[}y{]}{[}x{]}.sprite.redraw\_background}} & \multicolumn{1}{l|}{\multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}level{[}y{]}{[}x{]}.sprite.draw\_sprite(x \\ + camera.pos.get(x), y, screen) \\ $\land$ update\_entities(camera)\end{tabular}}} & & \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & & \\
+\multicolumn{1}{|l|}{} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{} & & \\ \cline{1-3}
+\multicolumn{1}{|l|}{\st{$\lnot$level{[}y{]}{[}x{]}.sprite}} & \multicolumn{1}{l|}{} & \multicolumn{1}{l|}{update\_entities(camera)} & & \\ \cline{1-3}
+& & & & \\
+& & & & \\
+& & & & \\
+& & & &
 \end{tabular}
 \end{table}
-
     \item exception: IndexError if x, y are out of range.
 \end{itemize}
 
@@ -779,28 +951,33 @@ add\_bush\_sprite(x, y):
 add\_random\_box(x, y):
 \begin{itemize}
     \item transition:\\ level[y][x] = Tile(None, pygame.Rect(x * 32, y * 32 - 1, 32, 32))\\
-    entity\_list := entity\_list + $\langle$Random\_Box(screen, sprites.sprite\_collection, x, y, dashboard)$\rangle$
+    entity\_list := entity\_list + $\langle$RandomBox(\st{screen, sprites.sprite\_collection,} x, y\st{, dashboard})$\rangle$
     \item exception: None
 \end{itemize}
 
 add\_coin(x, y):
 \begin{itemize}
-    \item transition: entity\_list := entity\_list + $\langle$Coin(screen, sprites.sprite\_collection, x, y)$\rangle$
+    \item transition: entity\_list := entity\_list + $\langle$Coin(\st{screen, sprites.sprite\_collection,} x, y)$\rangle$
     \item exception: None
 \end{itemize}
 
 add\_goomba(x, y):
 \begin{itemize}
-    \item transition: entity\_list := entity\_list +$\langle$Goomba(screen, sprites.sprite\_collection, x, y, self)$\rangle$
+    \item transition: entity\_list := entity\_list +$\langle$Goomba(\st{screen, sprites.sprite\_collection, }x, y, self)$\rangle$
     \item exception: None
 \end{itemize}
 
 add\_koopa(x, y):
 \begin{itemize}
-    \item transition: entity\_list := entity\_list + $\langle$Koopa(screen, sprites.sprite\_collection, x, y, self)$\rangle$
+    \item transition: entity\_list := entity\_list + $\langle$Koopa(\st{screen, sprites.sprite\_collection, }x, y, self)$\rangle$
     \item exception: None
 \end{itemize}
 
+\textcolor{red}{add\_power\_box(x, y):}
+\begin{itemize}
+    \item \color{red}transition:\\ level[y][x] = Tile(None, pygame.Rect(x * 32, y * 32 - 1, 32, 32))\\
+    entity\_list := entity\_list + $\langle$PowerUpBox(x, y)$\rangle$
+\end{itemize}
 
 \subsection* {Local Types}
 
@@ -810,7 +987,9 @@ None
 
 None
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Input Module}
 \subsection*{Uses}
@@ -1041,11 +1220,18 @@ N/A
 
 \begin{tabular}{lll}
     SOUNDTRACK   & = & Main soundtrack\\
+    \color{red}HURRY\_OVERWORLD & \color{red}= & \color{red}Sound when Mario is almost out of time\\
+    \color{red}GAME\_OVER & \color{red}= & \color{red}Sound when Mario loses all his lives\\
+    \color{red}STAGE\_CLEAR & \color{red}= & \color{red}Sound when Mario clears a stage\\
     COIN\_SOUND  & = & Sound for collecting a coin\\
     BUMP\_SOUND  & = & Sound when objects are bumped\\
     STOMP\_SOUND & = & Sound when Mario stomps an enemy\\
     JUMP\_SOUND  & = & Sound when Mario jumps\\
-    DEATH\_SOUND & = & Sound when Mario dies
+    DEATH\_SOUND & = & Sound when Mario dies\\
+    \color{red}MUSHROOM\_SOUND & \color{red}= & \color{red}Sound when Mario powers up\\
+    \color{red}MUSHROOM\APPEARS & \color{red}= & \color{red}Sound when a mushroom pops out from a box\\
+    \color{red}POWER\_DOWN & \color{red}= & \color{red}Sound when Mario loses his powerup from being hit\\
+    \color{red}KICK\_SOUND & \color{red}= & \color{red}Sound when Mario kicks a sleeping koopa\\
 \end{tabular}
 \subsubsection* {Exported Access Programs}
 
@@ -1053,7 +1239,7 @@ N/A
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new sound\_controller & --- & Sound\_Controller & ---\\
+new Sound\_Controller & --- & Sound\_Controller & ---\\
 \hline
 play\_sfx             & Sound & ---          & TypeError\\
 \hline
@@ -1202,8 +1388,11 @@ N/A
 
 \subsubsection* {Exported Constants}
 
-N/A
-
+\st{N/A}\\
+\textcolor{red}{
+SPRITE\_COLLECTION: Dictionary of string to sprite. This contains all the sprites for the game.\\
+FONT\_SPRITES: Dictionary of string to sprite. This contains all the sprites related to the font.
+}
 
 \subsubsection* {Exported Access Programs}
 
@@ -1242,9 +1431,9 @@ new Spritesheet(filename):
 \item out: $out := self$
 \end{itemize}
 
-\noindent image\_at($x, y, scalingfactor, colorkey, ignoretilesize, xtilesize, ytilesize$):
+\noindent image\_at($x, y, scaling\_factor, color\_key, ignore\_tile\_size, x\_tile\_size, y\_tile\_size$):
 \begin{itemize}
-\item out: This method creates a rectangle of the appropriate size (Rect($x, y, xtilesize, ytilesize$) or Rect($x \cdot xtilesize, y \cdot ytilesize, xtilesize, ytilesize$)), then creates a surface from this rectangle. It then "cuts out" a portion of sheet of the rectangle size and copies it into the new surface. Lastly, the method returns an image that is scaled by the scalingfactor.
+\item out: This method creates a rectangle of the appropriate size (Rect($x, y, x\_tile\_size, y\_tile\_size$) or Rect($x \cdot x\_tile\_size, y \cdot y\_tile\_size, x\_tile\_size, y\_tile\_size$)), then creates a surface from this rectangle. It then "cuts out" a portion of sheet of the rectangle size and copies it into the new surface. Lastly, the method returns an image that is scaled by the scaling\_factor.
 \end{itemize}
 
 
@@ -1263,7 +1452,7 @@ None
 \section* {Collider Module}
 
 \subsection* {Uses}
-Entity
+Entity\textcolor{red}{Base}\\
 Level
 \subsection* {Syntax}
 
@@ -1272,11 +1461,12 @@ Level
 \begin{tabular}{| l | l | l | l |}
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
-new Collider & Entity, Level & Collider & ---\\
 \hline
-check\_x & --- & --- &\\
+new Collider & Entity\textcolor{red}{Base}, Level & Collider & ---\\
 \hline
-check\_y & --- & --- &\\
+check\_x & --- & --- & ---\\
+\hline
+check\_y & --- & --- & ---\\
 \hline
 right\_level\_border\_reached & --- & $\mathbb{B}$ & ---\\
 \hline
@@ -1289,7 +1479,7 @@ left\_level\_border\_reached & --- & $\mathbb{B}$ & ---\\
 \subsubsection* {State Variables}
 
 \begin{tabular}{lll}
-    entity: Entity & // & Entity to check collision for \\
+    entity: Entity\textcolor{red}{Base} & // & Entity to check collision for \\
     level: list & // & list of objects to check for collidable objects \\
     level\_obj: Level & // & The level object itself
 \end{tabular}
@@ -1361,6 +1551,10 @@ idle & --- & --- & ---\\
 \hline
 in\_air & --- & --- & ---\\
 \hline
+\color{red}set\_image & \color{red}Surface & \color{red}--- & \color{red}---\\
+\hline
+\color{red}get\_image & \color{red}--- & \color{red}Surface & \color{red}---\\
+\hline
 \end{tabular}
 
 \subsection* {Semantics}
@@ -1426,6 +1620,16 @@ in\_air():
     \item transition: image := air\_sprite
 \end{itemize}
 
+\textcolor{red}{set\_image(img):}
+\begin{itemize}
+    \item \color{red}transition: image := img
+\end{itemize}
+
+\textcolor{red}{get\_image():}
+\begin{itemize}
+    \item \color{red}out: image
+\end{itemize}
+
 \subsection* {Local Types}
 
 None
@@ -1438,7 +1642,7 @@ None
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section* {Sprites Module}
+\section* {\st{Sprites Module}}
 
 \subsection* {Uses}
 Spritesheet
@@ -1499,7 +1703,9 @@ None
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section* {Sprite Module}
+
+
+\section* {\st{Sprite Module}}
 
 \subsection* {Uses}
 
@@ -1579,11 +1785,11 @@ Menu(screen, dashboard, level)
 
 \subsection* {Uses}
 
-animation - spritesheet
-dashboard
-levels
-display - screen
-settings.json
+\sout{animation - spritesheet} \\
+dashboard - \textcolor{red}{DASHBOARD} \\
+levels \textcolor{red}{- LEVEL, } \\
+\textcolor{red}{sound - SOUND\_CONTROLLER, SOUNDTRACK} \\
+display - \sout{screen} \textcolor{red}{SCREEN, SPRITE\_COLLECTION, Spritesheet}
 
 \subsection* {Syntax}
 
@@ -1594,6 +1800,8 @@ settings.json
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
 new menu & screen, dashboard, level & menu & invalid\_argument\\
+\hline
+\textcolor{red}{run} & & & \\
 \hline
 update & & & \\
 \hline
@@ -1625,17 +1833,17 @@ check\_input & & & \\
 
 \subsubsection* {State Variables}
 
-$screen$ : screen // from display module\\
+\sout{$screen$ : screen // from display module}\\
 $start$ : $\mathbb{B}$ \\
 $in\_settings$: $\mathbb{B}$ \\
 $state$: $\mathbb{N}$ // Represents where in menu user is\\
-$level$: level // from level module\\
+\sout{$level$: level // from level module}\\
 $music$ : $\mathbb{B}$ \\
 $sfx$: $\mathbb{B}$ \\
-$current\_selected\_level$ : $\mathbb{N}$ // defaults to first level\\
+$curr\_selected\_level$ : $\mathbb{N}$ // defaults to first level\\
 $level\_names$ : [] \\
 $in\_choosing\_level$ : $\mathbb{B}$ \\
-$dashboard$ : dashboard // from dashboard module\\
+\sout{$dashboard$ : dashboard // from dashboard module}\\
 $level\_count$ : $\mathbb{N}$ \\
 $spritesheet$ : $spritesheet$ from module Spritesheet \\
 $menu\_banner$ : obejct from $spritesheet$ \\
@@ -1646,6 +1854,7 @@ $menu\_dot2$ : object from $spritesheet$
 
 $spritesheet$ $\neq$ None \\
 $|level\_names|$ $\geq$  $current\_selected\_level$
+
 
 \subsubsection* {Assumptions and Design Decisions}
 
@@ -1672,12 +1881,33 @@ $|level\_names|$ $\geq$  $current\_selected\_level$
     \item $dashboard$ : dashboard
     \item $level\_count$ : 0
     \item $spritesheet$ : Spritesheet("./resources/img/title\_screen.png")
-    \item $menu\_banner$ :$spritesheet$.image\_at(0, 60, 2, colorkey=[255, 0, 220], ignoreTileSize=True, xTileSize=180, yTileSize=88)
-    \item $menu\_dot$ : $spritesheet$.image\_at(0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)
-    \item $menu\_dot2$ : $spritesheet$.image\_at(20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)
-    \item load\settings("./settings.json")
+    \item $menu\_banner$ :$spritesheet$.image\_at(0, 60, 2, color\_key=[255, 0, 220], ignore\_tile\_size=True, x\_tile\_size=180, y\_tile\_size=88)
+    \item $menu\_dot$ : $spritesheet$.image\_at(0, 150, 2, color\_key=[255, 0, 220], ignore\_tile\_size=True)
+    \item $menu\_dot2$ : $spritesheet$.image\_at(20, 150, 2, color\_key=[255, 0, 220], ignore\_tile\_size=True)
+    \item load\_settings("./settings.json")
 \end{itemize}
 \item exception: $exc := (screen \equiv None \lor dashboard \equiv None \lor level \equiv None) \Rightarrow \text{invalid\_argument})$
+\end{itemize}
+
+\noindent run():
+\begin{itemize}
+    \item transition:
+    
+\begin{tabular}{|l|l|}
+\hline
+\textcolor{red}{True} & \textcolor{red}{$DASHBOARD.state$ = "menu"} \\
+\hline
+\textcolor{red}{True} & \textcolor{red}{$DASHVOARD.lives$ = $3$} \\
+\hline
+\textcolor{red}{True} & \textcolor{red}{$DASHBOARD.update()$}\\
+\hline
+\textcolor{red}{True} & \textcolor{red}{$SOUND\_CONTROLLER.playmusic(SOUNDTRACK)$}\\
+\hline
+\textcolor{red}{NOT $start$} & \textcolor{red}{$update()$}\\
+\hline
+\end{tabular}
+
+\item exception: None
 \end{itemize}
 
 \noindent update():
@@ -1756,7 +1986,7 @@ $data$ \neq "sfx" & $sfx$ = False, $SOUND\_CONTROLLER$.mute\_sfx() \\
 \begin{itemize}
 \item transition:\\
 $draw\_dot()$\\
-The options "CHOOSE LEVEL", "SETTINGS", "EXIT" are written on the dashboard.
+The options "CHOOSE LEVEL", "SETTINGS", "EXIT" \textcolor{red}{and "HIGH SCORE"} are written on the \sout{dashboard} \textcolor{red}{Menu using $DASHBOARD.draw\_text()$}. \textcolor{red}{The dynamic highscore value is also written below "HIGH SCORE" after the value is read from $highscore.txt$.}
 
 \item exception: None
 \end{itemize}
@@ -1785,13 +2015,13 @@ In the settings menu, writes using the dashboard method $draw\_text$ to write th
 
 \begin{tabular}{|l|l|}
 \hline
-$music$ \equiv True & "ON" \\
+$music \equiv True$ & "ON" \\
 \hline
-$music$ \equiv False & "OFF" \\
+$music \equiv False & "OFF"$ \\
 \hline
-$sfx$ \equiv True & "ON" \\
+$sfx \equiv True & "ON"$ \\
 \hline
-$sfx$ \equiv False & "OFF" \\
+$sfx \equiv False & "OFF"$ \\
 \hline
 \end{tabular}
 
@@ -1868,7 +2098,7 @@ $event.key \equiv pygame.K\_RIGHT \land $ & \\
 $current\_selected\_level < level\_count $ & \\
 \hline
 $event.type$ \equiv $pygame.KEYDOWN$ \land & $in\_choosing\_level = False, dashboard.state = "start",$\\
-$event.key \equiv pygame.K\_RETURN \land $ & $dashboard.time = 420, $\\
+$event.key \equiv pygame.K\_RETURN \land $ & $dashboard.time =$ \sout{$420$} \textcolor{red}{$400$}, \\
 $(in\_choosing\_level \equiv True $ & $level.load\_level(level\_names[$\\
  & $current\_selected\_level-1]),$ \\
  & $dashboard.level\_name = level\_names[$ \\
@@ -1944,7 +2174,7 @@ dashboard
 
 \subsection {Uses}
 
-display - screen
+display - \sout{screen} \textcolor{red}{SCREEN, FONT\_SPRITES, Spritesheet} \\
 Mario
 
 \subsection* {Syntax}
@@ -1955,7 +2185,7 @@ None
 
 \subsubsection* {Exported Types}
 
-None
+\textcolor{red}{DASHBOARD}
 
 \subsubsection* {Exported Access Programs}
 
@@ -1963,7 +2193,9 @@ None
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new Dashboard & screen, $\mathbb{N}$ & Dashboard & invalidArgument\\
+new Dashboard & \sout{screen, $\mathbb{N}$} & Dashboard & invalidArgument\\
+\hline
+\textcolor{red}{reset} & & & \\
 \hline
 update & & & \\
 \hline
@@ -1982,18 +2214,22 @@ time\_string & & string & \\
 \subsubsection *{State Variables}
 
 $state$ : string \\
-$screen$ : instance of type screen \\
+\sout{$screen$ : instance of type screen} \\
 $level\_name$ : string \\
+\textcolor{red}{$earned\_points$ : $\mathbb{N}$} \\
 $points$ : $\mathbb{N}$ \\
 $coins$ : $\mathbb{N}$ \\
 $ticks$ : $\mathbb{N}$ \\
 $time$ : $\mathbb{N}$ \\
-$lives$: $\mathbb{N}$
+$lives$: $\mathbb{N}$ \\
+\textcolor{red}{$new\_level$: $\mathbb{B}$} \\
+\textcolor{red}{$sprite\_sheet$: $Spritesheet$} \\
+\textcolor{red}{$mushroom\_life$: $sprite\_sheet.image\_at()$}
 
 
 \subsubsection* {State Invariant}
 \begin{itemize}
-    \item $time \leq 420$
+    \item $time \leq \st{420}\textcolor{red}{400}$
     \item $coins \geq 0$
     \item $points \geq 0$
     \item $1 \leq lives \leq 3$
@@ -2009,23 +2245,41 @@ None
 \begin{itemize}
     \item transition:
     $state$ = "menu" \\
-    $screen$ = screen \\
+    \sout{$screen$ = screen} \\
     $level\_name$ = "" //empty string \\
     $points$ = 0 \\
+    \textcolor{red}{$earned\_points$ = 0} \\
     $coins$ = 0 \\
     $ticks$ = 0 \\
-    $time$ = 420 \\
-    $lives$ = $Mario.get_lives()$ \\
-    \item exception: $exc := screen \equiv None \Rightarrow invalidArguemnt$
+    $time$ = \sout{420} \textcolor{red}{400} \\
+    $lives$ = $3$ \\
+    \textcolor{red}{$new\_level$ = False} \\
+    \textcolor{red}{$sprite\_sheet$: $Spritesheet.$("./resources/img/title\_screen.png"} \\
+    \textcolor{red}{$mushroom\_life$: $sprite\_sheet.image\_at(0, 150, 2, color\_key = [0,0,0], ignore\_tile\_size = True)$}
+    \item exception: $exc := $\sout{$screen$} \textcolor{red}{$SCREEN$} $\equiv None \Rightarrow invalidArguemnt$
+\end{itemize}
+
+\noindent \textcolor{red}{reset():}
+\begin{itemize}
+    \item  \textcolor{red}{$state$ = "menu"} \\
+    \item \textcolor{red}{$screen$ = screen} \\
+    \item \textcolor{red}{$level\_name$ = "" //empty string} \\
+    \item \textcolor{red}{$points$ = 0} \\
+    \item \textcolor{red}{$earned\_points$ = 0} \\
+    \item \textcolor{red}{$coins$ = 0} \\
+    \item \textcolor{red}{$ticks$ = 0} \\
+    \item \textcolor{red}{$time$ = \textcolor{red}{400} } \\
+    \item \textcolor{red}{$lives$ = $3$ } \\
+    \textcolor{red}{$new\_level$ = False} \\
 \end{itemize}
 
 \noindent update():
 \begin{itemize}
-    \item transition: Uses the methods $draw\_text$ to write the words "MARIO", "WORLD", "TIME" as well using $coin\_string, point\_string, time\_string$ to write the official values of coin, point and time. The official value of time is only written when $state \neq$ "menu". Upon the player losing a life, the $lives$ state variable is updated by $lives = Mario.get_lives().$ Lastly, this method also updates the time value:
+    \item transition: Uses the methods $draw\_text$ to write the words "MARIO", "WORLD", "TIME" \textcolor{red}{ and "LIVES"} as well using $coin\_string, point\_string, time\_string$ \textcolor{red}{and the value at $lives$} to write the official values of coin, point \textcolor{red}{,} \sout{and} time \textcolor{red}{and the correct number of lives represented by $mushroom\_life$}. The official value of time is only written when $state \neq$ "menu". Lastly, this method also updates the time value:
 
     \begin{tabular}{|l|l|}
     \hline
-    $True$ & $ticks += 1$ \\
+    $True$ & $ticks += $\sout{$1$} \textcolor{red}{$2$} \\
     \hline
     $ticks$ \equiv 60 & $ticks$ = 0, $time -= 1$ \\
     \hline
@@ -2088,11 +2342,13 @@ Pause
 
 \subsection *{Uses}
 
-animation - spritesheet \\
-dashboard \\
-entity \\
-display - screen \\
-menu \\
+\sout{animation - spritesheet} \\
+dashboard \textcolor{red}{- DASHBOARD}\\
+\sout{entity} \\
+display - \sout{screen} \textcolor{red}{SCREEN} \\
+\sout{menu} \\
+\textcolor{red}{pygame} \\
+\textcolor{red}{game\_controller}
 
 \subsection* {Syntax}
 
@@ -2110,7 +2366,9 @@ None
 \hline
 \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
 \hline
-new Pause & $screen, entity, dashboard$ & Pause & invalidArgument\\
+new Pause & \sout{$screen, entity, dashboard$} \textcolor{red}{game\_controller} & Pause & invalidArgument\\
+\hline
+\textcolor{red}{run} & & & \\
 \hline
 update & & & \\
 \hline
@@ -2126,9 +2384,10 @@ create\_background\_blur & & & \\
 
 \subsubsection* {State Variables}
 
-$screen$ : instance of type screen \\
-$entity$ : instance of type entity \\
-$dashboard$ : instance of type dashboard\\
+\sout{$screen$ : instance of type screen} \\
+\sout{$entity$ : instance of type entity} \\
+\textcolor{red}{$game\_controller: instance of game\_controller$} \\
+\sout{$dashboard$ : instance of type dashboard}\\
 $state$ : $\mathbb{N}$ \\
 $spritesheet$ : value of $Spritesheet()$ \\
 $pause\_srfc$ : value of $GaussianBlur()$ \\
@@ -2150,16 +2409,23 @@ None
 \noindent pause(screen, entity, dashboard):
 \begin{itemize}
     \item transition: 
-    $screen$ : screen \\
-    $entity$ : entity \\
-    $dashboard$ : dashboard\\
+    \sout{$screen$ : screen} \\
+    \sout{$entity$ : entity} \\
+    \sout{$dashboard$ : dashboard}\\
+    \textcolor{red}{$game\_controller : game\_controller$} \\
     $state$ : 0 \\
     $spritesheet$ : $Spritesheet("./resources/img/title\_screen.png")$ \\
     $pause\_srfc$ : $GaussianBlur().filter(screen, 0, 0, 640, 480)$ \\
-    $dot$ : $spritesheet.image\_at(0, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)$ \\
-    $gray\_dot$ : $spritesheet.image\_at(20, 150, 2, colorkey=[255, 0, 220], ignoreTileSize=True)$ \\
+    $dot$ : $spritesheet.image\_at(0, 150, 2, color\_key=[255, 0, 220], ignore\_tile\_size=True)$ \\
+    $gray\_dot$ : $spritesheet.image\_at(20, 150, 2, color\_key=[255, 0, 220], ignore\_tile\_size=True)$ \\
     
     \item exception: $exc := screen \equiv None \lor entity \equiv None \lor dashboard \equiv None \Rightarrow invalidArgument$
+\end{itemize}
+
+\noindent \textcolor{red}{run():}
+\begin{itemize}
+    \item \textcolor{red}{transition: $Do update() when start \equiv False$}
+    \item \textcolor{red}{exception: None}
 \end{itemize}
 
 \noindent update():
@@ -2217,7 +2483,7 @@ None
 
 \noindent create\_background\_blur():
 \begin{itemize}
-    \item transition: $pause\_srfc = GaussianBlur().filter(self.screen, 0, 0, 640, 480)$
+    \item transition: $pause\_srfc = GaussianBlur().filter($\sout{$self.screen$}\textcolor{red}{$SCREEN$}, $0, 0, 640, 480)$
     
     \item exception: None
 \end{itemize}
@@ -2232,14 +2498,861 @@ None
 
 \newpage
 
-\section* {levels.json Module}
+\section* {\sout{levels.json Module}}
 
-\subsection*{Template Module}
+\subsection*{\sout{Template Module}}
 
-levels.json
+\sout{levels.json}
 
-\subsection* {Description}
+\subsection* {\sout{Description}}
 
-This is a document that contains the outlines of where different entities such as ground blocks or item boxes or sky etc. will be placed for a given level. This document is used to create the levels upon level initialization and menu initialization.
+\sout{This is a document that contains the outlines of where different entities such as ground blocks or item boxes or sky etc. will be placed for a given level. This document is used to create the levels upon level initialization and menu initialization.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\color{red}
+\section*{Coin Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Animation & & \\
+    EntityBase & &
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Coin & $\mathbb{Z, Z, R}$ & Coin & ---\\
+\hline
+update & Camera & --- & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+animation: Animation & // & Coin animation
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Coin(x, y, gravity):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item Initialize super class EntityBase
+        \item animation := Copy of the coin animation object from SPRITE\_COLLECTION
+        \item type := "Item"
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+
+\noindent update(camera):
+\begin{itemize}
+    \item transition: animation.update(), draw the coin to the screen at (self.rect.x + cam.x, self.rect.y)
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Item Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Animation & & \\
+    EntityBase & & \\
+    Sound\_Controller & &\\
+    Vector2D & &
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Item & $\mathbb{Z, Z}$ & Item & ---\\
+\hline
+spawn\_coin & Camera & --- & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+item\_pos: Vector2D & // & Represents the items position \\
+item\_vel: Vector2D & // & Represents the items velocity \\
+animation: Animation & // & Coin animation \\
+sound\_played: $\mathbb{B}$ & // & Flag if the sound for collecting the item has played\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Item(x, y):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item item\_pos, item\_vel := Vector2D(x, y), Vector2D(0, 0)
+        \item animation := Copy of the coin item animation object from SPRITE\_COLLECTION
+        \item sound\_played := False
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+
+\noindent spawn\_coin(camera):
+\begin{itemize}
+    \item transition: Play the coin collection sound if sound\_played is False, update the animation. Then, animate the object jumping and falling, as well as the points text.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{RandomBox Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Animation & & \\
+    EntityBase & & \\
+    Item & & \\
+    Vector2D & &
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new RandomBox & $\mathbb{Z, Z, R}$ & RandomBox & ---\\
+\hline
+update & Camera & --- & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+triggered: $\mathbb{B}$ & // & Represents if the box has been triggered\\
+max\_time: $\mathbb{N}$ & // & Represents the max time the box moves after being triggered\\
+vel: $\mathbb{Z}$ & // & Represents the vertical velocity of the box\\
+item: Item & // & Represents the coin inside the box\\
+spawn: $\mathbb{B}$ & // & Flag that keeps track if the coin has already been spawned
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new RandomBox(x, y, gravity):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item Initialize the super class EntityBase.
+        \item animation := Copy of the random box animation object from SPRITE\_COLLECTION
+        \item type, triggered, max\_time := "Block", False, 10
+        \item vel, item := 1, Item(self.rect.x, self.rect.y)
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+
+\noindent update(camera):
+\begin{itemize}
+    \item transition: If the box hasn't been triggered, then just update the animation. If the box is triggered, then set the image of the animation to the empty box image, call item.spawn\_coin(camera), animate the box bouncing, and draw the box. 
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{MushroomItem Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Animation & & \\
+    EntityBase & & \\
+    Level & & \\
+    LeftRightWalkTrait & & \\
+    Sound\_Controller & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new MushroomItem & $\mathbb{Z, Z}$, Level & MushroomItem & ---\\
+\hline
+spawn\_mushroom & Camera & --- & ---\\
+\hline
+update & Camera & --- & ---\\
+\hline
+draw\_mushroom & Camera & --- & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+animation: Animation & // & Animation object holding mushroom images\\
+sound\_played: $\mathbb{B}$ & // & Flag for if a sound has been played\\
+level: Level & // & Holds the level\\
+left\_right\_trait: LeftRightWalkTrait & // & For moving the mushroom\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new MushroomItem(x, y, level):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item Initialize the super class EntityBase.
+        \item animation := Copy of the mushroom animation object from SPRITE\_COLLECTION
+        \item type, level, alive := "powerup", level, False
+        \item left\_right\_trait, sound\_played := None, False
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+\noindent spawn\_mushroom(camera):
+\begin{itemize}
+    \item transition: Play the mushroom appearing sound, if sound\_played is False. Draw the mushroom, set alive := True and initialize the left\_right\_trait := LeftRightWalkTrait(self, level)
+\end{itemize}
+
+\noindent update(camera):
+\begin{itemize}
+    \item transition: If the mushroom hasn't been collected yet, then apply gravity, draw the mushroom and update the left\_right\_trait. Otherwise, set alive := None.
+\end{itemize}
+
+\noindent draw\_mushroom(camera):
+\begin{itemize}
+    \item transition: Draw the mushroom to the screen at (self.rect.x + camera.x, self.rect.y)
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{PowerUpBox Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Animation & & \\
+    EntityBase & & \\
+    MushroomItem & &
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new PowerUpBox & $\mathbb{Z, Z, R}$ & PowerUpBox & ---\\
+\hline
+update & Camera & --- & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+triggered: $\mathbb{B}$ & // & Represents if the box has been triggered\\
+max\_time: $\mathbb{N}$ & // & Represents the max time the box moves after being triggered\\
+vel: $\mathbb{Z}$ & // & Represents the vertical velocity of the box\\
+item: Mushroom & // & Represents the mushroom inside the box\\
+spawn: $\mathbb{B}$ & // & Flag that keeps track if the mushroom has already been spawned
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new PowerUpBox(x, y, gravity):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item Initialize the super class EntityBase.
+        \item animation := Copy of the power up box animation object from SPRITE\_COLLECTION
+        \item type, triggered, max\_time := "Block", False, 10
+        \item vel := 1
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+
+\noindent update(camera):
+\begin{itemize}
+    \item transition: If the box hasn't been triggered, then just update the animation. If the box is triggered, then set the image of the animation to the empty box image, call item.spawn\_mushroom(camera), animate the box bouncing, and draw the box. 
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{EntityCollider Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    pygame.Rect & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new EntityCollider & EntityBase & EntityCollider & ---\\
+\hline
+check & EntityBase & --- & ---\\
+\hline
+determine\_side & Rect, Rect & Tuple($\mathbb{B,B}$) & ---\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+entity: EntityBase & // & The entity that has this collider
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new EntityCollider(entity):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item entity := entity
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+\noindent check(target):
+\begin{itemize}
+    \item output: If entity.rect and target.rect collide, return (True, determine\_side(target.rect, entity.rect)), otherwise return (False, False)
+\end{itemize}
+
+\noindent determine\_side(rect1, rect2):
+\begin{itemize}
+    \item output: If rect2 is on top of rect1, return True, otherwise return False
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{BounceTrait Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Vector2D & & \\
+    EntityBase & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsection* {Semantics}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new BounceTrait & EntityBase & BounceTrait & ---\\
+\hline
+update & --- & --- & ---\\
+\hline
+reset & --- & --- & ---\\
+\hline
+set & --- & --- & ---\\
+\hline
+\end{tabular}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+    vel: $\mathbb{Z}$ & // & Represents the vertical velocity of the entity\\
+    jump: $\mathbb{B}$ & // & Boolean for indicating if the entity is jumping or not\\
+    entity: EntityBase & // & The entity with this trait
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new BounceTrait(entity):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item vel, jump, entity := 5, False, entity
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+update():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item jump $\Rightarrow$ (set entities y velocity to 0, subtract vel from entities y velocity, jump := False, entity.in\_air := True)
+    \end{itemize}
+\end{itemize}
+
+reset():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item entity.in\_air := False
+    \end{itemize}
+\end{itemize}
+
+set():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item entity.in\_air := True
+    \end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{GoTrait Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Animation & & \\
+    Camera & & \\
+    EntityBase & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsection* {Semantics}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new GoTrait & Animation, Camera, EntityBase & GoTrait & ---\\
+\hline
+update & --- & --- & ---\\
+\hline
+\end{tabular}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+    animation: Animation & // & Animation object of the entity\\
+    camera: Camera & // & The camera\\
+    entity: EntityBase & // & The entity that has this trait\\
+    direction: $\mathbb{Z}$ & // & The direction the entity should move based on user input \\
+    heading: $\mathbb{Z}$ & // & The direction the entity is heading\\
+    accel\_vel: $\mathbb{R}$ & // & The acceleration of the entity when moving\\
+    decel\_vel: $\mathbb{R}$ & // & The deceleration of the entity when stopped moving \\
+    max\_vel: $\mathbb{R}$ & // & The max velocity of the entity\\
+    boost: $\mathbb{B}$ & // & Indicates whether the entity is boosting or not\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new GoTrait(animation, camera, entity):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item animation, camera, entity := animation, camera, entity
+        \item direction, heading, boost := 0, 1, False
+        \item accel\_vel, decel\_vel, max\_vel := 0.4, 0.25, 3.0
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+update():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item If boosting, set the max velocity to 5, and speed up the animation. If the direction is non-zero, then the heading is updated, the velocity is updated, and the animation is updated. Else, the animation is updated, and the velocity is updated.
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{JumpTrait Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    EntityBase & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsection* {Semantics}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new JumpTrait & EntityBase & JumpTrait & ---\\
+\hline
+jump & $\mathbb{B}$ & --- & ---\\
+\hline
+set & --- & --- & ---\\
+\hline
+reset & --- & --- & ---\\
+\hline
+\end{tabular}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+    vertical\_speed: $\mathbb{R}$ & // & Represents the vertical speed of the entity\\
+    jump\_height: $\mathbb{N}$ & // & Represents the jump height of the entity\\
+    initial\_height: $\mathbb{N}$ & // & Represents the initial height of the entity\\
+    deceleration\_height: $\mathbb{N}$ & // & Represents the height at which the entity starts to decelerate\\
+    entity: EntityBase & // & Represents the entity with this trait\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new JumpTrait(entity):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item vertical\_speed, jump\_height, initial\_height := -12, 120, 384
+        \item deceleration\_height := jump\_height - (vertical\_speed * vertical\_speed)/(2 * entity.gravity)
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+jump(jumping):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item If jumping is true, the entity is not in air and the vertical velocity of the entity is 0, then set the vertical velocity of the entity to vertical\_speed, set entity.in\_air := True, entity.in\_jump := True, set the initial\_height := entity.rect.y. Then, if the entity is in a jump, check if they have jumped past the deceleration\_height and if so, set entity.in\_jump := False.
+    \end{itemize}
+\end{itemize}
+
+set():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item entity.in\_air := False
+    \end{itemize}
+\end{itemize}
+
+reset():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item entity.in\_air := True
+    \end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{LeftRightWalkTrait Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Collider & & \\
+    EntityBase & & \\
+    Level & & \\
+    Vector2D & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsection* {Semantics}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new LeftRightWalkTrait & EntityBase, Level & LeftRightWalkTrait & ---\\
+\hline
+update & --- & --- & ---\\
+\hline
+move\_entity & --- & --- & ---\\
+\hline
+\end{tabular}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+    direction: $\mathbb{Z}$ & // & The direction the entity is walking\\
+    entity: EntityBase & // & The entity which has this trait\\
+    coll_detection: Collider & // & The object which checks for collision\\
+    speed: $\mathbb{Z}$ & // & The horizontal velocity of the entity\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new LeftRightWalkTrait(entity, level):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item direction, speed := -1, 1
+        \item entity := entity
+        \item coll\_detection := Collider(entity, level)
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+update():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item If the horizontal velocity of the entity is 0 (ie. they have hit a barrier), then set direction := -direction. Call entity.vel.set\_x(speed * direction) to set the horizontal velocity of the entity and then call move\_entity.
+    \end{itemize}
+\end{itemize}
+
+move\_entity():
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item Add entity.vel.get\_y() to entity.rect.y, then check for collision in the vertical direction (ie. call coll\_detection.check\_y()). Add entity.vel.get\_x() to entity.rect.x, then check for collision in the horizontal direction (ie. call coll\_detection.check\_x())
+    \end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Tile Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    pygame.Rect & & \\
+    pygame.Surface & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsection* {Semantics}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Tile & pygame.Surface, pygame.Rect & Tile & ---\\
+\hline
+\end{tabular}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+sprite: pygame.Surface & // & The image of the tile\\
+rect: pygame.Rect & // & The hitbox of the tile\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Tile(sprite, rect):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item sprite, rect := sprite, rect
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+        
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Game\_Controller Module}
+
+\subsection* {Uses}
+
+\begin{tabular}{lll}
+    Mario & & \\
+    Dashboard & & \\
+    Level & & \\
+    MainMenu & & \\
+    Sound\_Controller & & \\
+    pygame.time.Clock & & \\
+\end{tabular}
+
+\subsection* {Syntax}
+
+\subsection* {Semantics}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new Game\_Controller & --- & Game\_Controller & ---\\
+\hline
+run & --- & --- & ---\\
+\hline
+\end{tabular}
+
+\subsubsection* {State Variables}
+\begin{tabular}{lll}
+\_\_clock: pygame.time.Clock & // & Clock for maintaining a constant frame rate\\
+menu: MainMenu & // & Self explanatory\\
+\end{tabular}
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions \& Design Decisions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+new Game\_Controller(sprite, rect):
+\begin{itemize}
+    \item transition: 
+    \begin{itemize}[]
+        \item sprite, rect := sprite, rect
+    \end{itemize}
+    \item output: $out := self$
+\end{itemize}
+
+run():
+\begin{itemize}
+    \item transition:
+    This is the main game loop. In an infinite loop, it will first run the menu. After this, it initializes some flags and a mario object with Mario(0, 0). Then, while mario is not restarting, check if mario has reached the right most border, and if so, add the score for finishing, play sounds, and after some time, switch to the next level, resetting some attributes of the dashboard. If there are no more levels (ie. mario has finished the last level), then record the highscore into highscore.txt. If mario hasn't reached the right border, then check if the time is less than the hurry time (ie. 100 time units), and if True then play the hurry music. All else being false, draw the level, update the entities in the level, update the dashboard and update mario. At the end of the inner while loop update the display, and call \_\_clock.tick(60), where 60 is the max frame rate. At the end of the outer while loop, reset the dashboard with Dashboard.reset(), and set menu.start := False.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end {document}
